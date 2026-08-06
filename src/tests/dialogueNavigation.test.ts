@@ -63,6 +63,37 @@ describe("node-level navigation effects are deferred until the player advances",
   });
 });
 
+describe("selectChoice: stat-gated choices are actually enforced, not just labeled", () => {
+  beforeEach(() => {
+    useGameStore.setState({ save: null, combat: null, pendingNodeNavigation: null });
+  });
+
+  it("refuses to apply a choice's effects when its conditions aren't met", () => {
+    const save = makeSave({ currentSceneId: "ea-scene-rei-intro", currentNodeId: "n2", flags: [] });
+    save.player.core.courage = 0; // choice "c2" on this node requires Courage 6
+    useGameStore.setState({ save });
+
+    useGameStore.getState().selectChoice("c2");
+
+    const state = useGameStore.getState();
+    // the choice's relationship-changing effects must not have applied
+    expect(state.save?.relationships.find((r) => r.npcId === "ea-rei")?.rivalry ?? 0).toBe(0);
+    // and it must not have logged as a taken choice
+    expect(state.save?.choiceLog.some((c) => c.choiceId === "c2")).toBe(false);
+  });
+
+  it("allows the same choice once the stat requirement is actually met", () => {
+    const save = makeSave({ currentSceneId: "ea-scene-rei-intro", currentNodeId: "n2", flags: [] });
+    save.player.core.courage = 6;
+    useGameStore.setState({ save });
+
+    useGameStore.getState().selectChoice("c2");
+
+    const state = useGameStore.getState();
+    expect(state.save?.choiceLog.some((c) => c.choiceId === "c2")).toBe(true);
+  });
+});
+
 describe("resolveSceneEntry: multi-branch chapter scenes", () => {
   it("ch7's Daichi-aftermath scene routes to the right branch per prior chapter-1 outcome flag", async () => {
     const { resolveSceneEntry } = await import("@/state/gameStore");

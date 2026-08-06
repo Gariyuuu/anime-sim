@@ -31,7 +31,9 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ea-flag-ch2-complete",
     nextChapterId: "ea-ch3",
     outcomes: [
+      { id: "ea-ch2-outcome-pinpointed", title: "Rattled Them", description: "You pieced together every clue and pushed hard enough that the watcher actually reacted. Someone up there is not as untouchable as they thought.", requiredFlags: ["ea-flag-ch2-pinpointed"] },
       { id: "ea-ch2-outcome-investigated", title: "Closing In", description: "You didn't find a name, but you narrowed the search to someone with real institutional access.", requiredFlags: ["ea-flag-ch2-investigated"] },
+      { id: "ea-ch2-outcome-bluffed", title: "A Convincing Lie", description: "You bluffed your way to a reaction without ever having real proof. It worked anyway.", requiredFlags: ["ea-flag-ch2-bluffed"] },
       { id: "ea-ch2-outcome-ignored", title: "Staying Focused", description: "You let the mystery wait and put your effort into the ranking board instead.", requiredFlags: ["ea-flag-ch2-ignored"] },
     ],
   },
@@ -62,6 +64,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ea-flag-ch4-complete",
     nextChapterId: "ea-ch5",
     outcomes: [
+      { id: "ea-ch4-outcome-pinpointed", title: "Not a Classmate", description: "You followed the pattern all the way to its source and confirmed what you suspected: someone's been watching you since before this rumor ever started.", requiredFlags: ["ea-flag-ch4-pinpointed"] },
       { id: "ea-ch4-outcome-confronted", title: "Faced It Head-On", description: "You denied it publicly and loudly. Not everyone believed you. Enough did.", requiredFlags: ["ea-flag-ch4-confronted"] },
       { id: "ea-ch4-outcome-traced", title: "Followed the Trail", description: "You traced the rumor quietly instead of reacting to it — and the trail led somewhere uncomfortable.", requiredFlags: ["ea-flag-ch4-traced"] },
       { id: "ea-ch4-outcome-ignored", title: "Let It Pass", description: "You didn't react at all. Most of it faded. Some of it stuck anyway.", requiredFlags: ["ea-flag-ch4-ignored"] },
@@ -93,6 +96,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ea-flag-ch6-complete",
     nextChapterId: "ea-ch7",
     outcomes: [
+      { id: "ea-ch6-outcome-exploited", title: "An Unfair Advantage", description: "You used Daichi's insider intel to target exactly where 1-A was weakest. The class won bigger than anyone expected — and you're the only one who knows why.", requiredFlags: ["ea-flag-ch6-exploited-intel"] },
       { id: "ea-ch6-outcome-individual", title: "Top of the Class", description: "You pushed for the highest individual score you could manage, and got it.", requiredFlags: ["ea-flag-ch6-individual"] },
       { id: "ea-ch6-outcome-tutored", title: "Carried Them Up", description: "You spent your study time tutoring the weaker scorers instead of chasing your own mark.", requiredFlags: ["ea-flag-ch6-tutored"] },
     ],
@@ -108,6 +112,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ea-flag-ch7-complete",
     nextChapterId: "ea-ch8",
     outcomes: [
+      { id: "ea-ch7-outcome-backed-rei", title: "A Partner in the Council", description: "You backed Rei for the open seat instead of taking it yourself. She won't forget it.", requiredFlags: ["ea-flag-ch7-backed-rei"] },
       { id: "ea-ch7-outcome-took", title: "New Influence", description: "You stepped into the gap Daichi's fall left behind. People bring you information now.", requiredFlags: ["ea-flag-ch7-took-influence"] },
       { id: "ea-ch7-outcome-stayed-out", title: "Staying Clean", description: "You saw exactly what that kind of influence costs, up close, and chose to stay out of it.", requiredFlags: ["ea-flag-ch7-stayed-out"] },
     ],

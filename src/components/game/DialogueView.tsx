@@ -8,6 +8,7 @@ import { evaluateConditions } from "@/lib/conditions";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { audioManager } from "@/audio/audioManager";
+import { cn } from "@/lib/utils";
 import type { Choice, Expression } from "@/types";
 
 const EXPRESSION_ICON: Record<Expression, string> = {
@@ -225,7 +226,13 @@ export function DialogueView() {
               </div>
             )}
             {visibleChoices.map((choice) => (
-              <ChoiceButton key={choice.id} choice={choice} showRequirement={save?.settings.showStatChecks ?? true} onSelect={() => selectChoice(choice.id)} />
+              <ChoiceButton
+                key={choice.id}
+                choice={choice}
+                showRequirement={save?.settings.showStatChecks ?? true}
+                met={!save || evaluateConditions(save, choice.conditions)}
+                onSelect={() => selectChoice(choice.id)}
+              />
             ))}
           </div>
         )}
@@ -248,19 +255,26 @@ export function DialogueView() {
   );
 }
 
-function ChoiceButton({ choice, showRequirement, onSelect }: { choice: Choice; showRequirement: boolean; onSelect: () => void }) {
+function ChoiceButton({ choice, showRequirement, met, onSelect }: { choice: Choice; showRequirement: boolean; met: boolean; onSelect: () => void }) {
   return (
     <button
-      onClick={onSelect}
-      className="flex items-center justify-between gap-2 rounded border-2 border-ink-950 bg-paper-0 px-3 py-2 text-left text-xs hover:bg-ink-100 active:translate-y-[1px]"
+      onClick={met ? onSelect : undefined}
+      disabled={!met}
+      aria-disabled={!met}
+      className={cn(
+        "flex items-center justify-between gap-2 rounded border-2 px-3 py-2 text-left text-xs transition-colors",
+        met ? "border-ink-950 bg-paper-0 hover:bg-ink-100 active:translate-y-[1px]" : "cursor-not-allowed border-ink-300 bg-ink-100 text-ink-400",
+      )}
     >
       <span className="flex items-center gap-1.5">
         {choice.isSilence && <Icon name="volume-x" size={12} className="text-ink-500" />}
         {choice.isBluff && <Icon name="drama" size={12} className="text-accent-warning" />}
-        {choice.importantChoice && <Icon name="star" size={12} className="text-accent-danger" />}
+        {choice.importantChoice && <Icon name="star" size={12} className={met ? "text-accent-danger" : "text-ink-400"} />}
         {choice.text}
       </span>
-      {showRequirement && choice.requirementLabel && <span className="shrink-0 text-[9px] uppercase text-ink-400">{choice.requirementLabel}</span>}
+      {showRequirement && choice.requirementLabel && (
+        <span className={cn("shrink-0 text-[9px] uppercase", met ? "text-ink-400" : "text-accent-danger")}>{choice.requirementLabel}</span>
+      )}
     </button>
   );
 }

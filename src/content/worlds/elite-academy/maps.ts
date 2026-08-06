@@ -61,10 +61,17 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
       { id: "obj-ranking-board", kind: "object", x: 6, y: 1, label: "Class Ranking Board", sceneId: "ea-scene-ranking-board", glyph: "bar-chart-2" },
       { id: "obj-exam-notice", kind: "quest-marker", x: 9, y: 1, label: "Special Exam Notice: The Consensus Trial", sceneId: "ea-scene-consensus-trial", requiresFlag: "ea-flag-penalty-revealed", glyph: "alert-triangle" },
       { id: "obj-your-desk", kind: "object", x: 6, y: 6, label: "Your Desk", sceneId: "ea-scene-study-here", glyph: "pencil" },
-      { id: "obj-ch2-event", kind: "quest-marker", x: 9, y: 3, label: "Check your device", sceneId: "ea-scene-ch2-yuzuki-check", requiresFlag: "ea-flag-ch2-arrived", glyph: "smartphone" },
+      { id: "obj-ch2-rei", kind: "trigger", x: 3, y: 4, label: "Ask Rei about the watcher", sceneId: "ea-scene-ch2-rei-theory", requiresFlag: "ea-flag-ch2-arrived", glyph: "eye" },
+      { id: "obj-ch2-souta", kind: "trigger", x: 8, y: 4, label: "Souta's theory", sceneId: "ea-scene-ch2-souta-nervous", requiresFlag: "ea-flag-ch2-arrived", glyph: "message-circle" },
+      { id: "obj-ch2-event", kind: "quest-marker", x: 9, y: 2, label: "Decide how to respond", sceneId: "ea-scene-ch2-event", requiresFlag: "ea-flag-ch2-arrived", glyph: "smartphone" },
       { id: "obj-ch3-event", kind: "quest-marker", x: 9, y: 5, label: "The Nomination Exam", sceneId: "ea-scene-ch3-souta-worried", requiresFlag: "ea-flag-ch3-arrived", glyph: "alert-triangle" },
       { id: "obj-ch7-event", kind: "quest-marker", x: 2, y: 5, label: "See what's changed", sceneId: "ea-scene-ch7-daichi-consequence", requiresFlag: "ea-flag-ch7-arrived", glyph: "alert-triangle" },
       { id: "obj-ch9-event", kind: "quest-marker", x: 9, y: 6, label: "Talk to Ms. Arase", sceneId: "ea-scene-ch9-event", requiresFlag: "ea-flag-ch9-arrived", glyph: "eye" },
+      { id: "obj-ch7-rei", kind: "trigger", x: 4, y: 2, label: "Rei's ambition", sceneId: "ea-scene-ch7-rei-ambition", requiresFlag: "ea-flag-ch7-arrived", glyph: "eye" },
+      { id: "obj-ch7-yuzuki", kind: "trigger", x: 10, y: 3, label: "Yuzuki's warning", sceneId: "ea-scene-ch7-yuzuki-warning", requiresFlag: "ea-flag-ch7-arrived", glyph: "eye" },
+      { id: "obj-ch9-rei", kind: "trigger", x: 3, y: 4, label: "Rei, looking back", sceneId: "ea-scene-ch9-rei-reflect", requiresFlag: "ea-flag-ch9-arrived", glyph: "eye" },
+      { id: "obj-ch9-yuzuki", kind: "trigger", x: 8, y: 4, label: "Yuzuki, looking back", sceneId: "ea-scene-ch9-yuzuki-reflect", requiresFlag: "ea-flag-ch9-arrived", glyph: "eye" },
+      { id: "obj-ch10-farewell", kind: "trigger", x: 5, y: 3, label: "Before the exam", sceneId: "ea-scene-ch10-farewell-round", requiresFlag: "ea-flag-ch10-arrived", glyph: "eye" },
       { id: "obj-ch10-event", kind: "quest-marker", x: 3, y: 6, label: "The Final Ranking Exam", sceneId: "ea-scene-ch10-event", requiresFlag: "ea-flag-ch10-arrived", glyph: "alert-triangle" },
     ],
   },
@@ -82,6 +89,9 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "npc-yuzuki", kind: "npc", x: 4, y: 3, label: "Yuzuki Hoshino", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-intro", glyph: "heart" },
       { id: "obj-food-counter", kind: "shop", x: 8, y: 2, label: "Lunch Counter", sceneId: "ea-scene-lunch-counter", glyph: "utensils" },
+      { id: "obj-ch2-yuzuki", kind: "trigger", x: 5, y: 4, label: "Yuzuki checks in", sceneId: "ea-scene-ch2-yuzuki-check", requiresFlag: "ea-flag-ch2-arrived", glyph: "smartphone" },
+      { id: "obj-ch3-yuzuki", kind: "trigger", x: 9, y: 5, label: "Yuzuki's read on the room", sceneId: "ea-scene-ch3-yuzuki-list", requiresFlag: "ea-flag-ch3-arrived", glyph: "eye" },
+      { id: "obj-ch4-yuzuki", kind: "trigger", x: 5, y: 5, label: "Yuzuki's support", sceneId: "ea-scene-ch4-yuzuki-support", requiresFlag: "ea-flag-ch4-arrived", glyph: "eye" },
     ],
   },
   {
@@ -102,6 +112,9 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
       { id: "obj-study-desk", kind: "object", x: 10, y: 6, label: "Study Carrel", sceneId: "ea-scene-study-minigame", glyph: "brain" },
       { id: "hidden-notebook-page", kind: "hidden-item", x: 2, y: 6, label: "Something wedged behind a shelf", itemId: "ea-item-notebook-photocopy", hidden: true, requiresFlag: "ea-flag-investigating-daichi", glyph: "file-text" },
       { id: "obj-ch6-event", kind: "quest-marker", x: 10, y: 2, label: "Midterms vs. Class 1-A", sceneId: "ea-scene-ch6-rei-risk", requiresFlag: "ea-flag-ch6-arrived", glyph: "alert-triangle" },
+      { id: "obj-ch3-nao", kind: "trigger", x: 6, y: 3, label: "Nao's contribution numbers", sceneId: "ea-scene-ch3-nao-numbers", requiresFlag: "ea-flag-ch3-arrived", glyph: "eye" },
+      { id: "obj-ch4-nao", kind: "trigger", x: 10, y: 5, label: "Nao's pattern analysis", sceneId: "ea-scene-ch4-nao-pattern", requiresFlag: "ea-flag-ch4-arrived", glyph: "eye" },
+      { id: "obj-ch6-souta", kind: "trigger", x: 3, y: 5, label: "Souta's panic", sceneId: "ea-scene-ch6-souta-panic", requiresFlag: "ea-flag-ch6-arrived", glyph: "eye" },
     ],
   },
   {
@@ -118,6 +131,8 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "npc-daichi", kind: "npc", x: 5, y: 2, label: "Daichi Onodera", npcId: "ea-daichi", sceneId: "ea-scene-daichi-intro", glyph: "crown" },
       { id: "hidden-hairpin", kind: "hidden-item", x: 8, y: 5, label: "A hairpin on the floor", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
+      { id: "obj-ch2-daichi", kind: "trigger", x: 3, y: 3, label: "Ask Daichi about the watcher", sceneId: "ea-scene-ch2-daichi-cagey", requiresFlag: "ea-flag-ch2-arrived", glyph: "eye" },
+      { id: "obj-ch6-daichi", kind: "trigger", x: 7, y: 5, label: "Daichi's intel on 1-A", sceneId: "ea-scene-ch6-daichi-intel", requiresFlag: "ea-flag-ch6-arrived", glyph: "eye" },
     ],
   },
   {
@@ -135,6 +150,11 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
       { id: "npc-kenta-gym", kind: "npc", x: 7, y: 3, label: "Kenta Mabuchi", npcId: "ea-kenta", sceneId: "ea-scene-kenta-gym", glyph: "shield" },
       { id: "obj-training", kind: "trigger", x: 3, y: 6, label: "Train (Courage / Discipline)", sceneId: "ea-scene-train-gym", glyph: "dumbbell" },
       { id: "obj-ch5-event", kind: "quest-marker", x: 10, y: 6, label: "The Away Exam", sceneId: "ea-scene-ch5-kenta-past", requiresFlag: "ea-flag-ch5-arrived", glyph: "alert-triangle" },
+      { id: "obj-ch5-campfire", kind: "trigger", x: 2, y: 2, label: "The campfire", sceneId: "ea-scene-ch5-campfire", requiresFlag: "ea-flag-ch5-arrived", glyph: "flame" },
+      { id: "obj-ch5-rei", kind: "trigger", x: 12, y: 3, label: "Rei's team trouble", sceneId: "ea-scene-ch5-rei-team", requiresFlag: "ea-flag-ch5-arrived", glyph: "eye" },
+      { id: "obj-ch5-1d", kind: "trigger", x: 5, y: 7, label: "The struggling team", sceneId: "ea-scene-ch5-1d-student", requiresFlag: "ea-flag-ch5-arrived", glyph: "eye" },
+      { id: "obj-ch2-kenta", kind: "trigger", x: 3, y: 3, label: "Kenta noticed something", sceneId: "ea-scene-ch2-kenta-notices", requiresFlag: "ea-flag-ch2-arrived", glyph: "eye" },
+      { id: "obj-ch3-kenta", kind: "trigger", x: 11, y: 3, label: "Kenta's worried too", sceneId: "ea-scene-ch3-kenta-worried", requiresFlag: "ea-flag-ch3-arrived", glyph: "eye" },
     ],
   },
   {
@@ -151,6 +171,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "npc-yuzuki-roof", kind: "npc", x: 5, y: 3, label: "Yuzuki Hoshino", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-rooftop", glyph: "heart", requiresFlag: "ea-flag-met-yuzuki" },
       { id: "obj-view", kind: "trigger", x: 2, y: 2, label: "Look out over the campus", sceneId: "ea-scene-rooftop-monologue", glyph: "cloud" },
+      { id: "obj-ch2-hidden-lead", kind: "trigger", x: 7, y: 2, label: "Piece it together", sceneId: "ea-scene-ch2-hidden-lead", hidden: true, requiresFlag: "ea-flag-ch2-clue-kenta", glyph: "sparkles" },
     ],
   },
   {
@@ -166,6 +187,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     ambientLabel: "Benches under thin trees. A popular spot to be overheard.",
     interactables: [
       { id: "npc-hikari-yard", kind: "npc", x: 4, y: 4, label: "Hikari Endo", npcId: "ea-hikari", sceneId: "ea-scene-hikari-courtyard", glyph: "message-circle" },
+      { id: "obj-ch2-hikari", kind: "trigger", x: 9, y: 4, label: "Hikari's rumor", sceneId: "ea-scene-ch2-hikari-gossip", requiresFlag: "ea-flag-ch2-arrived", glyph: "eye" },
       { id: "hidden-item-courtyard", kind: "hidden-item", x: 10, y: 6, label: "Something under the bench", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
       { id: "obj-ch4-event", kind: "quest-marker", x: 7, y: 3, label: "Ask Daichi about the rumor", sceneId: "ea-scene-ch4-daichi-hint", requiresFlag: "ea-flag-ch4-arrived", glyph: "alert-triangle" },
     ],
@@ -184,6 +206,8 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "obj-shop", kind: "shop", x: 5, y: 2, label: "Shop Counter", sceneId: "ea-scene-shop", glyph: "shopping-bag" },
       { id: "obj-ch8-event", kind: "quest-marker", x: 8, y: 4, label: "Market intel from Hikari", sceneId: "ea-scene-ch8-hikari-intel", requiresFlag: "ea-flag-ch8-arrived", glyph: "alert-triangle" },
+      { id: "obj-ch8-souta", kind: "trigger", x: 3, y: 2, label: "Souta's gamble", sceneId: "ea-scene-ch8-souta-trading", requiresFlag: "ea-flag-ch8-arrived", glyph: "eye" },
+      { id: "obj-ch8-rei", kind: "trigger", x: 7, y: 5, label: "Rei's market read", sceneId: "ea-scene-ch8-rei-strategy", requiresFlag: "ea-flag-ch8-arrived", glyph: "eye" },
     ],
   },
   {

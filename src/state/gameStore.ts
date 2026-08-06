@@ -270,6 +270,9 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
     const node = scene?.nodes.find((n) => n.id === save.currentNodeId);
     const choice = node?.choices.find((c) => c.id === choiceId);
     if (!scene || !node || !choice) return;
+    // Defense in depth: the UI already disables choices whose conditions aren't met, but never
+    // trust that alone — a stat-gated choice must not be selectable through any other path either.
+    if (!evaluateConditions(save, choice.conditions)) return;
 
     const savedWithLog: SaveGame = {
       ...save,
@@ -298,6 +301,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
     if (!save) return;
     set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined }, pendingNodeNavigation: null });
     get().saveGame();
+    get().showChapterRecapIfDue();
   },
 
   logDialogueLine: (speaker, text) => {
@@ -506,7 +510,10 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
 
   showChapterRecapIfDue: () => {
     const { save } = get();
-    if (!save || save.mode === "combat" || save.mode === "recap") return;
+    // Deliberately excludes "dialogue": a chapter's completion flag is typically set partway
+    // through its closing scene, and we don't want the recap to cut off the scene's remaining
+    // lines. Callers trigger this once dialogue actually ends (see endDialogue/leaveCurrentNode).
+    if (!save || save.mode === "combat" || save.mode === "recap" || save.mode === "dialogue") return;
     const chapter = getChapter(save.currentChapterId);
     if (!chapter) return;
     const recapShownFlag = `meta-recap-shown-${chapter.id}`;
@@ -568,6 +575,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
           pendingNodeNavigation: null,
         });
         get().saveGame();
+        get().showChapterRecapIfDue();
         return;
       } else if (cmd.type === "goToScene") {
         const entry = resolveSceneEntry(cmd.sceneId, workingSave, cmd.nodeId);
@@ -610,6 +618,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       if (cmd.type === "changeLocation") {
         set({ save: { ...save, currentMapId: cmd.mapId, currentSpawnId: cmd.spawnId, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined } });
         get().saveGame();
+        get().showChapterRecapIfDue();
       } else if (cmd.type === "goToScene") {
         const entry = resolveSceneEntry(cmd.sceneId, save, cmd.nodeId);
         get()._settleAtNode(save, cmd.sceneId, entry);
@@ -621,3 +630,8 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
     get().endDialogue();
   },
 }));
+
+// Expose the store for local debugging/E2E scripts only — never in production.
+if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+  (window as unknown as { __ANIME_SIM_STORE__: typeof useGameStore }).__ANIME_SIM_STORE__ = useGameStore;
+}
