@@ -1,0 +1,40 @@
+import type { CodexEntryInput } from "@/types";
+
+export const codexEntries: CodexEntryInput[] = [
+  /* ================================ Elite Academy ================================ */
+  { id: "ea-codex-academy", category: "location", title: "Advanced Integrated Academy", body: "A government-funded boarding school where students are split into four ranked classes. Officially, the ranking exists to identify talent. Unofficially, it exists to see how far students will go to keep their place in it.", worldId: "elite-academy" },
+  { id: "ea-codex-arase", category: "character", title: "Fumiko Arase", body: "Homeroom teacher of Class 1-C. Institutionally powerful, personally unreadable. Watches more than she teaches.", worldId: "elite-academy" },
+  { id: "ea-codex-rei", category: "character", title: "Rei Kagayama", body: "Class 1-C's representative. Cold, precise, treats every interaction as an audit.", worldId: "elite-academy" },
+  { id: "ea-codex-rei-secret", category: "secret", title: "Rei's Reserve List", body: "Rei's transcript doesn't match her reputation — she's clinging to a reserve spot in Class A's shadow roster, one bad exam from losing it entirely.", worldId: "elite-academy" },
+  { id: "ea-codex-yuzuki", category: "character", title: "Yuzuki Hoshino", body: "Gentle, perceptive, keeps a private notebook of classmate observations. Everyone underestimates her.", worldId: "elite-academy" },
+  { id: "ea-codex-daichi", category: "character", title: "Daichi Onodera", body: "Student council vice-president. Magnetic, calculating, sells information to those who can afford it.", worldId: "elite-academy" },
+  { id: "ea-codex-daichi-secret", category: "secret", title: "The Format Leak", body: "Daichi has been selling early exam-format details to select students, funded by the private points it earns him.", worldId: "elite-academy" },
+  { id: "ea-codex-hikari", category: "character", title: "Hikari Endo", body: "Knows everything about everyone. The academy's unofficial information network, for better or worse.", worldId: "elite-academy" },
+  { id: "ea-codex-class-points", category: "term", title: "Class Points", body: "A shared score that determines each class's standing and privileges. Can be gained through exams — and quietly lost to unexplained penalties.", worldId: "elite-academy" },
+  { id: "ea-codex-private-points", category: "term", title: "Private Points", body: "Personal currency earned through performance. Spendable on comfort, favors, or — for the right price — information.", worldId: "elite-academy" },
+  { id: "ea-codex-consensus-trial", category: "term", title: "The Consensus Trial", body: "A special exam where each class distributes a fixed resource pool among its own students. Whoever ends up lowest fails, regardless of the class's total.", worldId: "elite-academy" },
+  { id: "ea-codex-watcher", category: "secret", title: "The Watcher", body: "An anonymous message arrived after Chapter One's events, suggesting someone has been quietly observing your choices. Their identity is unknown.", worldId: "elite-academy" },
+  { id: "ea-codex-classes", category: "class", title: "The Four Classes", body: "Class 1-A, 1-B, 1-C, and 1-D are ranked by cumulative class points. Rank determines privileges, respect, and how much the school is willing to overlook.", worldId: "elite-academy", unlockedByDefault: true },
+
+  /* ================================== Aincrad ==================================== */
+  { id: "ai-codex-aincrad", category: "location", title: "Aincrad", body: "A floating castle of one hundred floors, home to a full-dive MMORPG that ten thousand players logged into on launch day. Nobody expected it to become a prison.", worldId: "aincrad" },
+  { id: "ai-codex-nerve-gear", category: "term", title: "No Logout", body: "The game's administrators disabled the logout function on launch day. Death in-game now means death in the real world. Clearing all 100 floors is the only known way out.", worldId: "aincrad" },
+  { id: "ai-codex-kirei", category: "character", title: "Kirei Sanjo", body: "A closed-beta veteran with detailed knowledge of Floor 1. Fast-talking, sharper than she lets on.", worldId: "aincrad" },
+  { id: "ai-codex-toran", category: "character", title: "Toran Voss", body: "An older, calm front-line fighter who talks about Aincrad like a man who's made peace with not going home.", worldId: "aincrad" },
+  { id: "ai-codex-mei", category: "character", title: "Mei Okuda", body: "Floor 1's blacksmith. Refuses to fight. Treats crafting as the one thing in Aincrad still fully within her control.", worldId: "aincrad" },
+  { id: "ai-codex-mei-secret", category: "secret", title: "The Slot That Wasn't Hers", body: "Mei used her brother's preordered NerveGear slot on launch day instead of him. He's safe outside. She isn't.", worldId: "aincrad" },
+  { id: "ai-codex-ryo", category: "character", title: "Ryo Katsuragi", body: "Leader of the Iron Vanguard. Charismatic, competitive, wants his guild remembered as the one that cleared Aincrad.", worldId: "aincrad" },
+  { id: "ai-codex-nell", category: "character", title: "Nell Farrow", body: "Leader of Hearthlight. Quiet, protective, builds her guild around not losing anyone.", worldId: "aincrad" },
+  { id: "ai-codex-dask", category: "character", title: "Dask Orrin", body: "Leader of the Stonebreakers. Believes surviving Aincrad is a logistics problem, not a combat one.", worldId: "aincrad" },
+  { id: "ai-codex-hollow", category: "character", title: "\"Hollow\"", body: "A solo player whose real name nobody in town knows. Avoids parties entirely, for reasons that go back to launch day.", worldId: "aincrad" },
+  { id: "ai-codex-archivist", category: "character", title: "The Archivist", body: "A strange NPC merchant who sells suspiciously accurate information at suspiciously fair prices.", worldId: "aincrad" },
+  { id: "ai-codex-archivist-mystery", category: "secret", title: "What Is the Archivist?", body: "Some players believe the Archivist isn't a normal NPC at all — that something, or someone, is operating behind that dialogue.", worldId: "aincrad" },
+  { id: "ai-codex-sword-skills", category: "term", title: "Sword Skills", body: "System-assisted combat arts drawn from a stamina pool. Timing your input during a skill's motion adds a bonus-damage window.", worldId: "aincrad", unlockedByDefault: true },
+  { id: "ai-codex-town-of-beginnings", category: "location", title: "Town of Beginnings", body: "Floor 1's central hub and the only fully safe zone most players have ever known in Aincrad.", worldId: "aincrad" },
+  { id: "ai-codex-shrine-secret", category: "secret", title: "The Forgotten Shrine", body: "A perfectly circular clearing in Floor 1's field with no quest marker and no explanation. It feels deliberate.", worldId: "aincrad" },
+  { id: "ai-codex-vigil", category: "secret", title: "The Vigil", body: "Someone relights a row of candles at the edge of Floor 3's dungeon every day. Nobody's ever caught them doing it.", worldId: "aincrad" },
+  { id: "ai-codex-sylvan-guardian", category: "monster", title: "Sylvan Guardian", body: "Floor 1's boss. An ancient construct grown into the forest itself, with bark plating that must be broken before its core is vulnerable.", worldId: "aincrad" },
+  { id: "ai-codex-mistfallen-warden", category: "monster", title: "Mistfallen Warden", body: "Floor 2's boss. A knight-shaped mass of fog and old armor guarding the Frozen Court.", worldId: "aincrad" },
+  { id: "ai-codex-ashen-hollow-king", category: "monster", title: "Ashen Hollow King", body: "Floor 3's boss. A self-declared ruler of a hollow nobody else wanted.", worldId: "aincrad" },
+  { id: "ai-codex-guilds", category: "guild", title: "Floor 1 Guilds", body: "Iron Vanguard (combat-focused), Hearthlight (survival-focused), and the Stonebreakers (logistics-focused) are Floor 1's three founding guilds.", worldId: "aincrad", unlockedByDefault: true },
+];

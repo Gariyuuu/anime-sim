@@ -1,0 +1,549 @@
+import { create } from "zustand";
+import type { CharacterCreatorInput, SaveGame, WorldId } from "@/types";
+import { createPlayerFromCreator } from "@/types/character";
+import { defaultSettings } from "@/types/settings";
+import { evaluateConditions } from "@/lib/conditions";
+import { applyEffects, type EffectCommand } from "@/lib/effects";
+import { checkGenericAchievements } from "@/lib/achievements";
+import { persistSave, loadSaveSlot, AUTOSAVE_SLOT_ID } from "@/lib/save";
+import { uid } from "@/lib/utils";
+import {
+  getChapter,
+  getScene,
+  getMap,
+  getEncounter,
+  getAchievement,
+  getEnemy,
+  getItem,
+} from "@/content/registry";
+import {
+  buildEncounter,
+  playerCombatant,
+  companionCombatant,
+  playerAttack,
+  playerUseSkill,
+  playerGuard,
+  playerDodge,
+  playerUseItem,
+  playerAnalyze,
+  playerEscape,
+  type CombatRuntimeState,
+} from "@/engine/combat";
+
+export type Screen =
+  | "boot"
+  | "title"
+  | "worldSelect"
+  | "characterCreator"
+  | "saveSelect"
+  | "settings"
+  | "codex"
+  | "achievements"
+  | "patchNotes"
+  | "credits"
+  | "game";
+
+export interface Notification {
+  id: string;
+  kind: "achievement" | "quest" | "relationship" | "levelup" | "info";
+  title: string;
+  detail?: string;
+}
+
+interface GameStoreState {
+  screen: Screen;
+  save: SaveGame | null;
+  combat: CombatRuntimeState | null;
+  pendingEncounterId: string | null;
+  deviceOpen: boolean;
+  debugOpen: boolean;
+  notifications: Notification[];
+  pendingWorldId: WorldId | null;
+
+  setScreen: (screen: Screen) => void;
+  setPendingWorldId: (worldId: WorldId | null) => void;
+  startNewGame: (input: CharacterCreatorInput) => Promise<void>;
+  continueFromAutosave: () => Promise<boolean>;
+  loadGame: (slotId: string) => Promise<void>;
+  saveGame: (slotIdOverride?: string) => Promise<void>;
+  returnToTitle: () => void;
+
+  goToScene: (sceneId: string, nodeId?: string) => void;
+  selectChoice: (choiceId: string) => void;
+  advanceToNode: (nodeId: string) => void;
+  endDialogue: () => void;
+  logDialogueLine: (speaker: string, text: string) => void;
+
+  moveToMap: (mapId: string, spawnId?: string) => void;
+  interact: (interactableId: string) => void;
+
+  startCombat: (encounterId: string) => void;
+  doPlayerAttack: (targetId: string, timingBonus?: boolean) => void;
+  doPlayerSkill: (skillId: string, targetId: string | null, timingBonus?: boolean) => void;
+  doPlayerGuard: () => void;
+  doPlayerDodge: () => void;
+  doPlayerItem: (itemId: string) => void;
+  doPlayerAnalyze: (targetId: string) => void;
+  doPlayerEscape: () => void;
+  resolveCombatEnd: () => void;
+
+  toggleDevice: (open?: boolean) => void;
+  toggleDebug: (open?: boolean) => void;
+  updateSettings: (partial: Partial<SaveGame["settings"]>) => void;
+
+  applyEffectsBatch: (effects: Parameters<typeof applyEffects>[1]) => void;
+  pushNotification: (n: Omit<Notification, "id">) => void;
+  dismissNotification: (id: string) => void;
+  markMessagesRead: () => void;
+
+  debugSetFlag: (flag: string) => void;
+  debugClearFlag: (flag: string) => void;
+  debugTeleport: (mapId: string, spawnId?: string) => void;
+  debugModifyStat: (stat: string, delta: number) => void;
+  debugResetSave: () => void;
+  showChapterRecapIfDue: () => void;
+
+  /** Internal: apply a computed save + side-effect commands, resolving navigation/achievements.
+   * If nothing navigates away, `onSettle` decides where to land (stay put, enter a dialogue node, or end the scene). */
+  _resolveEffects: (save: SaveGame, commands: EffectCommand[], onSettle: (save: SaveGame) => void) => void;
+  /** Internal: enter a specific scene node — applies ITS OWN `effects` (flags, codex unlocks, stat
+   * changes, etc. authored directly on that line) before displaying it. This is what makes
+   * node-level `effects` (as opposed to choice-level effects) actually take effect. */
+  _settleAtNode: (save: SaveGame, sceneId: string, nodeId: string) => void;
+}
+
+export function resolveSceneEntry(sceneId: string, save: SaveGame, overrideNodeId?: string): string {
+  const scene = getScene(sceneId);
+  if (!scene) return overrideNodeId ?? "n1";
+  if (overrideNodeId) return overrideNodeId;
+  for (const candidateId of scene.altEntryNodes) {
+    const node = scene.nodes.find((n) => n.id === candidateId);
+    if (node && evaluateConditions(save, node.conditions)) return candidateId;
+  }
+  return scene.startNode;
+}
+
+function xpToNextLevel(level: number): number {
+  return 60 + level * 40;
+}
+
+function applyAincradLeveling(save: SaveGame, pushNotif: (n: Omit<Notification, "id">) => void): SaveGame {
+  let next = structuredClone(save);
+  let leveled = false;
+  while (next.player.aincrad.experience >= xpToNextLevel(next.player.aincrad.level)) {
+    next = {
+      ...next,
+      player: {
+        ...next.player,
+        aincrad: {
+          ...next.player.aincrad,
+          experience: next.player.aincrad.experience - xpToNextLevel(next.player.aincrad.level),
+          level: next.player.aincrad.level + 1,
+          maxHealth: next.player.aincrad.maxHealth + 15,
+          health: next.player.aincrad.maxHealth + 15,
+          maxStamina: next.player.aincrad.maxStamina + 8,
+          strength: next.player.aincrad.strength + 3,
+          defense: next.player.aincrad.defense + 2,
+        },
+      },
+    };
+    leveled = true;
+  }
+  if (leveled) pushNotif({ kind: "levelup", title: `Level Up! Now Level ${next.player.aincrad.level}`, detail: "Stats increased." });
+  return next;
+}
+
+export const useGameStore = create<GameStoreState>((set, get) => ({
+  screen: "boot",
+  save: null,
+  combat: null,
+  pendingEncounterId: null,
+  deviceOpen: false,
+  debugOpen: false,
+  notifications: [],
+  pendingWorldId: null,
+
+  setScreen: (screen) => set({ screen }),
+  setPendingWorldId: (worldId) => set({ pendingWorldId: worldId }),
+
+  startNewGame: async (input) => {
+    const player = createPlayerFromCreator(input);
+    const chapter = getChapter(input.world === "elite-academy" ? "ea-ch1" : "ai-ch1");
+    const now = Date.now();
+    const slotId = uid("save");
+    const save: SaveGame = {
+      version: 1,
+      slotId,
+      createdAt: now,
+      updatedAt: now,
+      playtimeSeconds: 0,
+      chapterName: chapter?.title ?? "Chapter One",
+      worldId: input.world,
+      player,
+      flags: [],
+      relationships: [],
+      inventory:
+        input.world === "aincrad"
+          ? [
+              { itemId: "ai-item-training-sword", quantity: 1, equipped: true },
+              { itemId: "ai-item-leather-vest", quantity: 1, equipped: true },
+              { itemId: "ai-item-healing-crystal", quantity: 3, equipped: false },
+            ]
+          : [],
+      quests: [],
+      codexUnlocked: [],
+      achievementsUnlocked: [],
+      currentChapterId: chapter?.id ?? "",
+      currentSceneId: chapter?.startSceneId,
+      currentNodeId: undefined,
+      currentMapId: undefined,
+      currentSpawnId: undefined,
+      mode: "dialogue",
+      partyMemberIds: [],
+      timeOfDay: "morning",
+      dayCount: 1,
+      dialogueHistory: [],
+      choiceLog: [],
+      messages: [],
+      settings: defaultSettings(),
+    };
+    set({ screen: "game" });
+    if (chapter) {
+      const entry = resolveSceneEntry(chapter.startSceneId, save);
+      get()._settleAtNode(save, chapter.startSceneId, entry);
+    } else {
+      set({ save });
+      await persistSave(save);
+    }
+  },
+
+  continueFromAutosave: async () => {
+    const save = await loadSaveSlot(AUTOSAVE_SLOT_ID);
+    if (!save) return false;
+    set({ save, screen: "game" });
+    return true;
+  },
+
+  loadGame: async (slotId) => {
+    const save = await loadSaveSlot(slotId);
+    if (!save) return;
+    set({ save, screen: "game" });
+  },
+
+  saveGame: async (slotIdOverride) => {
+    const { save } = get();
+    if (!save) return;
+    const toSave = slotIdOverride ? { ...save, slotId: slotIdOverride } : save;
+    await persistSave(toSave);
+    if (toSave.slotId !== AUTOSAVE_SLOT_ID) await persistSave({ ...toSave, slotId: AUTOSAVE_SLOT_ID });
+    set({ save: toSave });
+  },
+
+  returnToTitle: () => set({ save: null, screen: "title", combat: null }),
+
+  goToScene: (sceneId, nodeId) => {
+    const { save } = get();
+    if (!save) return;
+    const entry = resolveSceneEntry(sceneId, save, nodeId);
+    get()._settleAtNode(save, sceneId, entry);
+  },
+
+  selectChoice: (choiceId) => {
+    const { save } = get();
+    if (!save?.currentSceneId || !save.currentNodeId) return;
+    const scene = getScene(save.currentSceneId);
+    const node = scene?.nodes.find((n) => n.id === save.currentNodeId);
+    const choice = node?.choices.find((c) => c.id === choiceId);
+    if (!scene || !node || !choice) return;
+
+    const savedWithLog: SaveGame = {
+      ...save,
+      choiceLog: [...save.choiceLog, { sceneId: scene.id, choiceId: choice.id, text: choice.text }],
+    };
+    const { save: afterEffects, commands } = applyEffects(savedWithLog, choice.effects);
+    const goTo = choice.goTo;
+    get()._resolveEffects(afterEffects, commands, (settled) => {
+      if (goTo) {
+        get()._settleAtNode(settled, scene.id, goTo);
+      } else {
+        set({ save: { ...settled, mode: settled.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined } });
+        get().saveGame();
+      }
+    });
+  },
+
+  advanceToNode: (nodeId) => {
+    const { save } = get();
+    if (!save?.currentSceneId) return;
+    get()._settleAtNode(save, save.currentSceneId, nodeId);
+  },
+
+  endDialogue: () => {
+    const { save } = get();
+    if (!save) return;
+    set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined } });
+    get().saveGame();
+  },
+
+  logDialogueLine: (speaker, text) => {
+    const { save } = get();
+    if (!save) return;
+    const last = save.dialogueHistory[save.dialogueHistory.length - 1];
+    if (last && last.speaker === speaker && last.text === text) return;
+    set({ save: { ...save, dialogueHistory: [...save.dialogueHistory, { speaker, text }].slice(-200) } });
+  },
+
+  moveToMap: (mapId, spawnId) => {
+    const { save } = get();
+    if (!save) return;
+    const map = getMap(mapId);
+    const spawn = spawnId ?? map?.defaultSpawn ?? "default";
+    set({
+      save: { ...save, currentMapId: mapId, currentSpawnId: spawn, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined },
+    });
+    get().saveGame();
+  },
+
+  interact: (interactableId) => {
+    const { save } = get();
+    if (!save?.currentMapId) return;
+    const map = getMap(save.currentMapId);
+    const it = map?.interactables.find((i) => i.id === interactableId);
+    if (!map || !it) return;
+    if (it.requiresFlag && !save.flags.includes(it.requiresFlag)) return;
+
+    if (it.kind === "door" || it.kind === "transition") {
+      if (it.targetMapId) get().moveToMap(it.targetMapId, it.targetSpawnId);
+      return;
+    }
+    if (it.kind === "monster" && it.encounterId) {
+      get().startCombat(it.encounterId);
+      return;
+    }
+    if (it.kind === "hidden-item" && it.itemId) {
+      const { save: afterEffects, commands } = applyEffects(save, [{ type: "addItem", itemId: it.itemId, quantity: 1 }]);
+      get().pushNotification({ kind: "info", title: "Item found", detail: it.label });
+      get()._resolveEffects(afterEffects, commands, (settled) => {
+        set({ save: settled });
+        get().saveGame();
+      });
+      return;
+    }
+    if (it.sceneId) {
+      get().goToScene(it.sceneId);
+    }
+  },
+
+  startCombat: (encounterId) => {
+    const { save } = get();
+    if (!save) return;
+    const encounter = getEncounter(encounterId);
+    if (!encounter) return;
+    const party = [playerCombatant(save.player.name, save.player.core, save.player.aincrad)];
+    for (const npcId of save.partyMemberIds) {
+      party.push(companionCombatant(npcId, npcId, save.player.aincrad.level, "user", "#4a4a4a"));
+    }
+    const combat = buildEncounter(encounter, party);
+    set({ combat, pendingEncounterId: encounterId, save: { ...save, mode: "combat" } });
+  },
+
+  doPlayerAttack: (targetId, timingBonus) => {
+    const { combat } = get();
+    if (!combat || combat.phase !== "player-turn") return;
+    set({ combat: playerAttack(combat, targetId, timingBonus) });
+  },
+  doPlayerSkill: (skillId, targetId, timingBonus) => {
+    const { combat } = get();
+    if (!combat || combat.phase !== "player-turn") return;
+    set({ combat: playerUseSkill(combat, skillId, targetId, timingBonus) });
+  },
+  doPlayerGuard: () => {
+    const { combat } = get();
+    if (!combat || combat.phase !== "player-turn") return;
+    set({ combat: playerGuard(combat) });
+  },
+  doPlayerDodge: () => {
+    const { combat } = get();
+    if (!combat || combat.phase !== "player-turn") return;
+    set({ combat: playerDodge(combat) });
+  },
+  doPlayerItem: (itemId) => {
+    const { combat, save } = get();
+    if (!combat || !save || combat.phase !== "player-turn") return;
+    const slot = save.inventory.find((s) => s.itemId === itemId && s.quantity > 0);
+    if (!slot) return;
+    const def = getItem(itemId);
+    const heal = def?.useEffect?.healthRestore ?? 0;
+    const stam = def?.useEffect?.staminaRestore ?? 0;
+    set({ combat: playerUseItem(combat, heal, stam, def?.name ?? itemId) });
+    const { save: afterEffects } = applyEffects(save, [{ type: "removeItem", itemId, quantity: 1 }]);
+    set({ save: afterEffects });
+  },
+  doPlayerAnalyze: (targetId) => {
+    const { combat } = get();
+    if (!combat || combat.phase !== "player-turn") return;
+    set({ combat: playerAnalyze(combat, targetId) });
+  },
+  doPlayerEscape: () => {
+    const { combat } = get();
+    if (!combat) return;
+    set({ combat: playerEscape(combat) });
+  },
+
+  resolveCombatEnd: () => {
+    const { combat, save, pendingEncounterId } = get();
+    if (!combat || !save || !pendingEncounterId) return;
+    const encounter = getEncounter(pendingEncounterId);
+
+    if (combat.phase === "victory") {
+      const xp = encounter?.enemyIds.reduce((sum, id) => sum + (getEnemy(id)?.xp ?? 0), 0) ?? 0;
+      const col = encounter?.enemyIds.reduce((sum, id) => sum + (getEnemy(id)?.col ?? 0), 0) ?? 0;
+      const effects = [
+        { type: "modifyStat" as const, stat: "experience", delta: xp },
+        { type: "modifyStat" as const, stat: "col", delta: col },
+        ...(encounter?.victoryEffects ?? []).map((flag) => ({ type: "setFlag" as const, flag })),
+      ];
+      const playerCombatantState = combat.party.find((p) => p.id === "player");
+      const survivedSave: SaveGame = {
+        ...save,
+        player: { ...save.player, aincrad: { ...save.player.aincrad, health: Math.max(1, playerCombatantState?.health ?? save.player.aincrad.health) } },
+      };
+      const { save: afterEffects, commands } = applyEffects(survivedSave, effects);
+      const leveled = applyAincradLeveling(afterEffects, get().pushNotification);
+      get().pushNotification({ kind: "info", title: "Victory", detail: `+${xp} XP, +${col} Col (Grade ${combat.grade})` });
+      set({ combat: null, pendingEncounterId: null });
+      const victoryScene = encounter?.victorySceneId;
+      get()._resolveEffects(leveled, commands, (settled) => {
+        if (victoryScene) {
+          const entry = resolveSceneEntry(victoryScene, settled);
+          get()._settleAtNode(settled, victoryScene, entry);
+        } else {
+          set({ save: { ...settled, mode: settled.currentMapId ? "exploration" : "device" } });
+          get().saveGame();
+        }
+      });
+    } else if (combat.phase === "defeat") {
+      const survivalMode = save.player.difficulty === "survival";
+      if (survivalMode && save.safeZoneCheckpoint) {
+        const cp = save.safeZoneCheckpoint;
+        set({
+          combat: null,
+          pendingEncounterId: null,
+          save: {
+            ...save,
+            currentMapId: cp.mapId,
+            currentSpawnId: cp.spawnId,
+            mode: "exploration",
+            player: { ...save.player, aincrad: { ...save.player.aincrad, health: Math.round(save.player.aincrad.maxHealth * 0.5) } },
+          },
+        });
+      } else {
+        set({
+          combat: null,
+          pendingEncounterId: null,
+          save: {
+            ...save,
+            player: { ...save.player, aincrad: { ...save.player.aincrad, health: Math.round(save.player.aincrad.maxHealth * 0.3) } },
+            mode: save.currentMapId ? "exploration" : "device",
+          },
+        });
+      }
+      get().pushNotification({ kind: "info", title: "Defeated", detail: "You retreat, battered but alive." });
+      get().saveGame();
+    } else if (combat.phase === "escaped") {
+      set({ combat: null, pendingEncounterId: null, save: { ...save, mode: save.currentMapId ? "exploration" : "device" } });
+      get().saveGame();
+    }
+  },
+
+  toggleDevice: (open) => set((s) => ({ deviceOpen: open ?? !s.deviceOpen })),
+  toggleDebug: (open) => set((s) => ({ debugOpen: open ?? !s.debugOpen })),
+
+  updateSettings: (partial) => {
+    const { save } = get();
+    if (!save) return;
+    set({ save: { ...save, settings: { ...save.settings, ...partial } } });
+  },
+
+  applyEffectsBatch: (effects) => {
+    const { save } = get();
+    if (!save) return;
+    const { save: afterEffects, commands } = applyEffects(save, effects);
+    get()._resolveEffects(afterEffects, commands, (settled) => {
+      set({ save: settled });
+      get().saveGame();
+    });
+  },
+
+  pushNotification: (n) => set((s) => ({ notifications: [...s.notifications, { ...n, id: uid("notif") }] })),
+  dismissNotification: (id) => set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
+  markMessagesRead: () => {
+    const { save } = get();
+    if (!save) return;
+    set({ save: { ...save, messages: save.messages.map((m) => ({ ...m, read: true })) } });
+  },
+
+  debugSetFlag: (flag) => get().applyEffectsBatch([{ type: "setFlag", flag }]),
+  debugClearFlag: (flag) => get().applyEffectsBatch([{ type: "clearFlag", flag }]),
+  debugTeleport: (mapId, spawnId) => get().moveToMap(mapId, spawnId),
+  debugModifyStat: (stat, delta) => get().applyEffectsBatch([{ type: "modifyStat", stat, delta }]),
+  debugResetSave: () => set({ save: null, screen: "title", combat: null }),
+
+  showChapterRecapIfDue: () => {
+    const { save } = get();
+    if (!save || save.mode === "combat" || save.mode === "recap") return;
+    const completionFlag = save.worldId === "elite-academy" ? "ea-flag-chapter1-complete" : "ai-flag-ch1-complete";
+    if (save.flags.includes(completionFlag) && !save.flags.includes("meta-recap-shown")) {
+      set({ save: { ...save, mode: "recap", flags: [...save.flags, "meta-recap-shown"] } });
+      get().saveGame();
+    }
+  },
+
+  _resolveEffects: (save, commands, onSettle) => {
+    let workingSave = save;
+    const genericUnlocks = checkGenericAchievements(workingSave);
+    if (genericUnlocks.length > 0) {
+      workingSave = { ...workingSave, achievementsUnlocked: [...workingSave.achievementsUnlocked, ...genericUnlocks] };
+    }
+    const scriptedUnlocks = commands.filter((c) => c.type === "unlockAchievement").map((c) => (c as { achievementId: string }).achievementId);
+    for (const id of [...scriptedUnlocks, ...genericUnlocks]) {
+      const def = getAchievement(id);
+      if (def) get().pushNotification({ kind: "achievement", title: `Achievement Unlocked: ${def.title}`, detail: def.description });
+    }
+
+    for (const cmd of commands) {
+      if (cmd.type === "changeLocation") {
+        set({
+          save: { ...workingSave, currentMapId: cmd.mapId, currentSpawnId: cmd.spawnId, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined },
+        });
+        get().saveGame();
+        return;
+      } else if (cmd.type === "goToScene") {
+        const entry = resolveSceneEntry(cmd.sceneId, workingSave, cmd.nodeId);
+        get()._settleAtNode(workingSave, cmd.sceneId, entry);
+        return;
+      } else if (cmd.type === "triggerBattle") {
+        set({ save: workingSave });
+        get().startCombat(cmd.encounterId);
+        return;
+      }
+    }
+
+    onSettle(workingSave);
+  },
+
+  _settleAtNode: (save, sceneId, nodeId) => {
+    const scene = getScene(sceneId);
+    const node = scene?.nodes.find((n) => n.id === nodeId);
+    if (!scene || !node) {
+      set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined } });
+      get().saveGame();
+      return;
+    }
+    const { save: afterEffects, commands } = applyEffects(save, node.effects);
+    get()._resolveEffects(afterEffects, commands, (settled) => {
+      set({ save: { ...settled, currentSceneId: sceneId, currentNodeId: nodeId, mode: "dialogue" } });
+      get().saveGame();
+    });
+  },
+}));

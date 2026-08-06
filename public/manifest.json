@@ -1,0 +1,17 @@
+{
+  "name": "ANIME//SIM",
+  "short_name": "ANIME//SIM",
+  "description": "Choose a world. Rewrite its story. An original anime life-sim across two branching worlds.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#171716",
+  "theme_color": "#171716",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

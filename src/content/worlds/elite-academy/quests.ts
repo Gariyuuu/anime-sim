@@ -1,0 +1,72 @@
+import type { QuestDefinitionInput } from "@/types";
+
+export const eliteAcademyQuests: QuestDefinitionInput[] = [
+  {
+    id: "ea-q-main-first-ranking",
+    worldId: "elite-academy",
+    title: "The First Ranking",
+    type: "main",
+    description: "Find your footing in Class 1-C before the first special exam decides who gets left behind.",
+    objectives: [
+      { id: "meet-classmates", text: "Meet your new classmates." },
+      { id: "learn-points", text: "Understand how private points and class points work." },
+      { id: "investigate-penalty", text: "Investigate the unexplained class-point penalty." },
+      { id: "first-exam", text: "Get through the first special exam." },
+      { id: "decide-unity", text: "Decide how far you'll go for class unity." },
+    ],
+    rewardSummary: "Shapes your class's trajectory and who trusts you going forward.",
+  },
+  {
+    id: "ea-q-daichi-leak",
+    worldId: "elite-academy",
+    title: "Who Leaked the Format",
+    type: "investigation",
+    giverNpcId: "ea-rei",
+    description: "Someone in the student council is selling early exam information. Find proof before it costs your class everything.",
+    objectives: [
+      { id: "gather-testimony", text: "Talk to classmates who suspiciously already knew exam details." },
+      { id: "find-evidence", text: "Find physical evidence connecting the leak to its source." },
+      { id: "confront-or-report", text: "Decide whether to confront, report, or use what you know." },
+    ],
+    rewardSummary: "Determines Daichi's fate and how much leverage you hold over the student council.",
+  },
+  {
+    id: "ea-q-yuzuki-notebook",
+    worldId: "elite-academy",
+    type: "character",
+    giverNpcId: "ea-yuzuki",
+    title: "The Private Notebook",
+    description: "Yuzuki's notebook of classmate observations has gone missing — and if it surfaces publicly, it will end friendships.",
+    objectives: [
+      { id: "find-notebook", text: "Find out who has the notebook." },
+      { id: "retrieve-or-negotiate", text: "Retrieve it, negotiate for it, or decide it isn't your problem." },
+    ],
+    rewardSummary: "Deepens or damages your relationship with Yuzuki depending on your approach.",
+  },
+  {
+    id: "ea-q-rei-reserve",
+    worldId: "elite-academy",
+    type: "hidden",
+    hidden: true,
+    giverNpcId: "ea-rei",
+    title: "Reserve List",
+    description: "You've noticed Rei's grades don't match her reputation. Something doesn't add up.",
+    objectives: [
+      { id: "notice-discrepancy", text: "Piece together why Rei is so afraid of a single bad exam." },
+      { id: "decide-secret", text: "Decide what to do with what you've learned." },
+    ],
+    rewardSummary: "A hidden thread that can turn Rei from rival into ally — or into an enemy who knows you know.",
+  },
+  {
+    id: "ea-q-side-lost-hairpin",
+    worldId: "elite-academy",
+    type: "side",
+    title: "The Silver Hairpin",
+    description: "A hairpin turned up near the student council room. Someone will want it back — and might owe you for its return.",
+    objectives: [
+      { id: "find-owner", text: "Identify who lost the hairpin." },
+      { id: "return-it", text: "Decide how to return it." },
+    ],
+    rewardSummary: "A small trust boost with whoever it belongs to.",
+  },
+];

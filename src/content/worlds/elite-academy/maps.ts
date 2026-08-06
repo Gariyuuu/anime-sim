@@ -1,0 +1,196 @@
+import type { MapDefinitionInput } from "@/types";
+
+function borderWalls(w: number, h: number, extra: Array<[number, number]> = []): Array<[number, number]> {
+  const walls: Array<[number, number]> = [];
+  for (let x = 0; x < w; x++) {
+    walls.push([x, 0]);
+    walls.push([x, h - 1]);
+  }
+  for (let y = 0; y < h; y++) {
+    walls.push([0, y]);
+    walls.push([w - 1, y]);
+  }
+  return [...walls, ...extra];
+}
+
+export const eliteAcademyMaps: MapDefinitionInput[] = [
+  {
+    id: "ea-map-hallway",
+    worldId: "elite-academy",
+    name: "Academy Hallway",
+    widthTiles: 16,
+    heightTiles: 9,
+    tileSize: 32,
+    background: "#eeece4",
+    wallColor: "#232323",
+    walls: borderWalls(16, 9),
+    spawns: { default: [8, 7], fromClassroom: [3, 7], fromLibrary: [13, 7] },
+    defaultSpawn: "default",
+    ambientLabel: "Midday chatter echoes off polished floors.",
+    interactables: [
+      { id: "door-classroom", kind: "door", x: 2, y: 4, label: "Classroom 1-C", targetMapId: "ea-map-classroom", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-cafeteria", kind: "door", x: 5, y: 4, label: "Cafeteria", targetMapId: "ea-map-cafeteria", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-library", kind: "door", x: 8, y: 4, label: "Library", targetMapId: "ea-map-library", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-council", kind: "door", x: 11, y: 4, label: "Student Council Room", targetMapId: "ea-map-council", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-gym", kind: "door", x: 14, y: 4, label: "Gym", targetMapId: "ea-map-gym", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-rooftop", kind: "door", x: 2, y: 2, label: "Stairs to Rooftop", targetMapId: "ea-map-rooftop", targetSpawnId: "fromHallway", glyph: "chevrons-up" },
+      { id: "door-courtyard", kind: "door", x: 8, y: 8, label: "Courtyard", targetMapId: "ea-map-courtyard", targetSpawnId: "fromHallway", glyph: "trees" },
+      { id: "door-store", kind: "door", x: 14, y: 8, label: "Convenience Store", targetMapId: "ea-map-store", targetSpawnId: "fromHallway", glyph: "shopping-bag" },
+      { id: "door-dorm", kind: "door", x: 5, y: 8, label: "Dorm Room", targetMapId: "ea-map-dorm", targetSpawnId: "fromHallway", glyph: "bed" },
+      { id: "npc-hikari", kind: "npc", x: 8, y: 6, label: "Hikari Endo", npcId: "ea-hikari", sceneId: "ea-scene-hikari-hub", glyph: "message-circle" },
+    ],
+  },
+  {
+    id: "ea-map-classroom",
+    worldId: "elite-academy",
+    name: "Classroom 1-C",
+    widthTiles: 12,
+    heightTiles: 9,
+    background: "#f2f1ea",
+    walls: borderWalls(12, 9),
+    spawns: { fromHallway: [6, 7] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Rows of desks face a wall-mounted ranking board.",
+    interactables: [
+      { id: "npc-rei", kind: "npc", x: 3, y: 3, label: "Rei Kagayama", npcId: "ea-rei", sceneId: "ea-scene-rei-intro", glyph: "user" },
+      { id: "npc-rei-secret", kind: "trigger", x: 3, y: 2, label: "Talk to Rei privately", sceneId: "ea-scene-rei-secret-followup", requiresFlag: "ea-flag-noticed-rei-discrepancy", glyph: "eye" },
+      { id: "npc-souta", kind: "npc", x: 8, y: 3, label: "Souta Ibaraki", npcId: "ea-souta", sceneId: "ea-scene-souta-intro", glyph: "smile" },
+      { id: "npc-nao", kind: "npc", x: 5, y: 5, label: "Nao Ichijou", npcId: "ea-nao", sceneId: "ea-scene-nao-intro", glyph: "book" },
+      { id: "npc-kenta", kind: "npc", x: 9, y: 6, label: "Kenta Mabuchi", npcId: "ea-kenta", sceneId: "ea-scene-kenta-intro", glyph: "shield" },
+      { id: "npc-arase", kind: "npc", x: 2, y: 1, label: "Ms. Arase", npcId: "ea-fumiko", sceneId: "ea-scene-arase-intro", glyph: "eye" },
+      { id: "obj-ranking-board", kind: "object", x: 6, y: 1, label: "Class Ranking Board", sceneId: "ea-scene-ranking-board", glyph: "bar-chart-2" },
+      { id: "obj-exam-notice", kind: "quest-marker", x: 9, y: 1, label: "Special Exam Notice: The Consensus Trial", sceneId: "ea-scene-consensus-trial", requiresFlag: "ea-flag-penalty-revealed", glyph: "alert-triangle" },
+      { id: "obj-your-desk", kind: "object", x: 6, y: 6, label: "Your Desk", sceneId: "ea-scene-study-here", glyph: "pencil" },
+    ],
+  },
+  {
+    id: "ea-map-cafeteria",
+    worldId: "elite-academy",
+    name: "Cafeteria",
+    widthTiles: 12,
+    heightTiles: 8,
+    background: "#efece0",
+    walls: borderWalls(12, 8),
+    spawns: { fromHallway: [6, 6] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Trays clatter. Every table is its own little kingdom.",
+    interactables: [
+      { id: "npc-yuzuki", kind: "npc", x: 4, y: 3, label: "Yuzuki Hoshino", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-intro", glyph: "heart" },
+      { id: "obj-food-counter", kind: "shop", x: 8, y: 2, label: "Lunch Counter", sceneId: "ea-scene-lunch-counter", glyph: "utensils" },
+    ],
+  },
+  {
+    id: "ea-map-library",
+    worldId: "elite-academy",
+    name: "Library",
+    widthTiles: 13,
+    heightTiles: 9,
+    background: "#eae7dc",
+    walls: borderWalls(13, 9, [
+      [4, 3], [4, 4], [4, 5], [8, 3], [8, 4], [8, 5],
+    ]),
+    spawns: { fromHallway: [6, 7] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Rows of shelves. Somebody is always watching who reads what.",
+    interactables: [
+      { id: "npc-nao-library", kind: "npc", x: 6, y: 2, label: "Nao Ichijou", npcId: "ea-nao", sceneId: "ea-scene-nao-library", glyph: "book" },
+      { id: "obj-study-desk", kind: "object", x: 10, y: 6, label: "Study Carrel", sceneId: "ea-scene-study-minigame", glyph: "brain" },
+      { id: "hidden-notebook-page", kind: "hidden-item", x: 2, y: 6, label: "Something wedged behind a shelf", itemId: "ea-item-notebook-photocopy", hidden: true, requiresFlag: "ea-flag-investigating-daichi", glyph: "file-text" },
+    ],
+  },
+  {
+    id: "ea-map-council",
+    worldId: "elite-academy",
+    name: "Student Council Room",
+    widthTiles: 11,
+    heightTiles: 8,
+    background: "#e6e3d8",
+    walls: borderWalls(11, 8),
+    spawns: { fromHallway: [5, 6] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Immaculate. Every surface polished. Nothing out of place, which is itself suspicious.",
+    interactables: [
+      { id: "npc-daichi", kind: "npc", x: 5, y: 2, label: "Daichi Onodera", npcId: "ea-daichi", sceneId: "ea-scene-daichi-intro", glyph: "crown" },
+      { id: "hidden-hairpin", kind: "hidden-item", x: 8, y: 5, label: "A hairpin on the floor", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
+    ],
+  },
+  {
+    id: "ea-map-gym",
+    worldId: "elite-academy",
+    name: "Gym",
+    widthTiles: 14,
+    heightTiles: 9,
+    background: "#e2e2e2",
+    walls: borderWalls(14, 9),
+    spawns: { fromHallway: [7, 7] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Squeaking shoes. Someone is always training past when they should stop.",
+    interactables: [
+      { id: "npc-kenta-gym", kind: "npc", x: 7, y: 3, label: "Kenta Mabuchi", npcId: "ea-kenta", sceneId: "ea-scene-kenta-gym", glyph: "shield" },
+      { id: "obj-training", kind: "trigger", x: 3, y: 6, label: "Train (Courage / Discipline)", sceneId: "ea-scene-train-gym", glyph: "dumbbell" },
+    ],
+  },
+  {
+    id: "ea-map-rooftop",
+    worldId: "elite-academy",
+    name: "Rooftop",
+    widthTiles: 10,
+    heightTiles: 8,
+    background: "#dfe6ea",
+    walls: borderWalls(10, 8),
+    spawns: { fromHallway: [5, 6] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Wind and quiet. The one place nobody is keeping score.",
+    interactables: [
+      { id: "npc-yuzuki-roof", kind: "npc", x: 5, y: 3, label: "Yuzuki Hoshino", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-rooftop", glyph: "heart", requiresFlag: "ea-flag-met-yuzuki" },
+      { id: "obj-view", kind: "trigger", x: 2, y: 2, label: "Look out over the campus", sceneId: "ea-scene-rooftop-monologue", glyph: "cloud" },
+    ],
+  },
+  {
+    id: "ea-map-courtyard",
+    worldId: "elite-academy",
+    name: "Outdoor Courtyard",
+    widthTiles: 14,
+    heightTiles: 10,
+    background: "#e3e8dc",
+    walls: borderWalls(14, 10),
+    spawns: { fromHallway: [7, 8] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Benches under thin trees. A popular spot to be overheard.",
+    interactables: [
+      { id: "npc-hikari-yard", kind: "npc", x: 4, y: 4, label: "Hikari Endo", npcId: "ea-hikari", sceneId: "ea-scene-hikari-courtyard", glyph: "message-circle" },
+      { id: "hidden-item-courtyard", kind: "hidden-item", x: 10, y: 6, label: "Something under the bench", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
+    ],
+  },
+  {
+    id: "ea-map-store",
+    worldId: "elite-academy",
+    name: "Convenience Store",
+    widthTiles: 10,
+    heightTiles: 7,
+    background: "#ecebe4",
+    walls: borderWalls(10, 7),
+    spawns: { fromHallway: [5, 5] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Everything here can be bought with private points — including, some say, favors.",
+    interactables: [
+      { id: "obj-shop", kind: "shop", x: 5, y: 2, label: "Shop Counter", sceneId: "ea-scene-shop", glyph: "shopping-bag" },
+    ],
+  },
+  {
+    id: "ea-map-dorm",
+    worldId: "elite-academy",
+    name: "Dorm Room",
+    widthTiles: 9,
+    heightTiles: 7,
+    background: "#f0eee6",
+    walls: borderWalls(9, 7),
+    spawns: { fromHallway: [4, 5] },
+    defaultSpawn: "fromHallway",
+    ambientLabel: "Your room. Quiet enough to think, which is sometimes the problem.",
+    interactables: [
+      { id: "obj-bed", kind: "trigger", x: 2, y: 2, label: "Rest until tomorrow", sceneId: "ea-scene-rest", glyph: "bed" },
+      { id: "obj-desk-dorm", kind: "trigger", x: 6, y: 4, label: "Review your notes", sceneId: "ea-scene-review-notes", glyph: "notebook" },
+    ],
+  },
+];

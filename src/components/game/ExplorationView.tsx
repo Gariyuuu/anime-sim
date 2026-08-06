@@ -1,0 +1,285 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useGameStore } from "@/state/gameStore";
+import { getMap, getNpc } from "@/content/registry";
+import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, type MoveInput } from "@/engine/exploration";
+import { Icon } from "@/components/ui/Icon";
+import { HUD } from "@/components/game/HUD";
+
+const PLAYER_SIZE = 20;
+const SPEED = 150; // px/sec
+const INTERACT_RANGE = 46;
+const VIEW_W = 640;
+const VIEW_H = 420;
+
+export function ExplorationView() {
+  const save = useGameStore((s) => s.save);
+  const interact = useGameStore((s) => s.interact);
+  const toggleDevice = useGameStore((s) => s.toggleDevice);
+
+  const map = save?.currentMapId ? getMap(save.currentMapId) : undefined;
+  const spawn = useMemo(() => {
+    if (!map) return [0, 0] as [number, number];
+    const s = map.spawns[save?.currentSpawnId ?? map.defaultSpawn] ?? map.spawns[map.defaultSpawn];
+    return s;
+  }, [map, save?.currentSpawnId]);
+
+  const [pos, setPos] = useState({ x: (spawn?.[0] ?? 0) * (map?.tileSize ?? 32) + (map?.tileSize ?? 32) / 2, y: (spawn?.[1] ?? 0) * (map?.tileSize ?? 32) + (map?.tileSize ?? 32) / 2 });
+  const posRef = useRef(pos);
+  const keysRef = useRef<MoveInput>({ up: false, down: false, left: false, right: false });
+  const clickTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const [nearbyId, setNearbyId] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [, forceTick] = useState(0);
+
+  // Keep the ref mirror of `pos` in sync for the rAF loop to read without re-subscribing.
+  useEffect(() => {
+    posRef.current = pos;
+  }, [pos]);
+
+  // Reset player position when the map changes. Adjusted during render (React's documented
+  // pattern for "state that depends on a changing prop") rather than in an effect, since this
+  // must happen before the canvas paints the old position on the new map.
+  const [lastMapId, setLastMapId] = useState(save?.currentMapId);
+  if (save?.currentMapId !== lastMapId) {
+    setLastMapId(save?.currentMapId);
+    if (map && spawn) {
+      setPos({ x: spawn[0] * map.tileSize + map.tileSize / 2, y: spawn[1] * map.tileSize + map.tileSize / 2 });
+    }
+  }
+
+  useEffect(() => {
+    function down(e: KeyboardEvent) {
+      if (e.repeat) return;
+      if (e.key === "w" || e.key === "ArrowUp") keysRef.current.up = true;
+      if (e.key === "s" || e.key === "ArrowDown") keysRef.current.down = true;
+      if (e.key === "a" || e.key === "ArrowLeft") keysRef.current.left = true;
+      if (e.key === "d" || e.key === "ArrowRight") keysRef.current.right = true;
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        if (nearbyId) interact(nearbyId);
+      }
+      if (e.key.toLowerCase() === "i" || e.key === "Escape") toggleDevice();
+    }
+    function up(e: KeyboardEvent) {
+      if (e.key === "w" || e.key === "ArrowUp") keysRef.current.up = false;
+      if (e.key === "s" || e.key === "ArrowDown") keysRef.current.down = false;
+      if (e.key === "a" || e.key === "ArrowLeft") keysRef.current.left = false;
+      if (e.key === "d" || e.key === "ArrowRight") keysRef.current.right = false;
+    }
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+    };
+  }, [nearbyId, interact, toggleDevice]);
+
+  // main loop
+  useEffect(() => {
+    if (!map) return;
+    const m = map;
+    let raf: number;
+    let last = performance.now();
+    function tick(now: number) {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (document.hidden) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      const input = keysRef.current;
+      let { dx, dy } = directionFromInput(input);
+
+      if (dx === 0 && dy === 0 && clickTargetRef.current) {
+        const t = clickTargetRef.current;
+        const vx = t.x - posRef.current.x;
+        const vy = t.y - posRef.current.y;
+        const dist = Math.hypot(vx, vy);
+        if (dist < 4) {
+          clickTargetRef.current = null;
+        } else {
+          dx = vx / dist;
+          dy = vy / dist;
+        }
+      } else if (dx !== 0 || dy !== 0) {
+        clickTargetRef.current = null;
+      }
+
+      if (dx !== 0 || dy !== 0) {
+        const nx = posRef.current.x + dx * SPEED * dt;
+        const ny = posRef.current.y + dy * SPEED * dt;
+        const half = PLAYER_SIZE / 2;
+        const testX = { x: nx - half, y: posRef.current.y - half, w: PLAYER_SIZE, h: PLAYER_SIZE };
+        const testY = { x: posRef.current.x - half, y: ny - half, w: PLAYER_SIZE, h: PLAYER_SIZE };
+        const next = { ...posRef.current };
+        if (!rectIntersectsWalls(testX, m.walls, m.tileSize)) next.x = nx;
+        if (!rectIntersectsWalls(testY, m.walls, m.tileSize)) next.y = ny;
+        next.x = Math.max(half, Math.min(m.widthTiles * m.tileSize - half, next.x));
+        next.y = Math.max(half, Math.min(m.heightTiles * m.tileSize - half, next.y));
+        posRef.current = next;
+        setPos(next);
+      }
+
+      const near = nearestInteractable(posRef.current.x, posRef.current.y, m.interactables, m.tileSize, INTERACT_RANGE);
+      setNearbyId((prev) => {
+        const nextId = near?.id ?? null;
+        return prev === nextId ? prev : nextId;
+      });
+
+      forceTick((t) => (t + 1) % 100000);
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [map]);
+
+  // canvas render
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !map) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const camera = clampCamera(pos.x, pos.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
+
+    ctx.fillStyle = map.background;
+    ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+
+    // subtle grid
+    ctx.strokeStyle = "rgba(0,0,0,0.05)";
+    for (let x = 0; x < map.widthTiles * map.tileSize; x += map.tileSize) {
+      ctx.beginPath();
+      ctx.moveTo(x - camera.x, 0);
+      ctx.lineTo(x - camera.x, VIEW_H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < map.heightTiles * map.tileSize; y += map.tileSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y - camera.y);
+      ctx.lineTo(VIEW_W, y - camera.y);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = map.wallColor;
+    for (const [wx, wy] of map.walls) {
+      ctx.fillRect(wx * map.tileSize - camera.x, wy * map.tileSize - camera.y, map.tileSize, map.tileSize);
+    }
+  }, [map, pos]);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!map) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const camera = clampCamera(posRef.current.x, posRef.current.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
+      const wx = e.clientX - rect.left + camera.x;
+      const wy = e.clientY - rect.top + camera.y;
+      clickTargetRef.current = { x: wx, y: wy };
+    },
+    [map],
+  );
+
+  if (!map || !save) return null;
+  const camera = clampCamera(pos.x, pos.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
+  const nearby = nearbyId ? map.interactables.find((i) => i.id === nearbyId) : null;
+
+  return (
+    <div className="flex h-dvh w-full flex-col bg-ink-100">
+      <HUD locationLabel={map.name} ambientLabel={map.ambientLabel} />
+      <div className="relative mx-auto my-2 w-full max-w-[640px] flex-1 overflow-hidden rounded-md border-2 border-ink-950" style={{ maxHeight: VIEW_H }}>
+        <canvas ref={canvasRef} width={VIEW_W} height={VIEW_H} onClick={handleClick} className="block h-full w-full cursor-pointer" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {map.interactables
+            .filter((it) => !it.hidden && (!it.requiresFlag || save.flags.includes(it.requiresFlag)))
+            .map((it) => {
+              const x = it.x * map.tileSize + map.tileSize / 2 - camera.x;
+              const y = it.y * map.tileSize + map.tileSize / 2 - camera.y;
+              if (x < -20 || x > VIEW_W + 20 || y < -20 || y > VIEW_H + 20) return null;
+              const npc = it.npcId ? getNpc(it.npcId) : undefined;
+              const color = npc?.portraitColor ?? (it.kind === "monster" ? "var(--accent-danger)" : it.kind === "door" || it.kind === "transition" ? "var(--accent-info)" : "var(--ink-700)");
+              const isNear = it.id === nearbyId;
+              return (
+                <div
+                  key={it.id}
+                  className="pointer-events-auto absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0.5"
+                  style={{ left: x, top: y }}
+                  onClick={() => interact(it.id)}
+                >
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm transition-transform"
+                    style={{ background: color, borderColor: isNear ? "var(--accent-warning)" : "var(--ink-950)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
+                  >
+                    <Icon name={it.glyph} size={12} color="var(--paper-0)" />
+                  </div>
+                  {isNear && <span className="whitespace-nowrap rounded bg-ink-950 px-1 py-0.5 text-[9px] text-paper-0">{it.label}</span>}
+                </div>
+              );
+            })}
+          {/* player */}
+          <div
+            className="absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-paper-0 bg-ink-950"
+            style={{ left: pos.x - camera.x, top: pos.y - camera.y, width: PLAYER_SIZE, height: PLAYER_SIZE }}
+          >
+            <Icon name="user" size={11} color="var(--paper-0)" />
+          </div>
+        </div>
+      </div>
+
+      {nearby && (
+        <button
+          onClick={() => interact(nearby.id)}
+          className="fixed bottom-24 left-1/2 z-20 -translate-x-1/2 rounded border-2 border-ink-950 bg-accent-warning px-3 py-1.5 text-[10px] uppercase tracking-widest text-paper-0 shadow-[2px_2px_0_0_var(--ink-950)] sm:hidden"
+        >
+          Interact: {nearby.label}
+        </button>
+      )}
+
+      <MobileControls keysRef={keysRef} onInteract={() => nearbyId && interact(nearbyId)} hasNearby={!!nearby} />
+    </div>
+  );
+}
+
+function MobileControls({ keysRef, onInteract, hasNearby }: { keysRef: React.MutableRefObject<MoveInput>; onInteract: () => void; hasNearby: boolean }) {
+  function bind(key: keyof MoveInput) {
+    return {
+      onPointerDown: (e: React.PointerEvent) => {
+        e.preventDefault();
+        keysRef.current[key] = true;
+      },
+      onPointerUp: () => {
+        keysRef.current[key] = false;
+      },
+      onPointerLeave: () => {
+        keysRef.current[key] = false;
+      },
+    };
+  }
+  return (
+    <div className="fixed inset-x-0 bottom-4 z-20 flex items-end justify-between px-4 sm:hidden">
+      <div className="grid grid-cols-3 grid-rows-3 gap-1">
+        <div />
+        <button {...bind("up")} className="col-start-2 row-start-1 rounded border-2 border-ink-950 bg-paper-0/90 p-2">
+          <Icon name="chevron-up" size={16} />
+        </button>
+        <div />
+        <button {...bind("left")} className="col-start-1 row-start-2 rounded border-2 border-ink-950 bg-paper-0/90 p-2">
+          <Icon name="chevron-left" size={16} />
+        </button>
+        <div />
+        <button {...bind("right")} className="col-start-3 row-start-2 rounded border-2 border-ink-950 bg-paper-0/90 p-2">
+          <Icon name="chevron-right" size={16} />
+        </button>
+        <div />
+        <button {...bind("down")} className="col-start-2 row-start-3 rounded border-2 border-ink-950 bg-paper-0/90 p-2">
+          <Icon name="chevron-down" size={16} />
+        </button>
+        <div />
+      </div>
+      {hasNearby && (
+        <button onClick={onInteract} className="rounded-full border-2 border-ink-950 bg-accent-warning p-4 text-paper-0">
+          <Icon name="hand" size={18} />
+        </button>
+      )}
+    </div>
+  );
+}
