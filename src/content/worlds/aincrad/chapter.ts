@@ -31,6 +31,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch2-complete",
     nextChapterId: "ai-ch3",
     outcomes: [
+      { id: "ai-ch2-outcome-read", title: "Reading the Throne", description: "You baited its first swing exactly the way Toran predicted and controlled the whole fight from there.", requiredFlags: ["ai-flag-raid2-read"] },
       { id: "ai-ch2-outcome-tight", title: "Never Out of Reach", description: "You kept the party close through the fog, and nobody had to fight the Warden alone.", requiredFlags: ["ai-flag-raid2-tight"] },
       { id: "ai-ch2-outcome-spread", title: "Trusting the Fog", description: "You spread out and flanked it — a riskier read on the fight, and it paid off.", requiredFlags: ["ai-flag-raid2-spread"] },
     ],
@@ -46,6 +47,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch3-complete",
     nextChapterId: "ai-ch4",
     outcomes: [
+      { id: "ai-ch3-outcome-split", title: "Two Fronts at Once", description: "You split the party and handled the summons and the King as two separate, controlled problems.", requiredFlags: ["ai-flag-raid3-split"] },
       { id: "ai-ch3-outcome-bait", title: "Read the Pattern", description: "You baited its summons early and controlled the pace of the whole fight.", requiredFlags: ["ai-flag-raid3-bait"] },
       { id: "ai-ch3-outcome-focus", title: "Straight Through", description: "You ignored the noise and put everything into the King directly.", requiredFlags: ["ai-flag-raid3-focus"] },
     ],
@@ -61,6 +63,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch4-complete",
     nextChapterId: "ai-ch5",
     outcomes: [
+      { id: "ai-ch4-outcome-overhang", title: "Sena's Route", description: "You used the overhang route she never quite admitted was combat-viable, and opened the fight before the Warden even knew you were there.", requiredFlags: ["ai-flag-raid4-overhang"] },
       { id: "ai-ch4-outcome-edge", title: "Room to Move", description: "You fought at the platform's edge and used every inch of space the Spire gave you.", requiredFlags: ["ai-flag-raid4-edge"] },
       { id: "ai-ch4-outcome-center", title: "Solid Ground", description: "You held the center and let the Warden come to you.", requiredFlags: ["ai-flag-raid4-center"] },
     ],
@@ -76,6 +79,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch5-complete",
     nextChapterId: "ai-ch6",
     outcomes: [
+      { id: "ai-ch5-outcome-drain", title: "Drained the Court", description: "You cranked the causeway's old sluice gates and stripped the Sovereign's footing advantage before the fight even started.", requiredFlags: ["ai-flag-raid5-drain"] },
       { id: "ai-ch5-outcome-shallow", title: "Steady Footing", description: "You kept to the shallows and fought on your own terms.", requiredFlags: ["ai-flag-raid5-shallow"] },
       { id: "ai-ch5-outcome-deep", title: "Cutting Off the Retreat", description: "You pushed into deep water and gave the Sovereign nowhere left to run.", requiredFlags: ["ai-flag-raid5-deep"] },
     ],

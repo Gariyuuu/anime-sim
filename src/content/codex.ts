@@ -41,14 +41,18 @@ export const codexEntries: CodexEntryInput[] = [
   { id: "ai-codex-town-of-beginnings", category: "location", title: "Town of Beginnings", body: "Floor 1's central hub and the only fully safe zone most players have ever known in Aincrad.", worldId: "aincrad" },
   { id: "ai-codex-shrine-secret", category: "secret", title: "The Forgotten Shrine", body: "A perfectly circular clearing in Floor 1's field with no quest marker and no explanation. It feels deliberate.", worldId: "aincrad" },
   { id: "ai-codex-vigil", category: "secret", title: "The Vigil", body: "Someone relights a row of candles at the edge of Floor 3's dungeon every day. Nobody's ever caught them doing it.", worldId: "aincrad" },
+  { id: "ai-codex-vigil-nell", category: "secret", title: "Who Keeps the Vigil", body: "It's Nell. She's relit the candles every day since turning a desperate player away on Floor 1 — a decision that cost him his life the next day.", worldId: "aincrad" },
   { id: "ai-codex-sylvan-guardian", category: "monster", title: "Sylvan Guardian", body: "Floor 1's boss. An ancient construct grown into the forest itself, with bark plating that must be broken before its core is vulnerable.", worldId: "aincrad" },
   { id: "ai-codex-mistfallen-warden", category: "monster", title: "Mistfallen Warden", body: "Floor 2's boss. A knight-shaped mass of fog and old armor guarding the Frozen Court.", worldId: "aincrad" },
+  { id: "ai-codex-mistfallen-fog", category: "secret", title: "The Fog Doesn't Forget", body: "Hollow's warning about the Frozen Court: a clean tactical read still means nothing if you stop moving to admire it.", worldId: "aincrad" },
   { id: "ai-codex-ashen-hollow-king", category: "monster", title: "Ashen Hollow King", body: "Floor 3's boss. A self-declared ruler of a hollow nobody else wanted.", worldId: "aincrad" },
   { id: "ai-codex-guilds", category: "guild", title: "Floor 1 Guilds", body: "Iron Vanguard (combat-focused), Hearthlight (survival-focused), and the Stonebreakers (logistics-focused) are Floor 1's three founding guilds.", worldId: "aincrad", unlockedByDefault: true },
 
   /* -------------------------- Floors 4-10 -------------------------- */
   { id: "ai-codex-sena", category: "character", title: "Sena Kurogane", body: "Fearless Verdant Spire climbing guide. Has fallen twice and doesn't know who saved her either time.", worldId: "aincrad" },
+  { id: "ai-codex-toran-guard", category: "secret", title: "The Anonymous Guard", body: "It was Toran who caught Sena's falls, both times, with a well-timed Guard skill. He never told her.", worldId: "aincrad" },
   { id: "ai-codex-bram", category: "character", title: "Bram Oyelaran", body: "Amphibious-gear trader on the Drowned Causeway, still quietly making up for the party he lost there on launch week.", worldId: "aincrad" },
+  { id: "ai-codex-hollow-open", category: "secret", title: "Two Answers to the Same Loss", body: "Hollow, hearing Bram's story, admits for the first time that avoiding parties entirely might not have been the only way to survive losing one.", worldId: "aincrad" },
   { id: "ai-codex-iris", category: "character", title: "Iris Vantille", body: "Sharp-tongued market broker who effectively runs the Gilded Quarter's economy.", worldId: "aincrad" },
   { id: "ai-codex-choirkeeper", category: "character", title: "The Choirkeeper", body: "One of the first players to reach Floor 7. Chose to stay rather than keep climbing, and listens for the voices of those who don't make it past the floor.", worldId: "aincrad" },
   { id: "ai-codex-doc-renner", category: "character", title: "\"Doc\" Renner", body: "Obsessive Iron Maze cartographer. Suspects, correctly, that the maze rearranges itself on purpose.", worldId: "aincrad" },

@@ -134,6 +134,10 @@ export const aincradMaps: MapDefinitionInput[] = [
       { id: "door-field2", kind: "door", x: 7, y: 1, label: "To the Field", targetMapId: "ai-map-field2", targetSpawnId: "fromTown", glyph: "trees" },
       { id: "obj-item-shop-2", kind: "shop", x: 4, y: 5, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
       { id: "obj-inn-2", kind: "object", x: 10, y: 5, label: "Frostkeep Inn", sceneId: "ai-scene-inn", glyph: "bed" },
+      { id: "obj-kirei-floor2", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor2-kirei-nerves", requiresFlag: "ai-flag-floor2-arrived", glyph: "zap" },
+      { id: "obj-toran-floor2", kind: "trigger", x: 11, y: 3, label: "Toran", sceneId: "ai-scene-floor2-toran-read", requiresFlag: "ai-flag-floor2-arrived", glyph: "shield" },
+      { id: "obj-nell-floor2", kind: "trigger", x: 6, y: 7, label: "Nell", sceneId: "ai-scene-floor2-nell-check", requiresFlag: "ai-flag-floor2-arrived", glyph: "leaf" },
+      { id: "obj-hollow-floor2", kind: "trigger", x: 2, y: 8, label: "Hollow", sceneId: "ai-scene-floor2-hollow-warning", requiresFlag: "ai-flag-floor2-clue-toran", glyph: "user-x" },
     ],
   },
   {
@@ -205,6 +209,9 @@ export const aincradMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "door-field3", kind: "door", x: 6, y: 1, label: "To the Field", targetMapId: "ai-map-field3", targetSpawnId: "fromTown", glyph: "trees" },
       { id: "obj-item-shop-3", kind: "shop", x: 3, y: 4, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
+      { id: "obj-mei-floor3", kind: "trigger", x: 9, y: 3, label: "Mei", sceneId: "ai-scene-floor3-mei-heat", requiresFlag: "ai-flag-floor3-arrived", glyph: "hammer" },
+      { id: "obj-hollow-floor3", kind: "trigger", x: 2, y: 6, label: "Hollow", sceneId: "ai-scene-floor3-hollow-distance", requiresFlag: "ai-flag-floor3-arrived", glyph: "user-x" },
+      { id: "obj-nell-floor3", kind: "trigger", x: 10, y: 6, label: "Nell", sceneId: "ai-scene-floor3-nell-vigil", requiresFlag: "ai-flag-floor2-met-nell", glyph: "leaf" },
     ],
   },
   {
@@ -349,3 +356,23 @@ if (town10) {
     },
   ];
 }
+
+// Patch: additional traveling-cast beat/hidden scenes added to floors 4-10 town maps during the
+// chapter-deepening pass. Kept as post-generation patches (matching the Ilyana pattern above)
+// rather than folded into `laterFloorMapSpecs` since each floor's extra interactables differ.
+function patchTown(floor: number, extra: import("@/types").InteractableInput[]) {
+  const town = aincradMaps.find((m) => m.id === `ai-map-town${floor}`);
+  if (town) town.interactables = [...(town.interactables ?? []), ...extra];
+}
+
+patchTown(4, [
+  { id: "obj-kirei-floor4", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor4-kirei-vertigo", requiresFlag: "ai-flag-floor4-arrived", glyph: "zap" },
+  { id: "obj-toran-floor4", kind: "trigger", x: 9, y: 3, label: "Toran", sceneId: "ai-scene-floor4-toran-legacy", requiresFlag: "ai-flag-floor4-arrived", glyph: "shield" },
+  { id: "obj-guard-reveal-floor4", kind: "trigger", x: 2, y: 7, label: "Toran, alone", sceneId: "ai-scene-floor4-guard-reveal", requiresFlag: "ai-flag-sena-secret", glyph: "shield" },
+]);
+
+patchTown(5, [
+  { id: "obj-kirei-floor5", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor5-kirei-scan", requiresFlag: "ai-flag-floor5-arrived", glyph: "zap" },
+  { id: "obj-hollow-floor5", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor5-hollow-water", requiresFlag: "ai-flag-floor5-arrived", glyph: "user-x" },
+  { id: "obj-hollow-open-floor5", kind: "trigger", x: 2, y: 7, label: "Hollow, alone", sceneId: "ai-scene-floor5-hollow-open", requiresFlag: "ai-flag-bram-secret", glyph: "user-x" },
+]);
