@@ -400,3 +400,7 @@ patchTown(9, [
   { id: "obj-toran-floor9", kind: "trigger", x: 9, y: 3, label: "Toran", sceneId: "ai-scene-floor9-toran-view", requiresFlag: "ai-flag-floor9-arrived", glyph: "shield" },
   { id: "obj-wren-followup-floor9", kind: "trigger", x: 2, y: 7, label: "Wren", sceneId: "ai-scene-floor9-wren-followup", requiresFlag: "ai-flag-wren-secret", glyph: "feather" },
 ]);
+
+patchTown(10, [
+  { id: "obj-farewell-floor10", kind: "trigger", x: 3, y: 3, label: "The party, gathered", sceneId: "ai-scene-floor10-farewell-round", requiresFlag: "ai-flag-met-ilyana", glyph: "users" },
+]);
