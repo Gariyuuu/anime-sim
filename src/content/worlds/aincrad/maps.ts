@@ -394,3 +394,9 @@ patchTown(8, [
   { id: "obj-hollow-floor8", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor8-hollow-scout", requiresFlag: "ai-flag-floor8-arrived", glyph: "user-x" },
   { id: "obj-hollow-proof-floor8", kind: "trigger", x: 2, y: 7, label: "Hollow, returned", sceneId: "ai-scene-floor8-hollow-proof", requiresFlag: "ai-flag-doc-renner-theory", glyph: "user-x" },
 ]);
+
+patchTown(9, [
+  { id: "obj-mei-floor9", kind: "trigger", x: 3, y: 3, label: "Mei", sceneId: "ai-scene-floor9-mei-wind", requiresFlag: "ai-flag-floor9-arrived", glyph: "hammer" },
+  { id: "obj-toran-floor9", kind: "trigger", x: 9, y: 3, label: "Toran", sceneId: "ai-scene-floor9-toran-view", requiresFlag: "ai-flag-floor9-arrived", glyph: "shield" },
+  { id: "obj-wren-followup-floor9", kind: "trigger", x: 2, y: 7, label: "Wren", sceneId: "ai-scene-floor9-wren-followup", requiresFlag: "ai-flag-wren-secret", glyph: "feather" },
+]);

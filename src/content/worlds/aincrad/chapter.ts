@@ -143,6 +143,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch9-complete",
     nextChapterId: "ai-ch10",
     outcomes: [
+      { id: "ai-ch9-outcome-scout", title: "Reading the Break", description: "You called the storm's break before it happened, using the reading Wren carried from a scout she lost on Floor 3.", requiredFlags: ["ai-flag-raid9-scout"] },
       { id: "ai-ch9-outcome-mobile", title: "Outrunning the Storm", description: "You stayed mobile and never let the Sentinel's storm settle.", requiredFlags: ["ai-flag-raid9-mobile"] },
       { id: "ai-ch9-outcome-hold", title: "Weathering It Together", description: "You held your ground and weathered the storm as a party.", requiredFlags: ["ai-flag-raid9-hold"] },
     ],
