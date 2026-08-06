@@ -95,6 +95,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch6-complete",
     nextChapterId: "ai-ch7",
     outcomes: [
+      { id: "ai-ch6-outcome-intel", title: "Bought Insurance", description: "You paid Iris for the Magnate's attack data, and the fight never got the chance to surprise you.", requiredFlags: ["ai-flag-raid6-intel"] },
       { id: "ai-ch6-outcome-fast", title: "Before It Could Spend", description: "You struck fast, before the Magnate could unload its hoard on the party.", requiredFlags: ["ai-flag-raid6-fast"] },
       { id: "ai-ch6-outcome-patient", title: "Let It Slow Itself", description: "You played patient and let the Magnate's own weight work against it.", requiredFlags: ["ai-flag-raid6-patient"] },
     ],
@@ -110,6 +111,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch7-complete",
     nextChapterId: "ai-ch8",
     outcomes: [
+      { id: "ai-ch7-outcome-guided", title: "Every Name in Order", description: "You used the order the Choirkeeper taught you, calling each voice by its place in line.", requiredFlags: ["ai-flag-raid7-guided"] },
       { id: "ai-ch7-outcome-loud", title: "Louder Than the Silence", description: "You drowned the voices out with noise and momentum.", requiredFlags: ["ai-flag-raid7-loud"] },
       { id: "ai-ch7-outcome-listen", title: "Listening for the Gaps", description: "You found the pattern hidden in the silence between its attacks.", requiredFlags: ["ai-flag-raid7-listen"] },
     ],
@@ -125,6 +127,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch8-complete",
     nextChapterId: "ai-ch9",
     outcomes: [
+      { id: "ai-ch8-outcome-predict", title: "Reading Its Schedule", description: "You used Hollow's proof of the maze's pattern to predict every reinforcement wave before it landed.", requiredFlags: ["ai-flag-raid8-predict"] },
       { id: "ai-ch8-outcome-fast", title: "Before It Could Rebuild", description: "You struck before the Architect could reinforce its own armor.", requiredFlags: ["ai-flag-raid8-fast"] },
       { id: "ai-ch8-outcome-patient", title: "Through the Cracks", description: "You waited for the rebuild and punished the exposed frame underneath.", requiredFlags: ["ai-flag-raid8-patient"] },
     ],

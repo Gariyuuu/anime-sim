@@ -376,3 +376,21 @@ patchTown(5, [
   { id: "obj-hollow-floor5", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor5-hollow-water", requiresFlag: "ai-flag-floor5-arrived", glyph: "user-x" },
   { id: "obj-hollow-open-floor5", kind: "trigger", x: 2, y: 7, label: "Hollow, alone", sceneId: "ai-scene-floor5-hollow-open", requiresFlag: "ai-flag-bram-secret", glyph: "user-x" },
 ]);
+
+patchTown(6, [
+  { id: "obj-kirei-floor6", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor6-kirei-market", requiresFlag: "ai-flag-floor6-arrived", glyph: "zap" },
+  { id: "obj-nell-floor6", kind: "trigger", x: 9, y: 3, label: "Nell", sceneId: "ai-scene-floor6-nell-guild-funds", requiresFlag: "ai-flag-floor6-arrived", glyph: "leaf" },
+  { id: "obj-iris-followup-floor6", kind: "trigger", x: 2, y: 7, label: "Iris, off the clock", sceneId: "ai-scene-floor6-iris-followup", requiresFlag: "ai-flag-iris-noticed", glyph: "coins" },
+]);
+
+patchTown(7, [
+  { id: "obj-toran-floor7", kind: "trigger", x: 3, y: 3, label: "Toran", sceneId: "ai-scene-floor7-toran-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "shield" },
+  { id: "obj-nell-floor7", kind: "trigger", x: 9, y: 3, label: "Nell", sceneId: "ai-scene-floor7-nell-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "leaf" },
+  { id: "obj-choirkeeper-names-floor7", kind: "trigger", x: 2, y: 7, label: "The Choirkeeper, again", sceneId: "ai-scene-floor7-choirkeeper-names", requiresFlag: "ai-flag-floor7-met-nell", glyph: "music" },
+]);
+
+patchTown(8, [
+  { id: "obj-kirei-floor8", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor8-kirei-lost", requiresFlag: "ai-flag-floor8-arrived", glyph: "zap" },
+  { id: "obj-hollow-floor8", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor8-hollow-scout", requiresFlag: "ai-flag-floor8-arrived", glyph: "user-x" },
+  { id: "obj-hollow-proof-floor8", kind: "trigger", x: 2, y: 7, label: "Hollow, returned", sceneId: "ai-scene-floor8-hollow-proof", requiresFlag: "ai-flag-doc-renner-theory", glyph: "user-x" },
+]);
