@@ -9,6 +9,26 @@ export interface PatchNote {
 
 export const patchNotes: PatchNote[] = [
   {
+    version: "0.3.0",
+    date: "Every Chapter, In Full",
+    title: "Every Chapter, In Full",
+    completed: [
+      "Elite Academy Chapters 2–10 deepened to Chapter One's density: each chapter now has 5–10 scenes (an arrival beat, multiple NPC beats across different classroom/campus locations, a hidden scene gated on exploration, a 2–4 option decision point, and a reactive multi-branch closing scene), instead of the single arrival/beat/decision/close skeleton they shipped with.",
+      "Aincrad Floors 2–10 deepened the same way: each floor now has 2–4 traveling-cast beat scenes (Kirei, Toran, Mei, Nell, Hollow, Wren — rotated across floors), a hidden lore/payoff scene unlocked by an earlier scene's clue flag, a third tactical option on the floor's boss-prep scene unlocked by exploration, and a reactive multi-branch boss-aftermath scene instead of one static line.",
+      "Floor 10's finale specifically got extra treatment: a full-party farewell scene the night before the Tenth Gate raid, and a post-victory epilogue chain that reacts to whether Ilyana was recruited earlier in the floor.",
+      "New character throughlines across floors: Toran's anonymous Guard-skill rescues of Sena (Floor 4), Nell's secret vigil for a player she once turned away (Floor 3), Hollow opening up about his own lost party after hearing Bram's story (Floor 5), and Wren's storm-reading passed down from a scout she lost on Floor 3, called back on Floor 9.",
+      "Added src/tests/sceneIntegrity.test.ts, a permanent regression test enforcing that a dialogue node's `conditions` field is only ever meaningful when that node is listed in its scene's `altEntryNodes` — the exact bug class caught and fixed during this pass (see Known Issues in v0.2.0). Running it against the full content set also surfaced and fixed 4 leftover dead-condition nodes in the original Floor 1 content.",
+    ],
+    knownIssues: [
+      "Floors 11+ of Aincrad and a second Elite Academy year both remain unbuilt; this slice still ends at the Tenth Gate / Year's End.",
+      "The new hidden/bonus scenes in each chapter and floor are optional content gated behind exploration or specific dialogue choices — a player who beelines the main decision points in each chapter will still see the lighter v0.2.0-era version of the story beats.",
+    ],
+    upcoming: [
+      "Chapters/floors 11+ for both worlds.",
+      "Deeper personal-quest resolution content for the newer NPCs introduced in Floors 4–10.",
+    ],
+  },
+  {
     version: "0.2.0",
     date: "The Long Climb",
     title: "The Long Climb",

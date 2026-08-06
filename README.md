@@ -329,8 +329,9 @@ playable end-to-end today:
   and a Chapters tab on the in-game device
 - 🔒 Aincrad Floors 11+ aren't built; this slice's climb ends at the Tenth Gate
 - 🔒 Elite Academy's arc ends at Year's End; a second year isn't built
-- ℹ️ Chapters 2–10 in both worlds are moderate-depth (matching how Aincrad's original Floors
-  2–3 were scoped) rather than Chapter One's full density — see Patch Notes for specifics
+- ✅ Chapters 2–10 in both worlds have been deepened to Chapter One's density — multiple NPC
+  beats, hidden/bonus scenes, a 2–4 option decision, and a reactive multi-branch close in every
+  chapter — see Patch Notes for specifics
 
 See [`content/patchnotes.ts`](src/content/patchnotes.ts) (rendered in-game under Patch Notes)
 for the authoritative, versioned list of what's done, known issues, and what's next.
