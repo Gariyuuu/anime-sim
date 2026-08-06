@@ -61,6 +61,11 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
       { id: "obj-ranking-board", kind: "object", x: 6, y: 1, label: "Class Ranking Board", sceneId: "ea-scene-ranking-board", glyph: "bar-chart-2" },
       { id: "obj-exam-notice", kind: "quest-marker", x: 9, y: 1, label: "Special Exam Notice: The Consensus Trial", sceneId: "ea-scene-consensus-trial", requiresFlag: "ea-flag-penalty-revealed", glyph: "alert-triangle" },
       { id: "obj-your-desk", kind: "object", x: 6, y: 6, label: "Your Desk", sceneId: "ea-scene-study-here", glyph: "pencil" },
+      { id: "obj-ch2-event", kind: "quest-marker", x: 9, y: 3, label: "Check your device", sceneId: "ea-scene-ch2-yuzuki-check", requiresFlag: "ea-flag-ch2-arrived", glyph: "smartphone" },
+      { id: "obj-ch3-event", kind: "quest-marker", x: 9, y: 5, label: "The Nomination Exam", sceneId: "ea-scene-ch3-souta-worried", requiresFlag: "ea-flag-ch3-arrived", glyph: "alert-triangle" },
+      { id: "obj-ch7-event", kind: "quest-marker", x: 2, y: 5, label: "See what's changed", sceneId: "ea-scene-ch7-daichi-consequence", requiresFlag: "ea-flag-ch7-arrived", glyph: "alert-triangle" },
+      { id: "obj-ch9-event", kind: "quest-marker", x: 9, y: 6, label: "Talk to Ms. Arase", sceneId: "ea-scene-ch9-event", requiresFlag: "ea-flag-ch9-arrived", glyph: "eye" },
+      { id: "obj-ch10-event", kind: "quest-marker", x: 3, y: 6, label: "The Final Ranking Exam", sceneId: "ea-scene-ch10-event", requiresFlag: "ea-flag-ch10-arrived", glyph: "alert-triangle" },
     ],
   },
   {
@@ -96,6 +101,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
       { id: "npc-nao-library", kind: "npc", x: 6, y: 2, label: "Nao Ichijou", npcId: "ea-nao", sceneId: "ea-scene-nao-library", glyph: "book" },
       { id: "obj-study-desk", kind: "object", x: 10, y: 6, label: "Study Carrel", sceneId: "ea-scene-study-minigame", glyph: "brain" },
       { id: "hidden-notebook-page", kind: "hidden-item", x: 2, y: 6, label: "Something wedged behind a shelf", itemId: "ea-item-notebook-photocopy", hidden: true, requiresFlag: "ea-flag-investigating-daichi", glyph: "file-text" },
+      { id: "obj-ch6-event", kind: "quest-marker", x: 10, y: 2, label: "Midterms vs. Class 1-A", sceneId: "ea-scene-ch6-rei-risk", requiresFlag: "ea-flag-ch6-arrived", glyph: "alert-triangle" },
     ],
   },
   {
@@ -128,6 +134,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "npc-kenta-gym", kind: "npc", x: 7, y: 3, label: "Kenta Mabuchi", npcId: "ea-kenta", sceneId: "ea-scene-kenta-gym", glyph: "shield" },
       { id: "obj-training", kind: "trigger", x: 3, y: 6, label: "Train (Courage / Discipline)", sceneId: "ea-scene-train-gym", glyph: "dumbbell" },
+      { id: "obj-ch5-event", kind: "quest-marker", x: 10, y: 6, label: "The Away Exam", sceneId: "ea-scene-ch5-kenta-past", requiresFlag: "ea-flag-ch5-arrived", glyph: "alert-triangle" },
     ],
   },
   {
@@ -160,6 +167,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "npc-hikari-yard", kind: "npc", x: 4, y: 4, label: "Hikari Endo", npcId: "ea-hikari", sceneId: "ea-scene-hikari-courtyard", glyph: "message-circle" },
       { id: "hidden-item-courtyard", kind: "hidden-item", x: 10, y: 6, label: "Something under the bench", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
+      { id: "obj-ch4-event", kind: "quest-marker", x: 7, y: 3, label: "Ask Daichi about the rumor", sceneId: "ea-scene-ch4-daichi-hint", requiresFlag: "ea-flag-ch4-arrived", glyph: "alert-triangle" },
     ],
   },
   {
@@ -175,6 +183,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     ambientLabel: "Everything here can be bought with private points — including, some say, favors.",
     interactables: [
       { id: "obj-shop", kind: "shop", x: 5, y: 2, label: "Shop Counter", sceneId: "ea-scene-shop", glyph: "shopping-bag" },
+      { id: "obj-ch8-event", kind: "quest-marker", x: 8, y: 4, label: "Market intel from Hikari", sceneId: "ea-scene-ch8-hikari-intel", requiresFlag: "ea-flag-ch8-arrived", glyph: "alert-triangle" },
     ],
   },
   {

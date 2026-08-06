@@ -6,14 +6,18 @@ import { ScreenFrame } from "@/components/ui/ScreenFrame";
 import { Panel } from "@/components/ui/Panel";
 import { RetroButton } from "@/components/ui/RetroButton";
 import { Icon } from "@/components/ui/Icon";
-import { determineEliteChapterOutcome, determineAincradChapterOutcome, achievements } from "@/content/registry";
+import { determineEliteChapterOutcome, determineAincradChapterOutcome, achievements, getChapter } from "@/content/registry";
 import { RELATIONSHIP_AXES } from "@/types/common";
 import { getNpc } from "@/content/registry";
 
 export function ChapterRecapScreen() {
   const save = useGameStore((s) => s.save)!;
   const setScreen = useGameStore((s) => s.setScreen);
+  const advanceChapter = useGameStore((s) => s.advanceChapter);
   const isElite = save.worldId === "elite-academy";
+
+  const currentChapterDef = getChapter(save.currentChapterId);
+  const nextChapter = currentChapterDef?.nextChapterId ? getChapter(currentChapterDef.nextChapterId) : undefined;
 
   const outcome = useMemo(() => (isElite ? determineEliteChapterOutcome(save) : determineAincradChapterOutcome(save)), [save, isElite]);
 
@@ -115,14 +119,20 @@ export function ChapterRecapScreen() {
         </div>
 
         <div className="mt-8 flex gap-2">
-          <RetroButton
-            onClick={() => {
-              useGameStore.setState({ save: { ...save, mode: save.currentMapId ? "exploration" : "device" } });
-            }}
-            icon={<Icon name="play" size={14} />}
-          >
-            Continue Playing
-          </RetroButton>
+          {nextChapter ? (
+            <RetroButton onClick={advanceChapter} icon={<Icon name="arrow-right" size={14} />}>
+              Next Chapter: {nextChapter.title}
+            </RetroButton>
+          ) : (
+            <RetroButton
+              onClick={() => {
+                useGameStore.setState({ save: { ...save, mode: save.currentMapId ? "exploration" : "device" } });
+              }}
+              icon={<Icon name="play" size={14} />}
+            >
+              Continue Playing
+            </RetroButton>
+          )}
           <RetroButton variant="secondary" onClick={() => setScreen("title")} icon={<Icon name="home" size={14} />}>
             Title Screen
           </RetroButton>

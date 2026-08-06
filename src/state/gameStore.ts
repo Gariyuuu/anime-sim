@@ -59,6 +59,9 @@ interface GameStoreState {
   debugOpen: boolean;
   notifications: Notification[];
   pendingWorldId: WorldId | null;
+  /** Navigation command(s) queued by the current node's own `effects`, held back until the
+   * player advances past the node so its text actually gets a chance to display first. */
+  pendingNodeNavigation: EffectCommand[] | null;
 
   setScreen: (screen: Screen) => void;
   setPendingWorldId: (worldId: WorldId | null) => void;
@@ -72,6 +75,9 @@ interface GameStoreState {
   selectChoice: (choiceId: string) => void;
   advanceToNode: (nodeId: string) => void;
   endDialogue: () => void;
+  /** Called when the player advances past a node that has no `next` and no `choices`. Fires any
+   * navigation the node's own effects queued up (see `pendingNodeNavigation`), or ends the scene. */
+  leaveCurrentNode: () => void;
   logDialogueLine: (speaker: string, text: string) => void;
 
   moveToMap: (mapId: string, spawnId?: string) => void;
@@ -102,14 +108,21 @@ interface GameStoreState {
   debugModifyStat: (stat: string, delta: number) => void;
   debugResetSave: () => void;
   showChapterRecapIfDue: () => void;
+  advanceChapter: () => void;
+  jumpToChapter: (chapterId: string) => void;
 
   /** Internal: apply a computed save + side-effect commands, resolving navigation/achievements.
    * If nothing navigates away, `onSettle` decides where to land (stay put, enter a dialogue node, or end the scene). */
   _resolveEffects: (save: SaveGame, commands: EffectCommand[], onSettle: (save: SaveGame) => void) => void;
   /** Internal: enter a specific scene node — applies ITS OWN `effects` (flags, codex unlocks, stat
    * changes, etc. authored directly on that line) before displaying it. This is what makes
-   * node-level `effects` (as opposed to choice-level effects) actually take effect. */
+   * node-level `effects` (as opposed to choice-level effects) actually take effect. Any
+   * navigation the node's effects request is held in `pendingNodeNavigation` rather than fired
+   * immediately, so the node's own text always gets displayed first. */
   _settleAtNode: (save: SaveGame, sceneId: string, nodeId: string) => void;
+  /** Internal: pushes achievement-unlock toasts for both scripted (`unlockAchievement` effect)
+   * and generic (stat-threshold) unlocks, and returns the save with generic unlocks recorded. */
+  _toastAchievements: (save: SaveGame, commands: EffectCommand[]) => SaveGame;
 }
 
 export function resolveSceneEntry(sceneId: string, save: SaveGame, overrideNodeId?: string): string {
@@ -158,6 +171,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   save: null,
   combat: null,
   pendingEncounterId: null,
+  pendingNodeNavigation: null,
   deviceOpen: false,
   debugOpen: false,
   notifications: [],
@@ -194,6 +208,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       codexUnlocked: [],
       achievementsUnlocked: [],
       currentChapterId: chapter?.id ?? "",
+      unlockedChapterIds: chapter ? [chapter.id] : [],
       currentSceneId: chapter?.startSceneId,
       currentNodeId: undefined,
       currentMapId: undefined,
@@ -281,7 +296,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   endDialogue: () => {
     const { save } = get();
     if (!save) return;
-    set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined } });
+    set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined }, pendingNodeNavigation: null });
     get().saveGame();
   },
 
@@ -492,14 +507,44 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   showChapterRecapIfDue: () => {
     const { save } = get();
     if (!save || save.mode === "combat" || save.mode === "recap") return;
-    const completionFlag = save.worldId === "elite-academy" ? "ea-flag-chapter1-complete" : "ai-flag-ch1-complete";
-    if (save.flags.includes(completionFlag) && !save.flags.includes("meta-recap-shown")) {
-      set({ save: { ...save, mode: "recap", flags: [...save.flags, "meta-recap-shown"] } });
+    const chapter = getChapter(save.currentChapterId);
+    if (!chapter) return;
+    const recapShownFlag = `meta-recap-shown-${chapter.id}`;
+    if (save.flags.includes(chapter.completionFlag) && !save.flags.includes(recapShownFlag)) {
+      const unlocked = save.unlockedChapterIds.includes(chapter.id) ? save.unlockedChapterIds : [...save.unlockedChapterIds, chapter.id];
+      set({ save: { ...save, mode: "recap", flags: [...save.flags, recapShownFlag], unlockedChapterIds: unlocked } });
       get().saveGame();
     }
   },
 
-  _resolveEffects: (save, commands, onSettle) => {
+  advanceChapter: () => {
+    const { save } = get();
+    if (!save) return;
+    const current = getChapter(save.currentChapterId);
+    const next = current?.nextChapterId ? getChapter(current.nextChapterId) : undefined;
+    if (!next) {
+      // no further chapter authored yet — just drop back into free play at the current location
+      set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device" } });
+      get().saveGame();
+      return;
+    }
+    const unlocked = save.unlockedChapterIds.includes(next.id) ? save.unlockedChapterIds : [...save.unlockedChapterIds, next.id];
+    const advanced: SaveGame = { ...save, currentChapterId: next.id, chapterName: next.title, unlockedChapterIds: unlocked };
+    const entry = resolveSceneEntry(next.startSceneId, advanced);
+    get()._settleAtNode(advanced, next.startSceneId, entry);
+  },
+
+  jumpToChapter: (chapterId) => {
+    const { save } = get();
+    if (!save || !save.unlockedChapterIds.includes(chapterId)) return;
+    const chapter = getChapter(chapterId);
+    if (!chapter) return;
+    const jumped: SaveGame = { ...save, currentChapterId: chapter.id, chapterName: chapter.title };
+    const entry = resolveSceneEntry(chapter.startSceneId, jumped);
+    get()._settleAtNode(jumped, chapter.startSceneId, entry);
+  },
+
+  _toastAchievements: (save, commands) => {
     let workingSave = save;
     const genericUnlocks = checkGenericAchievements(workingSave);
     if (genericUnlocks.length > 0) {
@@ -510,11 +555,17 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       const def = getAchievement(id);
       if (def) get().pushNotification({ kind: "achievement", title: `Achievement Unlocked: ${def.title}`, detail: def.description });
     }
+    return workingSave;
+  },
+
+  _resolveEffects: (save, commands, onSettle) => {
+    const workingSave = get()._toastAchievements(save, commands);
 
     for (const cmd of commands) {
       if (cmd.type === "changeLocation") {
         set({
           save: { ...workingSave, currentMapId: cmd.mapId, currentSpawnId: cmd.spawnId, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined },
+          pendingNodeNavigation: null,
         });
         get().saveGame();
         return;
@@ -523,7 +574,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
         get()._settleAtNode(workingSave, cmd.sceneId, entry);
         return;
       } else if (cmd.type === "triggerBattle") {
-        set({ save: workingSave });
+        set({ save: workingSave, pendingNodeNavigation: null });
         get().startCombat(cmd.encounterId);
         return;
       }
@@ -536,14 +587,37 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
     const scene = getScene(sceneId);
     const node = scene?.nodes.find((n) => n.id === nodeId);
     if (!scene || !node) {
-      set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined } });
+      set({ save: { ...save, mode: save.currentMapId ? "exploration" : "device", currentSceneId: undefined, currentNodeId: undefined }, pendingNodeNavigation: null });
       get().saveGame();
       return;
     }
     const { save: afterEffects, commands } = applyEffects(save, node.effects);
-    get()._resolveEffects(afterEffects, commands, (settled) => {
-      set({ save: { ...settled, currentSceneId: sceneId, currentNodeId: nodeId, mode: "dialogue" } });
-      get().saveGame();
+    const workingSave = get()._toastAchievements(afterEffects, commands);
+    const navCommands = commands.filter((c) => c.type === "changeLocation" || c.type === "triggerBattle" || c.type === "goToScene");
+    set({
+      save: { ...workingSave, currentSceneId: sceneId, currentNodeId: nodeId, mode: "dialogue" },
+      pendingNodeNavigation: navCommands.length > 0 ? navCommands : null,
     });
+    get().saveGame();
+  },
+
+  leaveCurrentNode: () => {
+    const { save, pendingNodeNavigation } = get();
+    if (!save) return;
+    const cmd = pendingNodeNavigation?.[0];
+    if (cmd) {
+      set({ pendingNodeNavigation: null });
+      if (cmd.type === "changeLocation") {
+        set({ save: { ...save, currentMapId: cmd.mapId, currentSpawnId: cmd.spawnId, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined } });
+        get().saveGame();
+      } else if (cmd.type === "goToScene") {
+        const entry = resolveSceneEntry(cmd.sceneId, save, cmd.nodeId);
+        get()._settleAtNode(save, cmd.sceneId, entry);
+      } else if (cmd.type === "triggerBattle") {
+        get().startCombat(cmd.encounterId);
+      }
+      return;
+    }
+    get().endDialogue();
   },
 }));

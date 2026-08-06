@@ -7,18 +7,19 @@ import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
 import { StatBar } from "@/components/ui/StatBar";
 import { RetroButton } from "@/components/ui/RetroButton";
-import { getNpc, getItem, getQuest, getMap } from "@/content/registry";
+import { getNpc, getItem, getQuest, getMap, chaptersForWorld } from "@/content/registry";
 import { getMessageDefinition } from "@/content/messages";
 import { CORE_STAT_KEYS } from "@/types/common";
 import { RELATIONSHIP_AXES } from "@/types/common";
 import { cn } from "@/lib/utils";
 
-type Tab = "messages" | "contacts" | "quests" | "stats" | "inventory" | "map" | "achievements" | "settings";
+type Tab = "messages" | "contacts" | "quests" | "chapters" | "stats" | "inventory" | "map" | "achievements" | "settings";
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: "messages", label: "Messages", icon: "mail" },
   { id: "contacts", label: "Contacts", icon: "users" },
   { id: "quests", label: "Quests", icon: "scroll-text" },
+  { id: "chapters", label: "Chapters", icon: "book-marked" },
   { id: "stats", label: "Stats", icon: "bar-chart-2" },
   { id: "inventory", label: "Inventory", icon: "backpack" },
   { id: "map", label: "Map", icon: "map" },
@@ -58,6 +59,7 @@ export function DeviceMenu() {
         {tab === "messages" && <MessagesTab />}
         {tab === "contacts" && <ContactsTab />}
         {tab === "quests" && <QuestsTab />}
+        {tab === "chapters" && <ChaptersTab />}
         {tab === "stats" && <StatsTab />}
         {tab === "inventory" && <InventoryTab />}
         {tab === "map" && <MapTab />}
@@ -142,6 +144,44 @@ function ContactsTab() {
                 <StatBar key={axis} label={axis} value={rel[axis] + 100} max={200} size="sm" showNumbers={false} color="var(--accent-info)" />
               ))}
             </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ChaptersTab() {
+  const save = useGameStore((s) => s.save)!;
+  const jumpToChapter = useGameStore((s) => s.jumpToChapter);
+  const toggleDevice = useGameStore((s) => s.toggleDevice);
+  const chapters = chaptersForWorld(save.worldId).sort((a, b) => a.index - b.index);
+  return (
+    <div className="space-y-2">
+      {chapters.map((c) => {
+        const unlocked = save.unlockedChapterIds.includes(c.id);
+        const isCurrent = c.id === save.currentChapterId;
+        return (
+          <div key={c.id} className={cn("rounded border-2 p-2", isCurrent ? "border-ink-950" : "border-ink-300", !unlocked && "opacity-50")}>
+            <div className="mb-1 flex items-center justify-between">
+              <p className="text-xs font-bold">
+                {c.index}. {unlocked ? c.title : "???"}
+              </p>
+              {isCurrent && <Badge color="var(--accent-success)">current</Badge>}
+              {!unlocked && <Icon name="lock" size={12} className="text-ink-400" />}
+            </div>
+            <p className="mb-1 text-[10px] text-ink-500">{unlocked ? c.subtitle : "Not yet reached."}</p>
+            {unlocked && !isCurrent && (
+              <RetroButton
+                variant="secondary"
+                onClick={() => {
+                  jumpToChapter(c.id);
+                  toggleDevice(false);
+                }}
+              >
+                Jump Here
+              </RetroButton>
+            )}
           </div>
         );
       })}

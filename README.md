@@ -69,20 +69,23 @@ location, item, and line of dialogue is an original creation written to evoke th
 - A development-only debug panel (stat/flag editors, teleport, quest triggers, state export).
 
 **Elite Academy**
-- Chapter One, *"The First Ranking,"* fully playable: 8 major NPCs, 10 explorable locations,
-  an investigation route, a hidden hint-gated subplot, a romance thread, a betrayal path, the
-  **Consensus Trial** special exam (multiple winning strategies), and 3 distinct chapter
-  outcomes computed from your choices.
+- **10 full chapters**, start to finish: *The First Ranking* (Ch.1, deepest — 8 major NPCs, an
+  investigation route, a hidden hint-gated subplot, a romance thread, a betrayal path, and the
+  **Consensus Trial** special exam with multiple winning strategies) through *The Final Ranking*
+  (Ch.10, year's end). Chapters 2–10 each add their own special exam or event — the Nomination
+  Exam, the Away Exam, Midterms vs. Class 1-A, the Trade War market exam, the Watcher's identity
+  reveal — with a meaningful decision and its own outcome.
+- A chapter-progression system: a "Next Chapter" flow from the recap screen, a per-save
+  unlocked-chapter list, and a Chapters tab on the in-game device to jump back into any of them.
 
 **Aincrad**
-- Chapter One, *"The Locked Sky,"* fully playable on **Floor 1**: 8 major NPCs, a training
-  quest, guild recruitment (3 original guilds) or a solo route, a hidden quest, a full
-  boss-raid with pre-raid planning and a mid-raid decision, and 3 chapter outcomes.
-- **Floors 2 and 3** are fully explorable (unique towns, fields, dungeons, mini-bosses, and
-  floor bosses) with lighter narrative content than Floor 1's chapter.
-- **Floors 4–10** exist as data-modeled, explicitly locked previews in the floor list.
-- 17 equipment items, 10 consumables, 10 common enemies, 3 mini-bosses, 3 floor bosses, 3
-  guilds, and a lightweight crafting-adjacent economy (col, shops, materials).
+- **10 full floors/chapters**: *The Locked Sky* (Floor 1, deepest — 8 major NPCs, a training
+  quest, guild recruitment across 3 original guilds or a solo route, a hidden quest, and a full
+  boss raid with pre-raid planning and a mid-raid decision) through *The Tenth Gate* (Floor 10,
+  this slice's milestone finale). Each floor has its own town, field/dungeon, mini-boss, floor
+  boss, and local NPC.
+- 15 major NPCs total, 17 equipment items, 10 consumables, 24 common enemies, 10 mini-bosses,
+  10 floor bosses, 3 guilds, and a lightweight crafting-adjacent economy (col, shops, materials).
 
 ## Screenshots
 
@@ -314,16 +317,20 @@ chapter-outcome/achievement derivation. See `src/tests/`.
 
 ## Current Scope & Roadmap
 
-This is a **vertical slice**, not a complete 100-floor/multi-chapter game. What's genuinely
+This is a **vertical slice**, not an infinite 100-floor/many-year game. What's genuinely
 playable end-to-end today:
 
 - ✅ Boot → title → character creation → world choice → save/load
-- ✅ Chapter One in **both** worlds, start to finish, with branching choices, 3 outcomes each
+- ✅ **10 full chapters in both worlds**, start to finish, each with a meaningful decision and
+  its own outcome — Elite Academy's full school year, and Aincrad's climb from Floor 1 to the
+  Tenth Gate
 - ✅ Exploration, dialogue, combat, relationships, quests, inventory, codex, achievements
-- ✅ Aincrad Floors 2–3 are explorable with unique content, at lower narrative depth than
-  Floor 1's chapter
-- 🔒 Aincrad Floors 4–10 are locked previews (data-modeled, not yet built out)
-- 🔒 Elite Academy has one chapter; a second chapter isn't built yet
+- ✅ Chapter-to-chapter progression: a "Next Chapter" flow, an unlocked-chapter list per save,
+  and a Chapters tab on the in-game device
+- 🔒 Aincrad Floors 11+ aren't built; this slice's climb ends at the Tenth Gate
+- 🔒 Elite Academy's arc ends at Year's End; a second year isn't built
+- ℹ️ Chapters 2–10 in both worlds are moderate-depth (matching how Aincrad's original Floors
+  2–3 were scoped) rather than Chapter One's full density — see Patch Notes for specifics
 
 See [`content/patchnotes.ts`](src/content/patchnotes.ts) (rendered in-game under Patch Notes)
 for the authoritative, versioned list of what's done, known issues, and what's next.

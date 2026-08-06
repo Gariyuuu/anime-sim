@@ -15,6 +15,14 @@ export const codexEntries: CodexEntryInput[] = [
   { id: "ea-codex-consensus-trial", category: "term", title: "The Consensus Trial", body: "A special exam where each class distributes a fixed resource pool among its own students. Whoever ends up lowest fails, regardless of the class's total.", worldId: "elite-academy" },
   { id: "ea-codex-watcher", category: "secret", title: "The Watcher", body: "An anonymous message arrived after Chapter One's events, suggesting someone has been quietly observing your choices. Their identity is unknown.", worldId: "elite-academy" },
   { id: "ea-codex-classes", category: "class", title: "The Four Classes", body: "Class 1-A, 1-B, 1-C, and 1-D are ranked by cumulative class points. Rank determines privileges, respect, and how much the school is willing to overlook.", worldId: "elite-academy", unlockedByDefault: true },
+  { id: "ea-codex-watcher-clue", category: "secret", title: "Tracing the Watcher", body: "Whoever's been sending messages from the unlisted account has real institutional access — faculty-level, or close to it.", worldId: "elite-academy" },
+  { id: "ea-codex-nomination-exam", category: "term", title: "The Nomination Exam", body: "Each class anonymously nominates one of its own members; the nominee's private points are seized and redistributed to the rest of the class.", worldId: "elite-academy" },
+  { id: "ea-codex-rumor-source", category: "secret", title: "The Rumor's Source", body: "A traced rumor campaign leads uncomfortably close to the student council — not close enough to prove anything, but close enough to note.", worldId: "elite-academy" },
+  { id: "ea-codex-away-exam", category: "term", title: "The Away Exam", body: "A multi-day survival-and-cooperation retreat held off-campus, with teams randomly assigned across all four classes.", worldId: "elite-academy" },
+  { id: "ea-codex-kenta-secret", category: "secret", title: "Kenta's Old School", body: "Kenta transferred after a fight that hurt someone badly. He still sends money to that person's family, anonymously, every month.", worldId: "elite-academy" },
+  { id: "ea-codex-trade-exam", category: "term", title: "The Point Exchange", body: "A special exam that opens private points to direct trade between all four classes, with no faculty oversight until the window closes.", worldId: "elite-academy" },
+  { id: "ea-codex-watcher-revealed", category: "secret", title: "The Watcher, Revealed", body: "Ms. Arase lobbied to have the player placed in Class 1-C instead of 1-A, specifically to see what they'd become without an easy path handed to them.", worldId: "elite-academy" },
+  { id: "ea-codex-final-ranking", category: "term", title: "The Final Ranking Exam", body: "The year-end exam that determines final class standing, final private points, and — unofficially — settles who each student turned out to be.", worldId: "elite-academy" },
 
   /* ================================== Aincrad ==================================== */
   { id: "ai-codex-aincrad", category: "location", title: "Aincrad", body: "A floating castle of one hundred floors, home to a full-dive MMORPG that ten thousand players logged into on launch day. Nobody expected it to become a prison.", worldId: "aincrad" },
@@ -37,4 +45,20 @@ export const codexEntries: CodexEntryInput[] = [
   { id: "ai-codex-mistfallen-warden", category: "monster", title: "Mistfallen Warden", body: "Floor 2's boss. A knight-shaped mass of fog and old armor guarding the Frozen Court.", worldId: "aincrad" },
   { id: "ai-codex-ashen-hollow-king", category: "monster", title: "Ashen Hollow King", body: "Floor 3's boss. A self-declared ruler of a hollow nobody else wanted.", worldId: "aincrad" },
   { id: "ai-codex-guilds", category: "guild", title: "Floor 1 Guilds", body: "Iron Vanguard (combat-focused), Hearthlight (survival-focused), and the Stonebreakers (logistics-focused) are Floor 1's three founding guilds.", worldId: "aincrad", unlockedByDefault: true },
+
+  /* -------------------------- Floors 4-10 -------------------------- */
+  { id: "ai-codex-sena", category: "character", title: "Sena Kurogane", body: "Fearless Verdant Spire climbing guide. Has fallen twice and doesn't know who saved her either time.", worldId: "aincrad" },
+  { id: "ai-codex-bram", category: "character", title: "Bram Oyelaran", body: "Amphibious-gear trader on the Drowned Causeway, still quietly making up for the party he lost there on launch week.", worldId: "aincrad" },
+  { id: "ai-codex-iris", category: "character", title: "Iris Vantille", body: "Sharp-tongued market broker who effectively runs the Gilded Quarter's economy.", worldId: "aincrad" },
+  { id: "ai-codex-choirkeeper", category: "character", title: "The Choirkeeper", body: "One of the first players to reach Floor 7. Chose to stay rather than keep climbing, and listens for the voices of those who don't make it past the floor.", worldId: "aincrad" },
+  { id: "ai-codex-doc-renner", category: "character", title: "\"Doc\" Renner", body: "Obsessive Iron Maze cartographer. Suspects, correctly, that the maze rearranges itself on purpose.", worldId: "aincrad" },
+  { id: "ai-codex-wren", category: "character", title: "Wren Castellan", body: "Veteran scout who launched the same day as the player. Carries the memory of everyone from that cohort who didn't make it this far.", worldId: "aincrad" },
+  { id: "ai-codex-ilyana", category: "character", title: "Ilyana Vasko", body: "Guards Gatewatch at the base of the Tenth Gate. Pulled out of the first attempt on the Gate at the last minute — the rest of that party never came back.", worldId: "aincrad" },
+  { id: "ai-codex-verdant-warden", category: "monster", title: "Verdant Warden", body: "Floor 4's boss. A colossal treant fused into the Spire's living core.", worldId: "aincrad" },
+  { id: "ai-codex-drowned-sovereign", category: "monster", title: "Drowned Sovereign", body: "Floor 5's boss. A crowned amphibious ruler of a court that flooded a century of game-time ago.", worldId: "aincrad" },
+  { id: "ai-codex-golden-magnate", category: "monster", title: "Golden Magnate", body: "Floor 6's boss. A corrupted construct built from every col the Gilded Quarter's players ever spent.", worldId: "aincrad" },
+  { id: "ai-codex-hollow-chorus", category: "monster", title: "Hollow Chorus", body: "Floor 7's boss. Dozens of voices that never got the chance to log out safely, now speaking as one.", worldId: "aincrad" },
+  { id: "ai-codex-iron-architect", category: "monster", title: "Iron Architect", body: "Floor 8's boss. The machine that designed the Iron Maze, and has never once let anyone see its true shape.", worldId: "aincrad" },
+  { id: "ai-codex-skybreak-sentinel", category: "monster", title: "Skybreak Sentinel", body: "Floor 9's boss. A storm given armor, said to be visible from Floor 1 on clear days.", worldId: "aincrad" },
+  { id: "ai-codex-tenth-gatekeeper", category: "monster", title: "The Tenth Gatekeeper", body: "Floor 10's boss. The first of Aincrad's confirmed milestone guardians.", worldId: "aincrad" },
 ];

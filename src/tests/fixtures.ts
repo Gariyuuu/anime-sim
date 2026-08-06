@@ -38,6 +38,7 @@ export function makeSave(overrides: Partial<SaveGame> = {}): SaveGame {
     codexUnlocked: [],
     achievementsUnlocked: [],
     currentChapterId: "ea-ch1",
+    unlockedChapterIds: ["ea-ch1"],
     currentSceneId: undefined,
     currentNodeId: undefined,
     currentMapId: undefined,

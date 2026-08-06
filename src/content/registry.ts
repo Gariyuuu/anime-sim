@@ -34,7 +34,7 @@ import { eliteAcademyQuests } from "./worlds/elite-academy/quests";
 import { eliteAcademyMaps } from "./worlds/elite-academy/maps";
 import { eliteAcademyScenes } from "./worlds/elite-academy/scenes";
 import { eliteAcademyClasses } from "./worlds/elite-academy/classes";
-import { eliteAcademyChapter1, determineEliteChapterOutcome } from "./worlds/elite-academy/chapter";
+import { eliteAcademyChapters, determineEliteChapterOutcome } from "./worlds/elite-academy/chapter";
 
 import { aincradNpcs } from "./worlds/aincrad/npcs";
 import { aincradItems } from "./worlds/aincrad/items";
@@ -46,7 +46,7 @@ import { aincradEnemies } from "./worlds/aincrad/enemies";
 import { aincradGuilds } from "./worlds/aincrad/guilds";
 import { aincradFloors } from "./worlds/aincrad/floors";
 import { aincradEncounters } from "./worlds/aincrad/encounters";
-import { aincradChapter1, determineAincradChapterOutcome } from "./worlds/aincrad/chapter";
+import { aincradChapters, determineAincradChapterOutcome } from "./worlds/aincrad/chapter";
 
 import { achievements as achievementsInput } from "./achievements";
 import { codexEntries as codexEntriesInput } from "./codex";
@@ -61,7 +61,7 @@ export const items: ItemDefinition[] = parseAll(ItemDefinitionSchema, [...eliteA
 export const quests: QuestDefinition[] = parseAll(QuestDefinitionSchema, [...eliteAcademyQuests, ...aincradQuests]);
 export const maps: MapDefinition[] = parseAll(MapDefinitionSchema, [...eliteAcademyMaps, ...aincradMaps]);
 export const scenes: Scene[] = parseAll(SceneSchema, [...eliteAcademyScenes, ...aincradScenes]);
-export const chapters: ChapterDefinition[] = parseAll(ChapterDefinitionSchema, [eliteAcademyChapter1, aincradChapter1]);
+export const chapters: ChapterDefinition[] = parseAll(ChapterDefinitionSchema, [...eliteAcademyChapters, ...aincradChapters]);
 export const classes: ClassDefinition[] = eliteAcademyClasses;
 export const skills: Skill[] = parseAll(SkillSchema, aincradSkills);
 export const enemies: EnemyDefinition[] = parseAll(EnemyDefinitionSchema, aincradEnemies);
@@ -113,4 +113,8 @@ export function questsForWorld(worldId: "elite-academy" | "aincrad"): QuestDefin
 
 export function floorsSorted(): FloorDefinition[] {
   return [...floors].sort((a, b) => a.index - b.index);
+}
+
+export function chaptersForWorld(worldId: "elite-academy" | "aincrad"): ChapterDefinition[] {
+  return chapters.filter((c) => c.worldId === worldId).sort((a, b) => a.index - b.index);
 }

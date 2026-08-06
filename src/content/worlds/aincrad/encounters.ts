@@ -32,6 +32,7 @@ export const aincradEncounters: EncounterDefinitionInput[] = [
     isBossRaid: true,
     preRaidPlanning: true,
     victoryEffects: ["ai-flag-floor2-cleared"],
+    victorySceneId: "ai-scene-boss2-aftermath",
   },
 
   /* Floor 3 field/dungeon */
@@ -46,5 +47,44 @@ export const aincradEncounters: EncounterDefinitionInput[] = [
     isBossRaid: true,
     preRaidPlanning: true,
     victoryEffects: ["ai-flag-floor3-cleared"],
+    victorySceneId: "ai-scene-boss3-aftermath",
   },
 ];
+
+interface FloorEncounterSpec {
+  floor: 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  bossName: string;
+  common: [string, string];
+  commonNames: [string, string];
+  miniBoss: string;
+  miniBossName: string;
+  floorBoss: string;
+}
+
+const laterFloorSpecs: FloorEncounterSpec[] = [
+  { floor: 4, bossName: "Verdant Warden", common: ["en-vine-stalker", "en-canopy-hawk"], commonNames: ["Vine Stalker", "Canopy Hawk"], miniBoss: "en-spire-ape", miniBossName: "Spire Ape", floorBoss: "en-verdant-warden" },
+  { floor: 5, bossName: "Drowned Sovereign", common: ["en-marsh-eel", "en-bog-crawler"], commonNames: ["Marsh Eel", "Bog Crawler"], miniBoss: "en-causeway-broodmaw", miniBossName: "Causeway Broodmaw", floorBoss: "en-drowned-sovereign" },
+  { floor: 6, bossName: "Golden Magnate", common: ["en-gilded-automaton", "en-counterfeit-wraith"], commonNames: ["Gilded Automaton", "Counterfeit Wraith"], miniBoss: "en-market-enforcer", miniBossName: "Market Enforcer", floorBoss: "en-golden-magnate" },
+  { floor: 7, bossName: "Hollow Chorus", common: ["en-silent-wisp", "en-echo-shade"], commonNames: ["Silent Wisp", "Echo Shade"], miniBoss: "en-choir-conductor", miniBossName: "Choir Conductor", floorBoss: "en-hollow-chorus" },
+  { floor: 8, bossName: "Iron Architect", common: ["en-maze-sentry", "en-rust-hound"], commonNames: ["Maze Sentry", "Rust Hound"], miniBoss: "en-labyrinth-keeper", miniBossName: "Labyrinth Keeper", floorBoss: "en-iron-architect" },
+  { floor: 9, bossName: "Skybreak Sentinel", common: ["en-gale-serpent", "en-cloud-raptor"], commonNames: ["Gale Serpent", "Cloud Raptor"], miniBoss: "en-storm-harrier", miniBossName: "Storm Harrier", floorBoss: "en-skybreak-sentinel" },
+  { floor: 10, bossName: "The Tenth Gatekeeper", common: ["en-gatekeeper-drone", "en-oathbound-knight"], commonNames: ["Gatekeeper Drone", "Oathbound Knight"], miniBoss: "en-gate-champion", miniBossName: "Gate Champion", floorBoss: "en-the-tenth-gatekeeper" },
+];
+
+const laterFloorEncounters: EncounterDefinitionInput[] = laterFloorSpecs.flatMap((spec) => [
+  { id: `ai-enc-field${spec.floor}-a`, worldId: "aincrad", name: spec.commonNames[0], enemyIds: [spec.common[0]] },
+  { id: `ai-enc-field${spec.floor}-b`, worldId: "aincrad", name: spec.commonNames[1], enemyIds: [spec.common[1]] },
+  { id: `ai-enc-field${spec.floor}-miniboss`, worldId: "aincrad", name: spec.miniBossName, enemyIds: [spec.miniBoss], victoryEffects: [`ai-flag-floor${spec.floor}-miniboss-defeated`] },
+  {
+    id: `ai-enc-boss${spec.floor}`,
+    worldId: "aincrad",
+    name: `Floor ${spec.floor} Boss Raid — ${spec.bossName}`,
+    enemyIds: [spec.floorBoss],
+    isBossRaid: true,
+    preRaidPlanning: true,
+    victoryEffects: [`ai-flag-floor${spec.floor}-cleared`],
+    victorySceneId: `ai-scene-boss${spec.floor}-aftermath`,
+  },
+]);
+
+aincradEncounters.push(...laterFloorEncounters);

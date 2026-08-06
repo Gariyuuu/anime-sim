@@ -258,3 +258,94 @@ export const aincradMaps: MapDefinitionInput[] = [
     ],
   },
 ];
+
+/* ============================ FLOORS 4-10 (generated) ============================ */
+
+interface LaterFloorMapSpec {
+  floor: number;
+  townName: string;
+  townAmbient: string;
+  townBg: string;
+  fieldName: string;
+  fieldAmbient: string;
+  fieldBg: string;
+  npcId: string;
+  npcName: string;
+  npcGlyph: string;
+  commonA: string;
+  commonB: string;
+  miniBoss: string;
+  miniBossLabel: string;
+}
+
+const laterFloorMapSpecs: LaterFloorMapSpec[] = [
+  { floor: 4, townName: "Canopy Landing", townAmbient: "A town built into the spire's first great branch. The ground floor hasn't seen sunlight in weeks.", townBg: "#dde6d2", fieldName: "Floor 4 — Verdant Spire", fieldAmbient: "The spire climbs out of sight. Rope bridges sway between platforms that shouldn't hold as much weight as they do.", fieldBg: "#c9d9b8", npcId: "ai-sena", npcName: "Sena Kurogane", npcGlyph: "mountain-snow", commonA: "ai-enc-field4-a", commonB: "ai-enc-field4-b", miniBoss: "ai-enc-field4-miniboss", miniBossLabel: "Spire Ape" },
+  { floor: 5, townName: "Causeway Landing", townAmbient: "Stilted buildings over black water. Everything smells like salt and old rope.", townBg: "#d2dee2", fieldName: "Floor 5 — The Drowned Causeway", fieldAmbient: "A stone road half-swallowed by a swamp that was never supposed to be here.", fieldBg: "#b8ccd2", npcId: "ai-bram", npcName: "Bram Oyelaran", npcGlyph: "anchor", commonA: "ai-enc-field5-a", commonB: "ai-enc-field5-b", miniBoss: "ai-enc-field5-miniboss", miniBossLabel: "Causeway Broodmaw" },
+  { floor: 6, townName: "Gilded Quarter", townAmbient: "The wealthiest town yet built in Aincrad. Every storefront is real col, spent on something that doesn't matter anymore.", townBg: "#e6ddc4", fieldName: "Floor 6 — The Exchange District", fieldAmbient: "Market stalls stretch farther than any single player has ever walked in one day.", fieldBg: "#d4c8a0", npcId: "ai-iris", npcName: "Iris Vantille", npcGlyph: "coins", commonA: "ai-enc-field6-a", commonB: "ai-enc-field6-b", miniBoss: "ai-enc-field6-miniboss", miniBossLabel: "Market Enforcer" },
+  { floor: 7, townName: "Rest Stop (Unnamed)", townAmbient: "Nobody agreed on a name for this town. Most players don't stay long enough to suggest one.", townBg: "#dcdce4", fieldName: "Floor 7 — Hollow Choir", fieldAmbient: "Dead silent. Even your own footsteps sound like they're coming from somewhere else.", fieldBg: "#c4c4d4", npcId: "ai-choirkeeper", npcName: "The Choirkeeper", npcGlyph: "music", commonA: "ai-enc-field7-a", commonB: "ai-enc-field7-b", miniBoss: "ai-enc-field7-miniboss", miniBossLabel: "Choir Conductor" },
+  { floor: 8, townName: "Maze Camp", townAmbient: "A cluster of tents just outside the maze entrance. Every wall here is chalked with somebody's failed route.", townBg: "#dcdcdc", fieldName: "Floor 8 — The Iron Maze", fieldAmbient: "Corridors that rearrange when you're not looking directly at them. Probably.", fieldBg: "#c8c8c8", npcId: "ai-doc-renner", npcName: "Doc Renner", npcGlyph: "compass", commonA: "ai-enc-field8-a", commonB: "ai-enc-field8-b", miniBoss: "ai-enc-field8-miniboss", miniBossLabel: "Labyrinth Keeper" },
+  { floor: 9, townName: "Skybreak Landing", townAmbient: "The highest town in this slice of Aincrad. On a clear day, you can just make out the Town of Beginnings below.", townBg: "#d4e2ec", fieldName: "Floor 9 — Skybreak Terrace", fieldAmbient: "Wind strong enough to knock a careless player off the terrace's edge.", fieldBg: "#c0d6e6", npcId: "ai-wren", npcName: "Wren Castellan", npcGlyph: "feather", commonA: "ai-enc-field9-a", commonB: "ai-enc-field9-b", miniBoss: "ai-enc-field9-miniboss", miniBossLabel: "Storm Harrier" },
+  { floor: 10, townName: "Gatewatch", townAmbient: "The staging town for every party that's attempted the Tenth Gate. The mood here is quieter than anywhere else in Aincrad.", townBg: "#dcd4cc", fieldName: "Floor 10 — The Tenth Gate", fieldAmbient: "A vast stone approach leading to a gate that hasn't opened for anyone yet.", fieldBg: "#c8bcae", npcId: "ai-ilyana", npcName: "Ilyana Vasko", npcGlyph: "flag", commonA: "ai-enc-field10-a", commonB: "ai-enc-field10-b", miniBoss: "ai-enc-field10-miniboss", miniBossLabel: "Gate Champion" },
+];
+
+const laterFloorMaps: MapDefinitionInput[] = laterFloorMapSpecs.flatMap((spec): MapDefinitionInput[] => [
+  {
+    id: `ai-map-town${spec.floor}`,
+    worldId: "aincrad",
+    name: spec.townName,
+    widthTiles: 12,
+    heightTiles: 9,
+    background: spec.townBg,
+    walls: borderWalls(12, 9),
+    spawns: { default: [6, 7], fromField: [6, 1] },
+    defaultSpawn: "default",
+    ambientLabel: spec.townAmbient,
+    interactables: [
+      { id: "door-field", kind: "door", x: 6, y: 1, label: "To the Field", targetMapId: `ai-map-field${spec.floor}`, targetSpawnId: "fromTown", glyph: "trees" },
+      { id: "obj-item-shop", kind: "shop", x: 3, y: 4, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
+      { id: "obj-inn", kind: "object", x: 9, y: 4, label: "Inn", sceneId: "ai-scene-inn", glyph: "bed" },
+      { id: "npc-local", kind: "npc", x: 6, y: 5, label: spec.npcName, npcId: spec.npcId, sceneId: `ai-scene-floor${spec.floor}-npc-intro`, glyph: spec.npcGlyph },
+    ],
+  },
+  {
+    id: `ai-map-field${spec.floor}`,
+    worldId: "aincrad",
+    name: spec.fieldName,
+    widthTiles: 17,
+    heightTiles: 12,
+    background: spec.fieldBg,
+    wallColor: "#1a1a1a",
+    walls: borderWalls(17, 12),
+    spawns: { fromTown: [8, 10] },
+    defaultSpawn: "fromTown",
+    ambientLabel: spec.fieldAmbient,
+    interactables: [
+      { id: "mon-a", kind: "monster", x: 5, y: 7, label: "Field encounter", encounterId: spec.commonA, glyph: "swords" },
+      { id: "mon-b", kind: "monster", x: 11, y: 6, label: "Field encounter", encounterId: spec.commonB, glyph: "swords" },
+      { id: "mon-c", kind: "monster", x: 4, y: 3, label: "Field encounter", encounterId: spec.commonA, glyph: "swords" },
+      { id: "mon-miniboss", kind: "monster", x: 13, y: 3, label: spec.miniBossLabel, encounterId: spec.miniBoss, glyph: "skull" },
+      { id: "obj-raid-prep", kind: "trigger", x: 8, y: 2, label: "Prepare for the Boss Raid", sceneId: `ai-scene-boss${spec.floor}-prep`, requiresFlag: `ai-flag-floor${spec.floor}-miniboss-defeated`, glyph: "alert-triangle" },
+      { id: "door-town", kind: "door", x: 8, y: 11, label: "Back to Town", targetMapId: `ai-map-town${spec.floor}`, targetSpawnId: "fromField", glyph: "chevrons-down" },
+    ],
+  },
+]);
+
+aincradMaps.push(...laterFloorMaps);
+
+// Patch: Floor 10's town gets an extra trigger to recruit Ilyana once her secret is known.
+const town10 = aincradMaps.find((m) => m.id === "ai-map-town10");
+if (town10) {
+  town10.interactables = [
+    ...(town10.interactables ?? []),
+    {
+      id: "npc-ilyana-join",
+      kind: "trigger",
+      x: 4,
+      y: 5,
+      label: "Ask Ilyana to join the raid",
+      sceneId: "ai-scene-ilyana-join",
+      requiresFlag: "ai-flag-ilyana-secret",
+      glyph: "user-plus",
+    },
+  ];
+}

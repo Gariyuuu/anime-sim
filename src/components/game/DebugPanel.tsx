@@ -26,7 +26,7 @@ export function DebugPanel() {
     <>
       <button
         onClick={() => toggleDebug()}
-        className="fixed bottom-2 left-2 z-40 rounded border-2 border-ink-950 bg-accent-warning px-2 py-1 text-[9px] uppercase tracking-widest text-paper-0 opacity-70 hover:opacity-100"
+        className="fixed bottom-2 right-2 z-40 rounded border-2 border-ink-950 bg-accent-warning px-2 py-1 text-[9px] uppercase tracking-widest text-paper-0 opacity-70 hover:opacity-100"
       >
         Debug
       </button>

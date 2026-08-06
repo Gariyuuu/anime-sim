@@ -47,11 +47,17 @@ export type ChapterOutcome = z.infer<typeof ChapterOutcomeSchema>;
 export const ChapterDefinitionSchema = z.object({
   id: z.string(),
   worldId: z.enum(["elite-academy", "aincrad"]),
+  index: z.number().default(1),
   title: z.string(),
   subtitle: z.string(),
   summary: z.string(),
   startSceneId: z.string(),
   outcomes: z.array(ChapterOutcomeSchema),
+  /** Story flag whose presence means this chapter's story content has been finished — checked by
+   * the recap trigger. Each chapter's closing scene sets this via a `setFlag` effect. */
+  completionFlag: z.string(),
+  /** Chapter id to advance into once this one's recap is dismissed. Unset on the final chapter. */
+  nextChapterId: z.string().optional(),
   locked: z.boolean().default(false),
 });
 export type ChapterDefinition = z.infer<typeof ChapterDefinitionSchema>;

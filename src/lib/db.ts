@@ -12,4 +12,6 @@ export class AnimeSimDatabase extends Dexie {
   }
 }
 
-export const db = typeof window !== "undefined" ? new AnimeSimDatabase() : null;
+// Guards on indexedDB specifically (not just `window`) so this stays null under jsdom-based
+// tests, which define `window` but don't implement IndexedDB.
+export const db = typeof indexedDB !== "undefined" ? new AnimeSimDatabase() : null;

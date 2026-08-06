@@ -30,7 +30,7 @@ export function DialogueView() {
   const save = useGameStore((s) => s.save);
   const selectChoice = useGameStore((s) => s.selectChoice);
   const advanceToNode = useGameStore((s) => s.advanceToNode);
-  const endDialogue = useGameStore((s) => s.endDialogue);
+  const leaveCurrentNode = useGameStore((s) => s.leaveCurrentNode);
   const logDialogueLine = useGameStore((s) => s.logDialogueLine);
   const toggleDevice = useGameStore((s) => s.toggleDevice);
   const saveGame = useGameStore((s) => s.saveGame);
@@ -133,7 +133,7 @@ export function DialogueView() {
     if (node.next) {
       advanceToNode(node.next);
     } else {
-      endDialogue();
+      leaveCurrentNode();
     }
   }
 

@@ -24,6 +24,7 @@ export const SaveGameSchema = z.object({
   codexUnlocked: z.array(z.string()).default([]),
   achievementsUnlocked: z.array(z.string()).default([]),
   currentChapterId: z.string(),
+  unlockedChapterIds: z.array(z.string()).default([]),
   currentSceneId: z.string().optional(),
   currentNodeId: z.string().optional(),
   currentMapId: z.string().optional(),
