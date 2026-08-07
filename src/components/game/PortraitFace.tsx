@@ -59,22 +59,32 @@ export function PortraitFace({
   const eyeH = look.eye === "wide" ? 4 : look.eye === "narrow" ? 1.4 : 2.6;
   const eyeY = look.eye === "wide" ? 17.5 : 18.3;
 
+  const isBuzz = hairstyle === "buzzcut";
+  // Hair renders as a silhouette *behind* the face (bigger than the face rect on every side),
+  // then the face is drawn on top — this guarantees a visible hair "frame" around the head no
+  // matter the exact curve math, instead of relying on a thin top sliver that used to render as
+  // functionally invisible (the "bald" bug). A thin dark outline keeps the silhouette readable
+  // even when hair color and card background land close together (e.g. silver hair, light card).
+  const hairOutline = "rgba(0,0,0,0.28)";
+
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} className={cn(animated ? "pixel-fade-in" : undefined)} shapeRendering="geometricPrecision" role="img" aria-label={`Portrait, expression ${expression}`}>
       {/* shoulders / outfit */}
       <rect x="2" y="31" width="36" height="9" fill={accentColor} />
       {/* neck */}
       <rect x="16" y="25" width="8" height="8" fill={skin} />
-      {/* long hair back layer */}
-      {isLong && <rect x="6" y="10" width="28" height="24" rx="2" fill={hair} opacity={0.95} />}
-      {/* head */}
+      {/* long hair back layer — flows past the shoulders, behind everything else */}
+      {isLong && <rect x="5" y="9" width="30" height="27" rx="3" fill={hair} stroke={hairOutline} strokeWidth={0.5} opacity={0.95} />}
+      {/* hair silhouette — a dome bigger than the face on every side, so it always peeks out as a
+          visible frame once the face is drawn on top of it */}
+      <rect x={isBuzz ? 9 : 7.5} y={isBuzz ? 6.5 : 4.5} width={isBuzz ? 22 : 25} height={isBuzz ? 19 : 22} rx={isBuzz ? 4 : 6} fill={hair} stroke={hairOutline} strokeWidth={0.5} />
+      {/* head (face) */}
       <rect x="10" y="8" width="20" height="19" rx="3" fill={skin} />
       {/* ears */}
       <rect x="8.5" y="16" width="2.2" height="4" rx="1" fill={skin} />
       <rect x="29.3" y="16" width="2.2" height="4" rx="1" fill={skin} />
-      {/* hair top + sides */}
-      <path d="M9,14 Q9,5 20,5 Q31,5 31,14 L31,10 Q20,8 9,10 Z" fill={hair} />
-      {hairstyle !== "buzzcut" && (
+      {/* bangs framing the face, drawn on top so they read against the skin */}
+      {!isBuzz && (
         <>
           <rect x="9" y="10" width="3.2" height="11" rx="1.2" fill={hair} />
           <rect x="27.8" y="10" width="3.2" height="11" rx="1.2" fill={hair} />

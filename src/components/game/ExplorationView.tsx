@@ -19,6 +19,26 @@ const MIN_VIEW_H = 240;
 
 const MAX_ZOOM = 2.2;
 
+/** Lightens (positive percent) or darkens (negative) a "#rrggbb" hex color. Falls back to the
+ * input unchanged for any other CSS color format (var(--x), named colors, etc.) since exploration
+ * maps only ever author `background`/`wallColor` as hex, but this is also reused defensively. */
+function shadeColor(hex: string, percent: number): string {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return hex;
+  const num = parseInt(m[1], 16);
+  const clamp = (v: number) => Math.max(0, Math.min(255, v));
+  const amt = Math.round((percent / 100) * 255);
+  const r = clamp((num >> 16) + amt);
+  const g = clamp(((num >> 8) & 0xff) + amt);
+  const b = clamp((num & 0xff) + amt);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
+/** Two close-but-distinct floor tones for a subtle checker, instead of one flat fill. */
+function shadeFloor(background: string): { light: string; dark: string } {
+  return { light: shadeColor(background, 4), dark: shadeColor(background, -5) };
+}
+
 /** Picks a zoom level that fits the room to however much space the view actually has (never
  * shrinking below 1x), then returns the camera position in world units for that zoom — small
  * rooms fill the screen instead of sitting tiny in a corner of an otherwise-empty canvas. */
@@ -225,26 +245,53 @@ export function ExplorationView() {
     ctx.scale(zoom, zoom);
     const worldViewW = VIEW_W / zoom;
     const worldViewH = VIEW_H / zoom;
+    const { light, dark } = shadeFloor(map.background);
+    const ts = map.tileSize;
+    const wallSet = new Set(map.walls.map(([wx, wy]) => `${wx},${wy}`));
 
-    // subtle grid
-    ctx.strokeStyle = "rgba(0,0,0,0.05)";
-    for (let x = 0; x < map.widthTiles * map.tileSize; x += map.tileSize) {
-      ctx.beginPath();
-      ctx.moveTo(x - camera.x, 0);
-      ctx.lineTo(x - camera.x, worldViewH);
-      ctx.stroke();
-    }
-    for (let y = 0; y < map.heightTiles * map.tileSize; y += map.tileSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y - camera.y);
-      ctx.lineTo(worldViewW, y - camera.y);
-      ctx.stroke();
+    // floor: a soft two-tone checker instead of one flat fill, so the room reads as a textured
+    // surface rather than a solid rectangle — the "grid with two colors" complaint was really
+    // about there being only ONE floor color at all, with a near-invisible 5%-opacity grid line.
+    const firstCol = Math.max(0, Math.floor(camera.x / ts) - 1);
+    const lastCol = Math.min(map.widthTiles, Math.ceil((camera.x + worldViewW) / ts) + 1);
+    const firstRow = Math.max(0, Math.floor(camera.y / ts) - 1);
+    const lastRow = Math.min(map.heightTiles, Math.ceil((camera.y + worldViewH) / ts) + 1);
+    for (let ty = firstRow; ty < lastRow; ty++) {
+      for (let tx = firstCol; tx < lastCol; tx++) {
+        if (wallSet.has(`${tx},${ty}`)) continue;
+        ctx.fillStyle = (tx + ty) % 2 === 0 ? light : dark;
+        ctx.fillRect(tx * ts - camera.x, ty * ts - camera.y, ts, ts);
+      }
     }
 
-    ctx.fillStyle = map.wallColor;
+    // walls: beveled instead of flat — a lighter top/left edge and a darker bottom/right edge
+    // gives each block a slight 3D lift instead of reading as a flat-color rectangle.
+    const wallLight = shadeColor(map.wallColor, 22);
+    const wallDark = shadeColor(map.wallColor, -22);
     for (const [wx, wy] of map.walls) {
-      ctx.fillRect(wx * map.tileSize - camera.x, wy * map.tileSize - camera.y, map.tileSize, map.tileSize);
+      const px = wx * ts - camera.x;
+      const py = wy * ts - camera.y;
+      ctx.fillStyle = map.wallColor;
+      ctx.fillRect(px, py, ts, ts);
+      const bevel = Math.max(2, ts * 0.08);
+      ctx.fillStyle = wallLight;
+      ctx.fillRect(px, py, ts, bevel);
+      ctx.fillRect(px, py, bevel, ts);
+      ctx.fillStyle = wallDark;
+      ctx.fillRect(px, py + ts - bevel, ts, bevel);
+      ctx.fillRect(px + ts - bevel, py, bevel, ts);
     }
+
+    // soft vignette so rooms have a sense of depth/light instead of totally flat, uniform color
+    const cx = pos.x - camera.x;
+    const cy = pos.y - camera.y;
+    const vignetteR = Math.max(worldViewW, worldViewH) * 0.75;
+    const vignette = ctx.createRadialGradient(cx, cy, vignetteR * 0.25, cx, cy, vignetteR);
+    vignette.addColorStop(0, "rgba(0,0,0,0)");
+    vignette.addColorStop(1, "rgba(0,0,0,0.16)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(camera.x, camera.y, worldViewW, worldViewH);
+
     ctx.restore();
   }, [map, pos, viewSize]);
 
