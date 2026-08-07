@@ -28,6 +28,12 @@ export function GameRoot() {
     audioManager.updateSettings(settings);
   }, [save]);
 
+  // Menu-level screens all share the title theme; in-game music (world/battle) is handled by
+  // GameShell, which knows the active save's worldId/mode.
+  useEffect(() => {
+    if (screen !== "game") audioManager.playMusic("title");
+  }, [screen]);
+
   switch (screen) {
     case "boot":
       return <BootScreen />;

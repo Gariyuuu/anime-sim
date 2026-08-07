@@ -10,7 +10,7 @@ import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
 import { PortraitFace } from "@/components/game/PortraitFace";
-import { cn } from "@/lib/utils";
+import { cn, hashString, shadeColor } from "@/lib/utils";
 import type { Interactable } from "@/types";
 
 // Static for the app's lifetime (content never changes at runtime) — build once, not per render.
@@ -24,24 +24,18 @@ const MIN_VIEW_H = 240;
 
 const MAX_ZOOM = 2.2;
 
-/** Lightens (positive percent) or darkens (negative) a "#rrggbb" hex color. Falls back to the
- * input unchanged for any other CSS color format (var(--x), named colors, etc.) since exploration
- * maps only ever author `background`/`wallColor` as hex, but this is also reused defensively. */
-function shadeColor(hex: string, percent: number): string {
-  const m = /^#([0-9a-f]{6})$/i.exec(hex);
-  if (!m) return hex;
-  const num = parseInt(m[1], 16);
-  const clamp = (v: number) => Math.max(0, Math.min(255, v));
-  const amt = Math.round((percent / 100) * 255);
-  const r = clamp((num >> 16) + amt);
-  const g = clamp(((num >> 8) & 0xff) + amt);
-  const b = clamp((num & 0xff) + amt);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
-}
-
-/** Two close-but-distinct floor tones for a subtle checker, instead of one flat fill. */
-function shadeFloor(background: string): { light: string; dark: string } {
-  return { light: shadeColor(background, 4), dark: shadeColor(background, -5) };
+/** A deterministic, mottled per-tile tone — replaces a strict alternating checker (which reads
+ * as an obvious, rigid "grid of blocks" no matter what's drawn on top of it) with an organic
+ * blotchy variation, like natural ground/flooring texture rather than a spreadsheet. Seeded by
+ * map id + tile coords, so it's stable across re-renders without needing to store anything. */
+function floorTileTone(background: string, mapId: string, tx: number, ty: number): string {
+  const h1 = hashString(`${mapId}:${tx}:${ty}`) / 0xffffffff;
+  const h2 = hashString(`${mapId}:${tx + 1}:${ty - 1}:b`) / 0xffffffff;
+  // Blend two offset hashes so neighboring tiles correlate loosely (soft patches of tone)
+  // instead of every tile being fully independent noise (which reads as static/grain).
+  const blended = h1 * 0.65 + h2 * 0.35;
+  const percent = (blended - 0.5) * 14; // +/-7%
+  return shadeColor(background, percent);
 }
 
 // Module-level cache so a background image is only ever loaded once, not re-fetched every time
@@ -282,6 +276,14 @@ export function ExplorationView() {
   const [viewSize, setViewSize] = useState({ w: MIN_VIEW_W, h: MIN_VIEW_H });
   const viewSizeRef = useRef(viewSize);
   const [, forceTick] = useState(0);
+  const [compassVisible, setCompassVisible] = useState(false);
+  const compassTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showCompass = useCallback(() => {
+    setCompassVisible(true);
+    if (compassTimeoutRef.current) clearTimeout(compassTimeoutRef.current);
+    compassTimeoutRef.current = setTimeout(() => setCompassVisible(false), 4000);
+  }, []);
+  useEffect(() => () => { if (compassTimeoutRef.current) clearTimeout(compassTimeoutRef.current); }, []);
 
   // Keep ref mirrors of state the rAF loop reads without re-subscribing to, in sync.
   useEffect(() => {
@@ -332,6 +334,7 @@ export function ExplorationView() {
         if (nearbyId) interact(nearbyId);
       }
       if (e.key.toLowerCase() === "i" || e.key === "Escape") toggleDevice();
+      if (e.key.toLowerCase() === "g") showCompass();
     }
     function up(e: KeyboardEvent) {
       if (e.key === "w" || e.key === "ArrowUp") keysRef.current.up = false;
@@ -345,7 +348,7 @@ export function ExplorationView() {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, [nearbyId, interact, toggleDevice]);
+  }, [nearbyId, interact, toggleDevice, showCompass]);
 
   // main loop
   useEffect(() => {
@@ -426,7 +429,6 @@ export function ExplorationView() {
     ctx.scale(zoom, zoom);
     const worldViewW = VIEW_W / zoom;
     const worldViewH = VIEW_H / zoom;
-    const { light, dark } = shadeFloor(map.background);
     const ts = map.tileSize;
     const wallSet = new Set(map.walls.map(([wx, wy]) => `${wx},${wy}`));
     const now = performance.now();
@@ -437,9 +439,9 @@ export function ExplorationView() {
       // procedural scenery is skipped entirely for this map (see the `sceneProps` memo above).
       ctx.drawImage(bgImage, 0, 0, map.widthTiles * ts, map.heightTiles * ts);
     } else {
-      // floor: a soft two-tone checker instead of one flat fill, so the room reads as a textured
-      // surface rather than a solid rectangle — the "grid with two colors" complaint was really
-      // about there being only ONE floor color at all, with a near-invisible 5%-opacity grid line.
+      // floor: mottled, organic per-tile tone (see floorTileTone) instead of a flat fill or a
+      // rigid alternating checker — a strict checker still reads as "a grid of blocks" no matter
+      // what's drawn on top of it; this looks like natural ground/flooring variation instead.
       const firstCol = Math.max(0, Math.floor(camera.x / ts) - 1);
       const lastCol = Math.min(map.widthTiles, Math.ceil((camera.x + worldViewW) / ts) + 1);
       const firstRow = Math.max(0, Math.floor(camera.y / ts) - 1);
@@ -447,8 +449,27 @@ export function ExplorationView() {
       for (let ty = firstRow; ty < lastRow; ty++) {
         for (let tx = firstCol; tx < lastCol; tx++) {
           if (wallSet.has(`${tx},${ty}`)) continue;
-          ctx.fillStyle = (tx + ty) % 2 === 0 ? light : dark;
+          ctx.fillStyle = floorTileTone(map.background, map.id, tx, ty);
           ctx.fillRect(tx * ts - camera.x, ty * ts - camera.y, ts, ts);
+        }
+      }
+
+      // fine speckle texture on top — a handful of tiny dots per visible tile, alternating
+      // slightly lighter/darker than that tile's own tone, so the floor reads as a textured
+      // surface (grass, stone, wood) up close instead of a smooth flat color.
+      for (let ty = firstRow; ty < lastRow; ty++) {
+        for (let tx = firstCol; tx < lastCol; tx++) {
+          if (wallSet.has(`${tx},${ty}`)) continue;
+          const seed = hashString(`${map.id}:speck:${tx}:${ty}`);
+          const speckCount = 2 + (seed % 3);
+          for (let i = 0; i < speckCount; i++) {
+            const sx = tx * ts - camera.x + ((seed >> (i * 4 + 1)) % 100) * 0.01 * ts;
+            const sy = ty * ts - camera.y + ((seed >> (i * 4 + 5)) % 100) * 0.01 * ts;
+            ctx.fillStyle = i % 2 === 0 ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.06)";
+            ctx.beginPath();
+            ctx.arc(sx, sy, ts * 0.02, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
 
@@ -529,9 +550,42 @@ export function ExplorationView() {
   const guidanceTarget = getGuidanceTarget(save);
   const guidanceDoorHop = guidanceTarget && guidanceTarget.mapId !== map.id ? nextDoorTowardMap(map.id, guidanceTarget.mapId, DOOR_GRAPH) : undefined;
 
+  // Compass overlay (Guide button / "G" key): points at whichever of the above is actually on
+  // THIS map right now — the on-map target itself, or the door leading toward an off-map one.
+  const compassInteractableId = guidanceTarget?.mapId === map.id ? guidanceTarget.interactableId : guidanceDoorHop?.interactableId;
+  const compassInteractable = compassInteractableId ? map.interactables.find((i) => i.id === compassInteractableId) : undefined;
+  const compassLabel = compassInteractable
+    ? guidanceDoorHop && guidanceTarget?.mapId !== map.id
+      ? `Head through: ${compassInteractable.label}`
+      : `Go to: ${compassInteractable.label}`
+    : guidanceTarget
+      ? "That way isn't reachable from here right now."
+      : "Nothing urgent right now — try talking to people or checking objects nearby.";
+  let compassAngleDeg = 0;
+  if (compassInteractable) {
+    const targetX = (compassInteractable.x * map.tileSize + map.tileSize / 2 - camera.x) * zoom;
+    const targetY = (compassInteractable.y * map.tileSize + map.tileSize / 2 - camera.y) * zoom;
+    const playerX = (pos.x - camera.x) * zoom;
+    const playerY = (pos.y - camera.y) * zoom;
+    compassAngleDeg = (Math.atan2(targetY - playerY, targetX - playerX) * 180) / Math.PI + 90;
+  }
+
   return (
     <div className="flex h-dvh w-full flex-col bg-ink-100">
-      <HUD locationLabel={map.name} ambientLabel={map.ambientLabel} />
+      <HUD locationLabel={map.name} ambientLabel={map.ambientLabel} onGuide={showCompass} />
+      {compassVisible && (
+        <div className="pointer-events-none fixed inset-x-0 top-16 z-30 flex flex-col items-center gap-2">
+          {compassInteractable && (
+            <div
+              className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-paper-0 shadow-lg transition-transform duration-500"
+              style={{ background: "var(--accent-warning)", transform: `rotate(${compassAngleDeg}deg)` }}
+            >
+              <Icon name="arrow-up" size={26} color="var(--paper-0)" />
+            </div>
+          )}
+          <p className="rounded-full border-2 border-ink-950 bg-paper-0 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink-950 shadow-md">{compassLabel}</p>
+        </div>
+      )}
       <div ref={containerRef} className="relative w-full flex-1 overflow-hidden">
         <canvas ref={canvasRef} width={VIEW_W} height={VIEW_H} onClick={handleClick} className="block h-full w-full cursor-pointer" />
         <div className="pointer-events-none absolute inset-0 overflow-hidden">

@@ -6,7 +6,7 @@ import { getNextObjective } from "@/lib/quests";
 import { Icon } from "@/components/ui/Icon";
 import { StatBar } from "@/components/ui/StatBar";
 
-export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; ambientLabel?: string }) {
+export function HUD({ locationLabel, ambientLabel, onGuide }: { locationLabel?: string; ambientLabel?: string; onGuide?: () => void }) {
   const save = useGameStore((s) => s.save);
   const toggleDevice = useGameStore((s) => s.toggleDevice);
   const toggleHelp = useGameStore((s) => s.toggleHelp);
@@ -46,6 +46,17 @@ export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; a
             <div className="hidden w-28 sm:block">
               <StatBar label="HP" value={save.player.aincrad.health} max={save.player.aincrad.maxHealth} color="var(--accent-danger)" size="sm" showNumbers={false} />
             </div>
+          )}
+          {onGuide && (
+            <button
+              onClick={onGuide}
+              className="flex items-center gap-1 rounded border-2 border-ink-950 px-2 py-1.5 text-[10px] font-bold uppercase tracking-wide hover:brightness-110"
+              style={{ background: "var(--accent-warning)", color: "var(--paper-0)" }}
+              aria-label="Show which way to go (or press G)"
+            >
+              <Icon name="compass" size={14} />
+              <span className="hidden sm:inline">Guide</span>
+            </button>
           )}
           <button onClick={() => toggleDevice(true)} className="rounded border-2 border-ink-950 p-1.5 hover:bg-ink-100" aria-label="Open device">
             <Icon name="smartphone" size={14} />

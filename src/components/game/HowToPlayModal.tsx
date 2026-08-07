@@ -21,6 +21,11 @@ const STEPS: { icon: string; title: string; body: string }[] = [
     body: "Blue circular markers are always doors or stairs. Interact with one the same way to travel there — that's how you leave a room.",
   },
   {
+    icon: "compass",
+    title: "Not sure where to go?",
+    body: "Press G, or tap the Guide button, for an arrow pointing at your next objective — and watch for a bouncing gold marker or a glowing green door, which mean the same thing without asking.",
+  },
+  {
     icon: "message-square",
     title: "Dialogue",
     body: "Click, tap, or press SPACE to advance a line. When choices appear, pick one — some are timed, so don't wait too long.",

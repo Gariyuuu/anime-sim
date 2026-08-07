@@ -36,18 +36,18 @@ interface SceneConfig {
 }
 
 const SCENE_CONFIG: Record<MapDefinition["sceneType"], SceneConfig> = {
-  forest: { mode: "scatter", floorProps: ["tree", "tree", "tree", "bush", "rock", "tall-grass"], floorDensity: 0.16 },
-  dungeon: { mode: "scatter", floorProps: ["pillar", "rock"], floorDensity: 0.05, wallProps: ["torch"], wallDensity: 0.15 },
-  boss: { mode: "scatter", floorProps: ["pillar"], floorDensity: 0.03, wallProps: ["torch"], wallDensity: 0.12 },
-  courtyard: { mode: "scatter", floorProps: ["tree", "bench", "planter", "fountain"], floorDensity: 0.09 },
-  town: { mode: "scatter", floorProps: ["planter", "crate", "lamppost", "banner"], floorDensity: 0.05, wallProps: ["window-glow"], wallDensity: 0.18 },
+  forest: { mode: "scatter", floorProps: ["tree", "tree", "tree", "bush", "bush", "rock", "tall-grass", "tall-grass"], floorDensity: 0.34 },
+  dungeon: { mode: "scatter", floorProps: ["pillar", "rock", "rock"], floorDensity: 0.12, wallProps: ["torch"], wallDensity: 0.3 },
+  boss: { mode: "scatter", floorProps: ["pillar"], floorDensity: 0.07, wallProps: ["torch"], wallDensity: 0.24 },
+  courtyard: { mode: "scatter", floorProps: ["tree", "bench", "planter", "fountain", "tall-grass"], floorDensity: 0.2 },
+  town: { mode: "scatter", floorProps: ["planter", "crate", "lamppost", "banner"], floorDensity: 0.12, wallProps: ["window-glow"], wallDensity: 0.32 },
   classroom: { mode: "grid", floorProps: ["desk"], floorDensity: 0 },
   library: { mode: "grid", floorProps: ["bookshelf"], floorDensity: 0 },
   gym: { mode: "grid", floorProps: ["bench"], floorDensity: 0 },
   cafeteria: { mode: "grid", floorProps: ["desk"], floorDensity: 0 },
-  dorm: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.04 },
-  shop: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.05 },
-  generic: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.02 },
+  dorm: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.1 },
+  shop: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.12 },
+  generic: { mode: "scatter", floorProps: ["crate", "planter"], floorDensity: 0.06 },
 };
 
 /** Deterministically scatters cosmetic props across a map's open floor (and, for some scene
@@ -55,7 +55,7 @@ const SCENE_CONFIG: Record<MapDefinition["sceneType"], SceneConfig> = {
  * the map's own data — seeded off `hashString(map.id)`, so the same map always produces the same
  * layout across re-renders without ever calling `Math.random()`. Purely visual: props never
  * affect collision (`engine/exploration.ts`'s wall-collision check is untouched by this). */
-export function generateScenery(map: MapDefinition, maxProps = 48): Prop[] {
+export function generateScenery(map: MapDefinition, maxProps = 90): Prop[] {
   const config = SCENE_CONFIG[map.sceneType];
   const rng = mulberry32(hashString(map.id));
   const props: Prop[] = [];

@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils";
+import { useId } from "react";
+import { cn, shadeColor as shadeHex } from "@/lib/utils";
 import { SKIN, HAIR, EYE } from "@/components/game/spriteColors";
 import type { Appearance, Expression } from "@/types";
 
@@ -57,6 +58,13 @@ export function PortraitFace({
   const isLong = hairstyle === "long" || hairstyle === "wavy" || hairstyle === "twintails" || hairstyle === "braided";
   const look = LOOK[expression] ?? LOOK.neutral;
   const isBuzz = hairstyle === "buzzcut";
+  const isPonytail = hairstyle === "ponytail";
+  const isTwintails = hairstyle === "twintails";
+  const isBraided = hairstyle === "braided";
+  const isWavy = hairstyle === "wavy";
+  // Gradient ids must be unique per instance — many portraits render on screen at once (map
+  // markers, dialogue, device menu), and SVG gradient ids share one document-wide namespace.
+  const gid = useId().replace(/[^a-zA-Z0-9-]/g, "");
   // Hair renders as a silhouette *behind* the face (slightly bigger than the face rect), then the
   // face is drawn on top — guarantees a visible hair "frame" no matter the exact curve math,
   // instead of relying on a thin top sliver that used to render as functionally invisible (the
@@ -98,30 +106,58 @@ export function PortraitFace({
 
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} className={cn(animated ? "pixel-fade-in" : undefined)} shapeRendering="geometricPrecision" role="img" aria-label={`Portrait, expression ${expression}`}>
+      <defs>
+        {/* Skin/hair gradients — the single biggest lever for "flat procedural shapes" reading as
+            actual rendered art instead of a color swatch: a soft light-to-shadow falloff gives
+            the face and hair real form instead of one uniform tone each. */}
+        <radialGradient id={`${gid}-skin`} cx="38%" cy="30%" r="75%">
+          <stop offset="0%" stopColor={shadeHex(skin, 10)} />
+          <stop offset="65%" stopColor={skin} />
+          <stop offset="100%" stopColor={shadeHex(skin, -12)} />
+        </radialGradient>
+        <linearGradient id={`${gid}-hair`} x1="0%" y1="0%" x2="30%" y2="100%">
+          <stop offset="0%" stopColor={shadeHex(hair, 22)} />
+          <stop offset="45%" stopColor={hair} />
+          <stop offset="100%" stopColor={shadeHex(hair, -18)} />
+        </linearGradient>
+      </defs>
       {/* long hair back layer — drawn FIRST so the neck/shoulders below paint over its center,
           leaving it visible only where it peeks out past their edges (hair draping down behind
           the shoulders). It used to be drawn after the neck, which painted the entire neck (and
           the mouth sitting just above it) over in solid hair color — invisible dark mouth on a
           same-color dark "neck". */}
-      {isLong && <rect x="5" y="9" width="30" height="27" rx="3" fill={hair} stroke={hairOutline} strokeWidth={0.5} opacity={0.95} />}
+      {isLong && <path d={isWavy ? "M5,9 Q3,20 6,36 L34,36 Q37,20 35,9 Q28,14 20,13 Q12,14 5,9 Z" : "M5,9 L5,36 L35,36 L35,9 Q28,13 20,12 Q12,13 5,9 Z"} fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.5} opacity={0.97} />}
+      {/* twintails: two bunches at ear height, ponytail: a single sweep off to one side */}
+      {isTwintails && (
+        <>
+          <ellipse cx="6" cy="20" rx="3.4" ry="7" fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.5} transform="rotate(-18 6 20)" />
+          <ellipse cx="34" cy="20" rx="3.4" ry="7" fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.5} transform="rotate(18 34 20)" />
+        </>
+      )}
+      {isPonytail && <ellipse cx="32" cy="16" rx="3" ry="8.5" fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.5} transform="rotate(24 32 16)" />}
+      {isBraided && <rect x="19" y="24" width="2.4" height="11" rx="1.1" fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.4} />}
       {/* shoulders / outfit */}
       <rect x="2" y="31" width="36" height="9" fill={accentColor} />
-      {/* neck */}
+      {/* neck, with a soft shadow where it meets the jaw for a little roundness */}
       <rect x="16" y="25" width="8" height="8" fill={skin} />
+      <rect x="16" y="25" width="8" height="2.5" fill="black" opacity={0.08} />
       {/* hair silhouette — a thin frame around the face, not a full dome (see note above) */}
-      <rect x={isBuzz ? 9.3 : 8.3} y={isBuzz ? 7 : 6} width={isBuzz ? 21.4 : 23.4} height={isBuzz ? 16 : 19} rx={isBuzz ? 4 : 5} fill={hair} stroke={hairOutline} strokeWidth={0.5} />
+      <rect x={isBuzz ? 9.3 : 8.3} y={isBuzz ? 7 : 6} width={isBuzz ? 21.4 : 23.4} height={isBuzz ? 16 : 19} rx={isBuzz ? 4 : 5} fill={`url(#${gid}-hair)`} stroke={hairOutline} strokeWidth={0.5} />
       {/* subtle hair shine so it doesn't read as a flat, dull cap */}
-      {!isBuzz && <path d="M11,10 Q15,6.5 21,6.2" stroke="#ffffff" strokeOpacity="0.28" strokeWidth="1" fill="none" strokeLinecap="round" />}
+      {!isBuzz && <path d="M11,10 Q15,6.5 21,6.2" stroke="#ffffff" strokeOpacity="0.32" strokeWidth="1" fill="none" strokeLinecap="round" />}
       {/* head (face) */}
-      <rect x="10" y="8" width="20" height="19" rx="4" fill={skin} />
+      <rect x="10" y="8" width="20" height="19" rx="4" fill={`url(#${gid}-skin)`} />
+      {/* soft jaw/cheek shadow along the bottom edge — the flat rect used to end abruptly with no
+          sense of a chin; a thin gradient-free shadow band suggests a rounded jaw cheaply. */}
+      <path d="M11,24 Q20,29 29,24 L29,26.5 Q20,31 11,26.5 Z" fill="black" opacity={0.07} />
       {/* ears */}
       <rect x="8.5" y="16" width="2.2" height="4" rx="1" fill={skin} />
       <rect x="29.3" y="16" width="2.2" height="4" rx="1" fill={skin} />
       {/* bangs — frame the temples/upper cheek only, not the whole jaw */}
       {!isBuzz && (
         <>
-          <rect x="9" y="10" width="3" height="7.5" rx="1.2" fill={hair} />
-          <rect x="28" y="10" width="3" height="7.5" rx="1.2" fill={hair} />
+          <rect x="9" y="10" width="3" height="7.5" rx="1.2" fill={`url(#${gid}-hair)`} />
+          <rect x="28" y="10" width="3" height="7.5" rx="1.2" fill={`url(#${gid}-hair)`} />
         </>
       )}
       {/* eyebrows */}
@@ -139,6 +175,9 @@ export function PortraitFace({
           {eyeAt(24.2)}
         </>
       )}
+      {/* nose — a faint single stroke; the face had no nose at all before, which is a big part of
+          why it read as "just eyes floating on a color swatch" rather than an actual face. */}
+      <path d="M20,20.5 L19.3,24 Q20,24.9 20.9,24" stroke="black" strokeOpacity={0.16} strokeWidth="0.8" fill="none" strokeLinecap="round" />
       {/* mouth */}
       {look.mouthFill === "fill" ? (
         <path d={look.mouth} fill="var(--ink-950,#171716)" opacity={0.85} />

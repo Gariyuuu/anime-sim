@@ -78,6 +78,13 @@ export function GameShell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [save?.settings]);
 
+  // Battle music during combat, otherwise each world's own theme.
+  useEffect(() => {
+    if (!save) return;
+    audioManager.playMusic(save.mode === "combat" ? "battle" : save.worldId === "elite-academy" ? "elite-academy" : "aincrad");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [save?.mode, save?.worldId]);
+
   useEffect(() => {
     function onVisibility() {
       document.documentElement.setAttribute("data-tab-hidden", String(document.hidden));

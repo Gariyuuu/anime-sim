@@ -2,6 +2,20 @@ export function cn(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
+/** Lightens (positive percent) or darkens (negative) a "#rrggbb" hex color. Falls back to the
+ * input unchanged for any other CSS color format (var(--x), named colors, etc.). */
+export function shadeColor(hex: string, percent: number): string {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex);
+  if (!m) return hex;
+  const num = parseInt(m[1], 16);
+  const clamp = (v: number) => Math.max(0, Math.min(255, v));
+  const amt = Math.round((percent / 100) * 255);
+  const r = clamp((num >> 16) + amt);
+  const g = clamp(((num >> 8) & 0xff) + amt);
+  const b = clamp((num & 0xff) + amt);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
 export function formatPlaytime(seconds: number): string {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
