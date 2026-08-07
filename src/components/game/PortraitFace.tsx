@@ -56,53 +56,87 @@ export function PortraitFace({
   const eye = EYE[eyeColor];
   const isLong = hairstyle === "long" || hairstyle === "wavy" || hairstyle === "twintails" || hairstyle === "braided";
   const look = LOOK[expression] ?? LOOK.neutral;
-  const eyeH = look.eye === "wide" ? 4 : look.eye === "narrow" ? 1.4 : 2.6;
-  const eyeY = look.eye === "wide" ? 17.5 : 18.3;
-
   const isBuzz = hairstyle === "buzzcut";
-  // Hair renders as a silhouette *behind* the face (bigger than the face rect on every side),
-  // then the face is drawn on top — this guarantees a visible hair "frame" around the head no
-  // matter the exact curve math, instead of relying on a thin top sliver that used to render as
-  // functionally invisible (the "bald" bug). A thin dark outline keeps the silhouette readable
-  // even when hair color and card background land close together (e.g. silver hair, light card).
+  // Hair renders as a silhouette *behind* the face (slightly bigger than the face rect), then the
+  // face is drawn on top — guarantees a visible hair "frame" no matter the exact curve math,
+  // instead of relying on a thin top sliver that used to render as functionally invisible (the
+  // "bald" bug). Kept small (1.5-2 units of overhang) so it reads as a hairline, not a hood — an
+  // earlier, larger version swallowed the whole face. A thin dark outline keeps hair readable even
+  // when hair color and card background land close together (e.g. silver hair, light card).
   const hairOutline = "rgba(0,0,0,0.28)";
+  // Eyebrows sit clearly above the eyes (smaller Y = higher up); a prior version had them at a
+  // larger Y than the eyes, so they rendered UNDER/overlapping the eyes instead of above them.
+  const browY = 14 + look.browY;
+  const eyeCenterY = look.eye === "wide" ? 18.5 : 19;
+  const eyeH = look.eye === "wide" ? 4.6 : look.eye === "narrow" ? 1.3 : 3.2;
+
+  // A plain function returning elements (called as `{eyeAt(cx)}`), not a nested component
+  // (`<Eye cx={cx} />`) — the latter creates a fresh component identity every render, which the
+  // react-hooks/static-components lint rule rejects.
+  function eyeAt(cx: number) {
+    if (look.eye === "narrow") {
+      // Squinting/sharp look: a curved upper-lid line with a thin iris-colored sliver beneath it
+      // reads as "narrowed eye" — a single flat bar (the prior version) was indistinguishable
+      // from the eyebrow above it at a glance, especially since "cold" is Suzune's default look.
+      return (
+        <g>
+          <path d={`M${cx - 2.1},${eyeCenterY} Q${cx},${eyeCenterY - 1.3} ${cx + 2.1},${eyeCenterY}`} stroke="var(--ink-950,#171716)" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+          <rect x={cx - 1.7} y={eyeCenterY} width="3.4" height="1.1" rx="0.5" fill={eye} />
+        </g>
+      );
+    }
+    const irisR = Math.min(1.55, eyeH / 2 - 0.35);
+    return (
+      <g className="sprite-blink" style={{ transformOrigin: `${cx}px ${eyeCenterY}px` }}>
+        <rect x={cx - 2.3} y={eyeCenterY - eyeH / 2} width="4.6" height={eyeH} rx={eyeH / 2.4} fill="#f8f4ec" />
+        <circle cx={cx} cy={eyeCenterY} r={irisR} fill={eye} />
+        <circle cx={cx} cy={eyeCenterY} r={irisR * 0.42} fill="var(--ink-950,#171716)" />
+        <circle cx={cx - irisR * 0.35} cy={eyeCenterY - irisR * 0.4} r={irisR * 0.3} fill="#ffffff" opacity="0.9" />
+      </g>
+    );
+  }
 
   return (
     <svg viewBox="0 0 40 40" width={size} height={size} className={cn(animated ? "pixel-fade-in" : undefined)} shapeRendering="geometricPrecision" role="img" aria-label={`Portrait, expression ${expression}`}>
+      {/* long hair back layer — drawn FIRST so the neck/shoulders below paint over its center,
+          leaving it visible only where it peeks out past their edges (hair draping down behind
+          the shoulders). It used to be drawn after the neck, which painted the entire neck (and
+          the mouth sitting just above it) over in solid hair color — invisible dark mouth on a
+          same-color dark "neck". */}
+      {isLong && <rect x="5" y="9" width="30" height="27" rx="3" fill={hair} stroke={hairOutline} strokeWidth={0.5} opacity={0.95} />}
       {/* shoulders / outfit */}
       <rect x="2" y="31" width="36" height="9" fill={accentColor} />
       {/* neck */}
       <rect x="16" y="25" width="8" height="8" fill={skin} />
-      {/* long hair back layer — flows past the shoulders, behind everything else */}
-      {isLong && <rect x="5" y="9" width="30" height="27" rx="3" fill={hair} stroke={hairOutline} strokeWidth={0.5} opacity={0.95} />}
-      {/* hair silhouette — a dome bigger than the face on every side, so it always peeks out as a
-          visible frame once the face is drawn on top of it */}
-      <rect x={isBuzz ? 9 : 7.5} y={isBuzz ? 6.5 : 4.5} width={isBuzz ? 22 : 25} height={isBuzz ? 19 : 22} rx={isBuzz ? 4 : 6} fill={hair} stroke={hairOutline} strokeWidth={0.5} />
+      {/* hair silhouette — a thin frame around the face, not a full dome (see note above) */}
+      <rect x={isBuzz ? 9.3 : 8.3} y={isBuzz ? 7 : 6} width={isBuzz ? 21.4 : 23.4} height={isBuzz ? 16 : 19} rx={isBuzz ? 4 : 5} fill={hair} stroke={hairOutline} strokeWidth={0.5} />
+      {/* subtle hair shine so it doesn't read as a flat, dull cap */}
+      {!isBuzz && <path d="M11,10 Q15,6.5 21,6.2" stroke="#ffffff" strokeOpacity="0.28" strokeWidth="1" fill="none" strokeLinecap="round" />}
       {/* head (face) */}
-      <rect x="10" y="8" width="20" height="19" rx="3" fill={skin} />
+      <rect x="10" y="8" width="20" height="19" rx="4" fill={skin} />
       {/* ears */}
       <rect x="8.5" y="16" width="2.2" height="4" rx="1" fill={skin} />
       <rect x="29.3" y="16" width="2.2" height="4" rx="1" fill={skin} />
-      {/* bangs framing the face, drawn on top so they read against the skin */}
+      {/* bangs — frame the temples/upper cheek only, not the whole jaw */}
       {!isBuzz && (
         <>
-          <rect x="9" y="10" width="3.2" height="11" rx="1.2" fill={hair} />
-          <rect x="27.8" y="10" width="3.2" height="11" rx="1.2" fill={hair} />
+          <rect x="9" y="10" width="3" height="7.5" rx="1.2" fill={hair} />
+          <rect x="28" y="10" width="3" height="7.5" rx="1.2" fill={hair} />
         </>
       )}
       {/* eyebrows */}
-      <rect x="13.5" y={19.5 + look.browY} width="5" height="1.3" rx="0.6" fill={hair} transform={`rotate(${look.browAngle} 16 20)`} />
-      <rect x="21.5" y={19.5 + look.browY} width="5" height="1.3" rx="0.6" fill={hair} transform={`rotate(${-look.browAngle} 24 20)`} />
+      <rect x="13.5" y={browY} width="4.6" height="1" rx="0.5" fill={hair} transform={`rotate(${look.browAngle} 15.8 14.5)`} />
+      <rect x="21.9" y={browY} width="4.6" height="1" rx="0.5" fill={hair} transform={`rotate(${-look.browAngle} 24.2 14.5)`} />
       {/* eyes */}
       {look.eye === "happy" ? (
         <>
-          <path d="M13.5,18.5 Q16,16 18.5,18.5" stroke={eye} strokeWidth="1.3" fill="none" strokeLinecap="round" />
-          <path d="M21.5,18.5 Q24,16 26.5,18.5" stroke={eye} strokeWidth="1.3" fill="none" strokeLinecap="round" />
+          <path d="M13.3,19 Q15.8,16.4 18.3,19" stroke={eye} strokeWidth="1.3" fill="none" strokeLinecap="round" />
+          <path d="M21.7,19 Q24.2,16.4 26.7,19" stroke={eye} strokeWidth="1.3" fill="none" strokeLinecap="round" />
         </>
       ) : (
         <>
-          <rect x="14" y={eyeY} width="3.4" height={eyeH} rx="0.8" fill={eye} className="sprite-blink" />
-          <rect x="22.6" y={eyeY} width="3.4" height={eyeH} rx="0.8" fill={eye} className="sprite-blink" />
+          {eyeAt(15.8)}
+          {eyeAt(24.2)}
         </>
       )}
       {/* mouth */}

@@ -13,7 +13,7 @@ export const HAIR: Record<Appearance["hairColor"], string> = {
   black: "#1a1a1a",
   brown: "#4a2f1f",
   auburn: "#7a3320",
-  silver: "#c7c5bb",
+  silver: "#dde1e8",
   "ash-blonde": "#c9b98a",
   charcoal: "#333333",
 };
