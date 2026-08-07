@@ -59,6 +59,7 @@ interface GameStoreState {
   pendingEncounterId: string | null;
   deviceOpen: boolean;
   helpOpen: boolean;
+  arenaOpen: boolean;
   debugOpen: boolean;
   notifications: Notification[];
   pendingWorldId: WorldId | null;
@@ -99,6 +100,7 @@ interface GameStoreState {
 
   toggleDevice: (open?: boolean) => void;
   toggleHelp: (open?: boolean) => void;
+  toggleArena: (open?: boolean) => void;
   toggleDebug: (open?: boolean) => void;
   updateSettings: (partial: Partial<SaveGame["settings"]>) => void;
 
@@ -179,6 +181,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   pendingNodeNavigation: null,
   deviceOpen: false,
   helpOpen: false,
+  arenaOpen: false,
   debugOpen: false,
   notifications: [],
   pendingWorldId: null,
@@ -359,6 +362,10 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       get().triggerPuzzleSwitch(it.puzzleId, it.puzzleOrder);
       return;
     }
+    if (it.kind === "arena") {
+      get().toggleArena(true);
+      return;
+    }
     if (it.sceneId) {
       get().goToScene(it.sceneId);
     }
@@ -526,6 +533,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
 
   toggleDevice: (open) => set((s) => ({ deviceOpen: open ?? !s.deviceOpen })),
   toggleHelp: (open) => set((s) => ({ helpOpen: open ?? !s.helpOpen })),
+  toggleArena: (open) => set((s) => ({ arenaOpen: open ?? !s.arenaOpen })),
   toggleDebug: (open) => set((s) => ({ debugOpen: open ?? !s.debugOpen })),
 
   updateSettings: (partial) => {

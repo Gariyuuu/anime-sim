@@ -10,6 +10,7 @@ import { DebugPanel } from "./DebugPanel";
 import { ChapterRecapScreen } from "./ChapterRecapScreen";
 import { NotificationToasts } from "./NotificationToasts";
 import { HowToPlayModal } from "./HowToPlayModal";
+import { ArenaModal } from "./ArenaModal";
 import { audioManager } from "@/audio/audioManager";
 
 const TUTORIAL_SEEN_KEY = "anime-sim-tutorial-seen";
@@ -99,6 +100,7 @@ export function GameShell() {
       <DebugPanel />
       <NotificationToasts />
       <HowToPlayModal />
+      <ArenaModal />
     </div>
   );
 }

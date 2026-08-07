@@ -450,3 +450,10 @@ patchTown(15, [
 patchTown(20, [
   { id: "npc-renn-join", kind: "trigger", x: 4, y: 5, label: "Ask Renn to attempt the Spire together", sceneId: "ai-scene-renn-join", requiresFlag: "ai-flag-renn-secret", glyph: "user-plus" },
 ]);
+
+// Every town gets a Combat Arena — re-fight any common/mini-boss encounter from a reached floor,
+// for repeatable grinding without hunting down a fresh field spawn. (10,6) sits inside every
+// town's walls regardless of floor (smallest town is 12x9).
+for (let floor = 1; floor <= 20; floor++) {
+  patchTown(floor, [{ id: "obj-arena", kind: "arena", x: 10, y: 6, label: "Combat Arena", glyph: "swords" }]);
+}

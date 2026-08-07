@@ -30,6 +30,11 @@ export const NpcDefinitionSchema = z.object({
   speechStyle: z.string(),
   portraitColor: z.string(),
   portraitGlyph: z.string(),
+  /** Optional real artwork override — a path under /public (e.g. "/portraits/ea-rei.png").
+   * When set, dialogue and map portraits render this image instead of the procedural face
+   * below. Drop a file into public/portraits/ and set this to use it; leave unset to keep
+   * the original, fully-original procedural art. */
+  portraitImageUrl: z.string().optional(),
   /** Drives the procedural face portrait (`PortraitFace`) — same trait vocabulary as the
    * player's own character-creator `Appearance`, so NPC and player art stay consistent. */
   hairColor: z.enum(HAIR_COLORS),

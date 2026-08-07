@@ -198,15 +198,20 @@ export function DialogueView() {
               )}
               style={{ background: `color-mix(in srgb, ${speakerNpc.portraitColor} 22%, var(--paper-0))` }}
             >
-              <PortraitFace
-                hairColor={speakerNpc.hairColor}
-                hairstyle={speakerNpc.hairstyle}
-                eyeColor={speakerNpc.eyeColor}
-                skinTone={speakerNpc.skinTone}
-                accentColor={speakerNpc.portraitColor}
-                expression={node.expression}
-                size={144}
-              />
+              {speakerNpc.portraitImageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={speakerNpc.portraitImageUrl} alt={speakerNpc.fullName} className="h-full w-full object-cover" />
+              ) : (
+                <PortraitFace
+                  hairColor={speakerNpc.hairColor}
+                  hairstyle={speakerNpc.hairstyle}
+                  eyeColor={speakerNpc.eyeColor}
+                  skinTone={speakerNpc.skinTone}
+                  accentColor={speakerNpc.portraitColor}
+                  expression={node.expression}
+                  size={144}
+                />
+              )}
             </div>
             <div className="mt-1 flex items-center gap-1 rounded-full border-2 border-paper-0 bg-ink-950 px-2 py-0.5">
               <Icon name={EXPRESSION_ICON[node.expression]} size={10} color="var(--paper-0)" />

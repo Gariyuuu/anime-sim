@@ -53,6 +53,7 @@ export const MARKER_COLOR: Record<Interactable["kind"], string> = {
   shop: "#2f8f6f",
   trigger: "#7a5fc7",
   "puzzle-switch": "#8a8a86",
+  arena: "#c74a1f",
 };
 
 export function ExplorationView() {
@@ -299,7 +300,10 @@ export function ExplorationView() {
                     )}
                     style={{ background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : color, borderColor: isNear ? "var(--accent-warning)" : "var(--paper-0)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
                   >
-                    {npc ? (
+                    {npc?.portraitImageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={npc.portraitImageUrl} alt={npc.fullName} className="h-full w-full object-cover" />
+                    ) : npc ? (
                       <PortraitFace hairColor={npc.hairColor} hairstyle={npc.hairstyle} eyeColor={npc.eyeColor} skinTone={npc.skinTone} accentColor={npc.portraitColor} expression="neutral" size={26} />
                     ) : (
                       <Icon name={it.glyph} size={12} color="var(--paper-0)" />

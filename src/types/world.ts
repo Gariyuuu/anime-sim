@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const InteractableSchema = z.object({
   id: z.string(),
-  kind: z.enum(["npc", "object", "door", "quest-marker", "hidden-item", "shop", "trigger", "transition", "monster", "puzzle-switch"]),
+  kind: z.enum(["npc", "object", "door", "quest-marker", "hidden-item", "shop", "trigger", "transition", "monster", "puzzle-switch", "arena"]),
   x: z.number(),
   y: z.number(),
   label: z.string(),
