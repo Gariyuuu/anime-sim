@@ -1,5 +1,21 @@
 # ROADMAP.md
 
+**KNOWN STALE as of the 2026-08-07 checkpoint pass.** Below, "A second
+Elite Academy year, and Floors 11+ of Aincrad" is listed as an unscoped,
+not-yet-started `v0.2.0` roadmap item with "zero matches" for
+`ea-ch11`/`ai-ch11`/`floor-11`. **That is no longer true — both shipped**:
+Elite Academy Year Two (Chapters 11-20) in commit `63b80f5`, Aincrad
+Floors 11-20 in commit `bfbe3fa`. Both worlds now run 20 chapters/floors,
+not 10, and current tests are 83/83 (not 62/62). `HEAD` is `b0a4dbe`, 15
+commits past `4f6ac3e` — see `PROJECT_STATE.md` for the full list of what
+else shipped since (guidance/waypoint system, background music, art
+overrides, Combat Arena, portrait fixes, colorization). This file's
+"Current milestone"/"Next milestone"/"MVP completion" sections below were
+**not** rewritten this pass (out of scope for a documentation/git-hygiene
+checkpoint) — treat every specific claim below as unverified until
+someone re-derives the roadmap against `patchnotes.ts`'s current version
+and the actual current content.
+
 **Re-synced 2026-08-06** against commit `4f6ac3e` ("Expand to 10 full
 chapters/floors in both worlds") and `patchnotes.ts`'s new `v0.2.0` entry,
 which shipped as part of that same commit. The prior version of this file

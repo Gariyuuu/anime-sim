@@ -1,6 +1,20 @@
 # DEPLOYMENT.md
 
-## Current status: not deployed
+## Current status: DEPLOYED (superseded the "not deployed" claim below)
+
+**Update, 2026-08-07 checkpoint pass:** this project has since been
+deployed. Live at `https://anime-sim-eta.vercel.app` (Vercel project
+`anime-sim`, linked via `.vercel/project.json`, which now exists), via a
+manual `vercel --prod` run in a later session (not triggered by a git
+push). Re-confirmed `200` via `curl` this pass. Deploys are **not**
+push-triggered — `main` is currently 11 commits ahead of `origin/main`
+(unpushed), so the live deploy can drift from what's on GitHub; nobody has
+verified whether the current live build matches `HEAD` (`b0a4dbe`) exactly.
+See `PROJECT_STATE.md` for the up-to-date git state. The section below
+("No deployment has ever been run…") is the original, now-stale audit —
+kept for history, not current fact.
+
+**Original (superseded) audit, 2026-08-06:**
 
 **No deployment has ever been run for this repository**, as far as
 anything in the repo can show. Verified this session:

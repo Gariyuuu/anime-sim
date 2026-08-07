@@ -1,49 +1,99 @@
 # PROJECT_STATE.md — Exact Snapshot
 
-**Audit timestamp:** 2026-08-06, later same-day pass (this session).
-Everything below the "Superseded" notice further down predates a large
-burst of work done later on 2026-08-06 that is **not** reflected in that
-older narrative — real anime character names, chapters/floors 11-20 in
-both worlds, full colorization of menus + exploration maps, a dynamic
-viewport fix, a first-time tutorial, Save/Main Menu buttons, a
-`portraitImageUrl` override system (drop a file in `public/portraits/` to
-replace an NPC's procedural art), a repeatable Combat Arena (re-fight any
-reached floor's common/mini-boss encounters), and the project's **first
-deploy**. See "Current state (this pass)" immediately below for what's
-actually true now; treat everything after it as historical record only.
+**Audit timestamp: 2026-08-07 — "final transfer checkpoint" pass.** This
+is now the third layer of updates to this file; everything below the next
+"---" predates this pass and is historical record only (each older layer
+already says the same about the layer before it — this is a documented
+pattern in this repo, not a one-off). See "Current state (checkpoint pass,
+2026-08-07)" immediately below for what's actually true now.
 
-## Current state (this pass)
+## Current state (checkpoint pass, 2026-08-07)
 
-- **Latest commit:** `46bcebe` — "Add real-portrait override support and a
-  repeatable Combat Arena" (10 commits total in `git log --oneline`, up
-  from the 2 described in the older sections below).
-- **Branch `main` is 4 commits ahead of `origin/main`** (not pushed this
-  pass — push is a user-driven action, not done automatically).
-- **Working tree: clean.** No uncommitted `src/` or doc changes.
-- **Deployed and live:** `https://anime-sim-eta.vercel.app` (Vercel
-  project `anime-sim`, already linked via `.vercel/project.json` from an
-  earlier point in this same day's work) — confirmed `200` via `curl`
-  immediately after this pass's `vercel --prod` run. The "Production
-  status: Not deployed" claim elsewhere in this file (and in `CLAUDE.md`)
-  is now **stale** — update `CLAUDE.md`'s "Production status" line
-  next time it's touched.
-- **Verification this pass, run fresh against `46bcebe`:** `npx tsc
-  --noEmit` — 0 errors. `pnpm lint` — 0 errors/warnings. `pnpm test` —
-  66/66 passing (8 test files, up from 62/7). `pnpm build` — clean.
-  Additionally **live-browser-verified** (Playwright, real UI clicks, not
-  store manipulation) end-to-end: New Game → World Select → Aincrad →
-  Character Creator → dialogue → Debug Panel flag/teleport → exploration
-  view (confirmed it now fills the full viewport with a colorful map and
-  distinct per-kind marker icons, not the old fixed 640×420 box) →
-  clicked the Combat Arena marker in Town of Beginnings → modal opened →
-  selected a fight → `startCombat` fired and CombatView rendered with
-  live HP bars and the full action menu (Attack/Skill/Guard/Dodge/Item/
-  Analyze/Escape). Zero console errors across the whole run.
-- **Not yet verified:** the `portraitImageUrl` override itself rendering a
-  real image (no NPC has one set yet — no image files exist in
-  `public/portraits/` beyond the placeholder `.gitkeep`). Only the
-  fallback path (procedural `PortraitFace`) has been confirmed to still
-  render correctly with the new conditional in place.
+- **Latest commit:** `b0a4dbe` — "Add background music, a compass/guide
+  system, and another visual pass" (**25 commits total** in
+  `git log --oneline`, up from the 10 described in the layer below).
+- **Branch `main` is 11 commits ahead of `origin/main`, unpushed.**
+  Confirmed via `git status` and `git log origin/main..HEAD --oneline`.
+  **This number will drift** — re-run those two commands yourself before
+  trusting it; do not assume it's still 11 by the time you read this.
+  The 11 unpushed commits, oldest first: `bfbe3fa` (Aincrad Floors 11-20),
+  `63b80f5` (Elite Academy Chapters 11-20 + v0.4.0 patch notes),
+  `97bbfa5` (colorize menu-level screens), `46bcebe` (portrait/background
+  art-override support + repeatable Combat Arena), `5ca6ab3` (docs sync),
+  `92e211f` (fixed invisible-hair portrait bug, textured exploration
+  rooms, persistent objective HUD), `1207fe9` (docs: log Session 4),
+  `12296ff` (redesigned PortraitFace eyes/hair/neck — prior fix still read
+  as "old man"), `0f72792` (fixed a dead-end room trapping players after
+  the training quest, added real per-objective quest tracking),
+  `33d7967` (guided navigation/waypoint system, dialogue-UI redesign,
+  better fonts, procedural scenery), `b0a4dbe` (background music, a
+  compass/"Guide" HUD button + G-keybind, another visual pass — current
+  `HEAD`). None of this has reached `origin/main` yet.
+- **Working tree at the start of this pass had exactly 2 untracked items**
+  (no modified-tracked-file diffs at all): `docs/PORTRAIT_PROMPTS.md` (a
+  complete, ready-to-use AI-image-prompt reference sheet for all ~29
+  characters, generated directly from the real in-game NPC data — not
+  partial/WIP) and `public/backgrounds/.gitkeep` (an empty placeholder
+  directory for the `MapDefinition.backgroundImageUrl` override system
+  that already shipped, working, in commit `33d7967` — it mirrors the
+  already-tracked `public/portraits/.gitkeep` placeholder exactly). Both
+  were finished, not mid-work, so **both were committed as their own
+  commit** this pass (kept separate from the documentation-only commit —
+  see `SESSION_LOG.md` for the exact commit hash).
+- **Deployed and live:** `https://anime-sim-eta.vercel.app` re-confirmed
+  `200` via `curl` this pass. No new `vercel --prod` was run — this just
+  re-checks the deploy from a prior session is still up. Whether that live
+  deploy reflects `HEAD` (`b0a4dbe`) or an earlier commit was **not**
+  independently verified this pass (Vercel deploys are triggered manually,
+  not by git push/pull, and there's no build-id output surfaced to check
+  against).
+- **Verification this pass, run fresh against `b0a4dbe`:** `npx tsc
+  --noEmit -p tsconfig.json` — 0 errors. `pnpm lint` — 0 errors/warnings.
+  `pnpm test` — **83/83 passing (12 test files**, up from 66/8). `pnpm
+  build` — clean (Turbopack, static pages generated). **No browser/runtime
+  testing was performed this pass** — this was a documentation/git-hygiene
+  checkpoint, not a feature session; do not read the "verification" above
+  as covering the new guidance/music/dialogue-redesign systems in a live
+  browser. See "Not yet verified" below.
+- **Not yet verified by this pass specifically:** whether the
+  guidance/waypoint BFS system (`33d7967`), the "Guide" HUD button/keybind
+  and background music (`b0a4dbe`), the per-objective quest tracking fix
+  (`0f72792`), or the second portrait redesign (`12296ff`) actually work
+  correctly in a real browser — each was reportedly Playwright-verified in
+  its own originating session per `SESSION_LOG.md`, but this checkpoint
+  pass did not re-run any of that, only the four automated commands above.
+  `FEATURES.md` still describes the project as a 10-chapter/10-floor arc
+  (`4f6ac3e`-era) and has **not** been re-audited feature-by-feature for
+  Chapters/Floors 11-20 or any of the systems added since — flagged there,
+  not fixed line-by-line, given this pass's scope.
+- **No secrets found in tracked files.** `.env.local` (a short-lived
+  Vercel OIDC dev token) exists locally but is untracked and correctly
+  covered by `.gitignore`'s `.env*` rule — never committed. A repo-wide
+  `git grep` for common secret patterns across tracked non-doc files
+  turned up nothing but game-content strings (NPC "secret" codex entries,
+  achievement names) — no real API keys/passwords/tokens committed
+  anywhere in this repo.
+- **IMPORTANT — new mid-work change appeared DURING this checkpoint pass,
+  from what is clearly a concurrent live session (file timestamps landed
+  minutes apart while this pass was already running):** a partially-wired
+  sprite-icon system. `src/content/iconSprites.ts` (new, untracked) maps
+  a subset of `glyph` names to real CC0 pixel-art PNGs (Kenney.nl packs,
+  copied from `~/Projects/shared-assets` into `public/sprites/kenney/`,
+  18 PNGs present as of this note, new files still appearing as this was
+  being written — do not assume the count is final). `src/components/game/ExplorationView.tsx`
+  has an in-progress, uncommitted modification wiring `GLYPH_SPRITES`
+  into the interactable-marker render path (falls back to the existing
+  `<Icon>` for any glyph without an entry — additive by design per the
+  file's own doc comment). **None of this was touched, finished, or
+  committed by this checkpoint pass** — it is not this pass's work, its
+  intent wasn't confirmed with the user, and per this repo's own
+  documented history (see `SESSION_LOG.md`'s prior sessions) treating a
+  moving concurrent diff as if it were a stable snapshot has caused real
+  problems before. `git status` at the moment this pass's own commits
+  were made will show this diff/these untracked files still present —
+  that is expected and correct, not a sign this pass did something wrong.
+  Whoever picks this up next: run `git status` fresh, don't assume this
+  work is either finished or abandoned, and ask before committing it.
 
 ---
 
@@ -216,8 +266,17 @@ not currently in progress.
 
 ## Verification required before continuing
 
-Before any further work: run `git status` and `git log --oneline -5` and
-confirm they match this file (2 commits, `HEAD` at `4f6ac3e`, working
-tree clean except the 17 doc files). If they don't match, something has
-changed since this pass and this file is stale — re-run the four
-verification commands fresh and act on their actual current output.
+Everything in this section and above (except "Current state (checkpoint
+pass, 2026-08-07)" at the very top) is historical record from earlier
+sessions and is known to be stale — do not use it to judge current repo
+state.
+
+Before any further work: run `git status`, `git log --oneline -5`, and
+`git log origin/main..HEAD --oneline` and confirm they match the
+"Current state (checkpoint pass, 2026-08-07)" section at the top of this
+file (`HEAD` at `b0a4dbe`, 25 commits total, 11 ahead of `origin/main`,
+working tree clean). If they don't match — especially the ahead-of-origin
+count, which is expected to change as soon as the user pushes — something
+has changed since this pass and even that top section is now stale:
+re-run the four verification commands fresh and act on their actual
+current output, and update this file before ending your session.

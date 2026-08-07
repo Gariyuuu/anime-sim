@@ -2,12 +2,23 @@
 
 ## Current task
 
-**None in progress.** The prior current task (`TASK-001`, below) is now
-**complete** — it was committed as `4f6ac3e` ("Expand to 10 full
-chapters/floors in both worlds") since the last documentation pass. See
-"Recently completed" for the record, and "Next up" for what to pick up
-next. This session (a documentation-only re-sync pass) did not start any
-new application-code task.
+**None in progress.** As of the 2026-08-07 "final transfer checkpoint"
+pass, `HEAD` is `b0a4dbe` — 15 commits past `4f6ac3e` (the commit this
+file's TASK-001 write-up below was originally written against), 11 of
+them unpushed to `origin/main`. Both worlds now run 20 chapters/floors,
+not 10 (Elite Academy Year Two + Aincrad Floors 11-20), plus a guidance/
+waypoint system, background music, a dialogue-UI redesign, real-art
+override support (portraits and now backgrounds), a repeatable Combat
+Arena, and two rounds of portrait-rendering bug fixes — see
+`PROJECT_STATE.md`'s "Current state (checkpoint pass, 2026-08-07)" for the
+full commit-by-commit list. `npx tsc --noEmit`, `pnpm lint`, `pnpm test`
+(83/83, up from 62/62), and `pnpm build` all re-verified clean against
+`b0a4dbe` this pass. This checkpoint pass itself was documentation/
+git-hygiene only (see "Recently completed") — it did not start or
+continue any application-code task; pick one from "Next up" below, after
+first checking whether any of them were already addressed by the 15
+commits landed since this section was last accurate (some were — see the
+per-item notes below).
 
 ---
 
@@ -55,33 +66,49 @@ new application-code task.
 
 ## Next up
 
+**Re-checked 2026-08-07:** TASK-002, TASK-003, and TASK-007 below are
+confirmed still genuinely open (re-grepped `src/` this pass — no
+`ErrorBoundary`, no integrity-check pass in `registry.ts`, no reader of
+`FloorDefinition.locked` anywhere). **TASK-004 (first deploy) is done** —
+see `PROJECT_STATE.md`, live at `https://anime-sim-eta.vercel.app`,
+re-confirmed `200` this pass — left below with a status note instead of
+being deleted, since deploy *maintenance* (does the live build match
+`HEAD`?) is still an open question nobody has checked.
+
 - **TASK-002 — Add a React error boundary.** No error boundary exists
-  anywhere in the component tree (verified via grep, still true after
-  `4f6ac3e`). An uncaught exception in any game-mode view currently
-  crashes the whole app instead of degrading one screen. Priority:
-  Medium. Files: `src/components/GameRoot.tsx` or a new wrapper
+  anywhere in the component tree (re-verified via grep 2026-08-07, still
+  true 15 commits later). An uncaught exception in any game-mode view
+  currently crashes the whole app instead of degrading one screen.
+  Priority: Medium. Files: `src/components/GameRoot.tsx` or a new wrapper
   component. No dependencies. Not started.
 - **TASK-003 — Add a content cross-reference integrity check.** Zod
   validates shape but not that a referenced `sceneId`/`npcId`/`itemId`/
   `mapId` actually exists — this is exactly how the Floor 4–10
-  dangling-scene bug (now fixed) went unnoticed for a while during
-  development. Priority: Medium, arguably worth promoting to High given
-  it just prevented a real bug from being caught earlier. Files:
+  dangling-scene bug (fixed in `4f6ac3e`) went unnoticed for a while
+  during development. Re-verified 2026-08-07: still no such check exists
+  in `registry.ts`, and the content surface has since roughly doubled
+  (Chapters/Floors 11-20 added in `63b80f5`/`bfbe3fa`), making this more
+  valuable, not less. Priority: Medium, arguably High. Files:
   `src/content/registry.ts` (add a post-`parseAll` integrity pass).
   Depends on: nothing. Not started.
-- **TASK-004 — First deploy.** No deploy has ever been run for this repo
-  (no `.vercel/`, no `vercel.json`, no live URL found anywhere). There is
-  now substantially more finished, playable content than at the last
-  audit (10 chapters/floors in both worlds vs. 1). Priority: Low
-  (user-driven — only do this when asked). See `DEPLOYMENT.md`. Not
-  started.
-- **TASK-006 — Manual browser playthrough of the new content.** No
-  automated test covers UI/runtime behavior; Floors 4–10 and Elite
-  Academy chapters 2–10 have never been clicked through in a live
-  browser by an agent session (per available records). Priority: Medium —
-  this is the largest remaining unverified claim now that
-  typecheck/lint/test/build are all green. See `TESTING.md`'s smoke-test
-  checklist. Not started.
+- **TASK-004 — First deploy. STATUS: DONE**, superseded by an actual
+  deploy — live at `https://anime-sim-eta.vercel.app`, re-confirmed `200`
+  2026-08-07. Open follow-up (new, not the original task): nobody has
+  verified whether the live deploy actually reflects current `HEAD`
+  (`b0a4dbe`) — deploys are manual `vercel --prod` runs, not triggered by
+  git push, so drift is possible. Low priority; check by running
+  `vercel --prod` again or inspecting deploy history in the Vercel
+  dashboard if it matters for a demo.
+- **TASK-006 — Manual browser playthrough of the new content.** Several
+  individual sessions have Playwright-verified specific slices since this
+  was written (per `SESSION_LOG.md`): the Combat Arena flow, the
+  portrait-rendering fixes, textured exploration rooms. **No session has
+  done a full playthrough of Chapters/Floors 11-20**, the guidance/
+  waypoint system (`33d7967`), or the background-music/Guide-button
+  additions (`b0a4dbe`) — those remain unverified beyond
+  typecheck/lint/test/build. Priority: Medium. See `TESTING.md`'s
+  smoke-test checklist. Not started for the 11-20 content or the newest
+  systems.
 
 ## Blocked
 
@@ -168,6 +195,32 @@ None.
 
 ## Recently completed
 
+- **2026-08-07 "final transfer checkpoint" pass** (documentation/
+  git-hygiene only, no application code changed): re-verified `HEAD`
+  (`b0a4dbe`, 25 commits total, 11 unpushed to `origin/main`) against
+  `tsc`/`lint`/`test` (83/83)/`build` — all clean. Committed the 2
+  finished-but-untracked items found in the working tree
+  (`docs/PORTRAIT_PROMPTS.md`, `public/backgrounds/.gitkeep`) as their own
+  commit. Corrected stale HEAD/commit-count/test-count/chapter-count
+  claims in `CLAUDE.md`, `PROJECT_STATE.md`, `TASKS.md` (this file), and
+  `HANDOFF.md`; flagged (but did not line-by-line rewrite) staleness in
+  `FEATURES.md`. Ran a repo-wide secret scan — nothing found in tracked
+  files. Committed doc changes separately from the asset commit. Did not
+  push (user's call — 11 commits is a lot to push unreviewed).
+- 15 commits landed between `4f6ac3e` and `b0a4dbe` covering: Elite
+  Academy Year Two (Chapters 11-20, `63b80f5`), Aincrad Floors 11-20
+  (`bfbe3fa`), full menu/exploration colorization (`97bbfa5`, `f29e992`),
+  real anime-cast names (`75bd892`), a viewport-fill fix (`e115b74`),
+  sprite animation + switch puzzles (`7915b66`), a `portraitImageUrl`
+  override system + repeatable Combat Arena (`46bcebe`), two portrait-
+  rendering bug-fix passes (`92e211f`, `12296ff`), a dead-end-room fix +
+  real per-objective quest tracking (`0f72792`), a guidance/waypoint
+  system + dialogue-UI redesign (`33d7967`), and background music + a
+  Guide HUD button (`b0a4dbe`) — plus 2 documentation-sync commits
+  (`c7d8ffb`, `5ca6ab3`) and one logged-but-not-doc-synced session
+  (`1207fe9`, "Session 4"). None of this work's individual commit
+  sessions are re-described task-by-task here; see `git log --oneline` and
+  `SESSION_LOG.md` for the full record.
 - **Commit `4f6ac3e` — "Expand to 10 full chapters/floors in both
   worlds"** (2026-08-06): see "TASK-001" above for the full breakdown.
   26 files changed, +2,688/−102.

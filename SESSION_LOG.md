@@ -425,3 +425,102 @@ at the bottom; never overwrite prior entries.
   would need a `relatedInteractableId` or similar on `QuestObjective` to
   do this precisely; right now there's no structured link from a quest
   objective back to the map object that satisfies it.
+
+## Session 5 (commits, not individually logged before now) — 2026-08-06/07 — Elite Academy Year Two, Aincrad Floors 11-20, guidance system, music
+
+- **Account/agent:** unknown (multiple Claude Code sessions, no persistent
+  identifier available in this environment). Grouped into one log entry
+  here because they were never individually logged, discovered as a gap
+  during the 2026-08-07 checkpoint pass below.
+- **What shipped (from `git log`/`git show`, reconstructed after the
+  fact — not verified via live browser by this checkpoint pass):**
+  commit `63b80f5` added Elite Academy Chapters 11-20 ("Year Two") plus
+  `v0.4.0` patch notes; `bfbe3fa` added Aincrad Floors 11-20; `12296ff`
+  redesigned `PortraitFace`'s eyes/hair/neck a second time (the
+  Session 4 fix still read as "old man" — eyebrows were below eye level,
+  narrow-eye expressions rendered as a flat bar, and long hairstyles
+  painted over the neck/mouth due to z-order); `0f72792` fixed a dead-end
+  Training Field map (no door back to Town of Beginnings) and added real
+  per-objective quest tracking (a `completeObjective` effect, wired into
+  the Aincrad main quest's six-step chain — `completedObjectiveIds` was
+  previously declared but never populated); `33d7967` added a chapter-
+  level waypoint/guidance system (`src/content/guidance.ts`, a bouncing
+  beacon + door-glow driven by a BFS over the map transition graph in
+  `engine/exploration.ts`), a dialogue-UI redesign (wider/larger text),
+  better fonts, and procedural scenery across all 40 chapters/floors —
+  and separately found/fixed a real bug where Elite Academy's main quest
+  was defined but never started, leaving guidance/HUD text blank for all
+  of Chapter One; `b0a4dbe` (current `HEAD`) added four synthesized
+  chiptune background tracks (title/menu + one per world + battle,
+  wired via new `playMusic`/`stopMusic` on the Howler wrapper) and a
+  prominent "Guide" HUD button + `G` keybind on top of the guidance
+  system, since the beacon/door-glow alone was reportedly still easy to
+  miss.
+- **Work remaining:** none of this content/systems work has been
+  re-verified in a live browser or re-audited feature-by-feature in
+  `FEATURES.md`/`ROADMAP.md` (both flagged as stale by the checkpoint
+  session below rather than rewritten line-by-line). `main` was left
+  unpushed through all of these commits.
+
+## Session 6 — 2026-08-07 — "Final transfer checkpoint" pass (documentation/git-hygiene only)
+
+- **Account/agent:** unknown (Claude Code session, no persistent
+  identifier available in this environment).
+- **Goal:** prepare this repo to be picked up cold by a brand-new Claude
+  Code account with zero shared chat history — verify the working tree,
+  reconcile 15 commits' worth of doc drift since the last full re-sync,
+  scan for secrets, resolve cross-file contradictions, and hand off
+  cleanly. Explicitly not a feature-development session.
+- **Findings:** working tree had exactly 2 untracked items, both
+  finished (not mid-work): `docs/PORTRAIT_PROMPTS.md` (a complete
+  AI-image-prompt reference sheet for ~29 characters, generated from real
+  NPC data) and `public/backgrounds/.gitkeep` (a placeholder mirroring the
+  already-tracked `public/portraits/.gitkeep`, for the
+  `MapDefinition.backgroundImageUrl` override system that already shipped
+  working in `33d7967`). `main` was 11 commits ahead of `origin/main`,
+  unpushed — see the "Session 5" entry above for what those commits are;
+  they had never been reconciled into `PROJECT_STATE.md`/`TASKS.md`/
+  `HANDOFF.md`/`CLAUDE.md`/`FEATURES.md`/`ROADMAP.md`/`README.md`/
+  `DEPLOYMENT.md`, several of which still claimed `HEAD` was `4f6ac3e` or
+  `46bcebe`, 10 chapters/floors (actually 20), 62/66 tests (actually 83),
+  and in `CLAUDE.md`'s and `DEPLOYMENT.md`'s case, actively contradicted
+  themselves about whether the project was deployed at all (it is — 
+  re-confirmed `https://anime-sim-eta.vercel.app` returns `200`).
+- **Work completed:** committed the 2 untracked-but-finished items as
+  their own commit (kept separate from documentation changes). Re-ran
+  `npx tsc --noEmit`, `pnpm lint`, `pnpm test` (83/83, 12 files), and
+  `pnpm build` fresh against `HEAD` — all clean. Ran a repo-wide `git
+  grep` for secret-shaped strings (API keys, passwords, tokens, PEM
+  blocks) across all tracked non-doc files — found nothing but game
+  content (NPC "secret" codex entries, achievement names); confirmed
+  `.env.local` (a short-lived Vercel OIDC dev token) is untracked and
+  correctly `.gitignore`d, never committed. Corrected stale HEAD/commit-
+  count/ahead-of-origin-count/test-count/chapter-count claims in
+  `CLAUDE.md`, `PROJECT_STATE.md`, `TASKS.md`, and `HANDOFF.md`; resolved
+  the deployed/not-deployed self-contradiction in `CLAUDE.md` and
+  `DEPLOYMENT.md`; added prominent "known stale, not line-by-line
+  rewritten" notes to `FEATURES.md`, `ROADMAP.md`, and `README.md` rather
+  than attempting a full content rewrite of those larger files in scope
+  reserved for a git-hygiene checkpoint. Refreshed `HANDOFF.md`'s "Prompt
+  for the next Claude Code account" section to explicitly instruct the
+  next session to re-verify the ahead-of-origin count rather than trust
+  the number recorded here. Committed all documentation changes as a
+  single commit, separate from the asset commit above.
+- **Work remaining:** `FEATURES.md` and `ROADMAP.md` still need a real
+  feature-by-feature re-audit against Chapters/Floors 11-20 and the
+  guidance/music/art-override systems — flagged, not done, this pass.
+  No live-browser verification was performed of any content newer than
+  what earlier sessions already Playwright-tested (Combat Arena, portrait
+  fixes, textured rooms) — Chapters/Floors 11-20 and the guidance/music
+  systems remain code-inspection-and-automated-test-only. `main` is still
+  11 commits ahead of `origin/main` and was **not** pushed this session —
+  that decision was left entirely to the user.
+- **Recommended next action:** if the user pushes, immediately re-run
+  `git log origin/main..HEAD --oneline` in the next session and correct
+  every doc that still says "11 commits ahead" before doing anything
+  else — this checkpoint pass added several explicit reminders of that
+  exact failure mode across `CLAUDE.md`/`PROJECT_STATE.md`/`TASKS.md`/
+  `HANDOFF.md`. Otherwise, the strongest next move is either `TASK-003`
+  (content cross-reference integrity check, still not implemented and
+  now covering roughly double the content it did when written) or a real
+  feature-by-feature re-audit of `FEATURES.md`/`ROADMAP.md`.

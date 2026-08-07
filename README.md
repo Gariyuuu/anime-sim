@@ -1,5 +1,13 @@
 # ANIME//SIM
 
+> **Note (2026-08-07 checkpoint pass):** this file's content counts below
+> (e.g. "10 full floors/chapters", "10 floor bosses") are stale — both
+> worlds have shipped a second act since this was last updated: Elite
+> Academy Year Two (Chapters 11-20) and Aincrad Floors 11-20 (20 floor
+> bosses total, not 10). See `PROJECT_STATE.md`/`CLAUDE.md` for current
+> numbers; this file was out of scope for a line-by-line rewrite in that
+> pass.
+
 **Choose a world. Rewrite its story.**
 
 ANIME//SIM is an original, unofficial fan-made prototype: a story-driven 2D anime life

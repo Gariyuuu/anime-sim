@@ -1,5 +1,27 @@
 # FEATURES.md
 
+**KNOWN STALE as of the 2026-08-07 checkpoint pass — read this note before
+trusting any specific number below.** This file still describes the
+project as it was at commit `4f6ac3e` ("Expand to 10 full chapters/floors
+in both worlds"). Since then, `HEAD` has moved to `b0a4dbe` (15 more
+commits, 11 of them unpushed — see `PROJECT_STATE.md`) and picked up, at
+minimum: **Elite Academy Year Two (Chapters 11-20) and Aincrad Floors
+11-20** (so every "10 chapters"/"10 floors"/"Chapters 2-10" claim below is
+now wrong — it's 20, not 10), real anime-cast character names, full menu/
+exploration colorization, a `portraitImageUrl`/`backgroundImageUrl` real-
+art override system, a repeatable Combat Arena, two portrait-rendering
+bug-fix passes, real per-objective quest tracking (`completedObjectiveIds`
+is no longer a dead field — see `0f72792`), a chapter-level guidance/
+waypoint system with door-graph BFS pathing (`33d7967`), a dialogue-UI
+redesign, and synthesized background music plus a HUD "Guide" button/
+keybind (`b0a4dbe`). None of this has been re-audited feature-by-feature
+below — the 2026-08-07 checkpoint pass was documentation/git-hygiene only
+and did not have scope to rewrite this file section-by-section. Test count
+below (62/62) is also stale — current is **83/83** (12 test files). Treat
+every section below as "true as of `4f6ac3e`, not re-verified since" until
+someone does that pass. The original re-sync note follows, unedited, for
+history:
+
 **Re-synced 2026-08-06** against commit `4f6ac3e` ("Expand to 10 full
 chapters/floors in both worlds"). The prior version of this file was
 written against an in-progress, uncommitted diff that has since been
@@ -14,8 +36,9 @@ verify**. Nothing is marked "Verified complete" unless its full flow (data
 → engine/lib → store → UI → persistence) was actually traced through the
 code. No runtime/browser testing was performed this session either (no dev
 server was started) — features below are verified by code inspection and
-by the automated test suite (62/62 passing), not by clicking through the
-app. Where that distinction matters it's called out explicitly.
+by the automated test suite (62/62 passing at the time, now 83/83 — see
+the stale-note above), not by clicking through the app. Where that
+distinction matters it's called out explicitly.
 
 ---
 

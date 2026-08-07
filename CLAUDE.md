@@ -53,27 +53,43 @@ and is left as-is.
 - **Target audience:** Solo players who enjoy visual-novel-style branching
   narrative with light RPG/combat systems; a personal/portfolio project, not
   a commercial product.
-- **Current development stage:** Full 10-chapter/10-floor content arc in
-  both worlds, as of commit `4f6ac3e`. Elite Academy Chapters 1–10 (a full
-  school year) and Aincrad Floors 1–10 (Town of Beginnings through The
-  Tenth Gate) are each fully playable and chained together via a
-  chapter-navigation system wired into the recap screen ("Next Chapter"
-  button) and the in-game device (a Chapters tab for jumping back to any
-  unlocked chapter). Chapters 2–10 in both worlds are moderate-depth (one
-  arrival beat, one or two character beats, one decision, one close) by
-  design, per `patchnotes.ts`'s own `v0.2.0` known-issues note — Chapter
-  One in each world remains the deepest single chapter. See
-  `PROJECT_STATE.md` and `TASKS.md`.
+- **Current development stage (re-verified 2026-08-07, `HEAD` = `b0a4dbe`,
+  supersedes the paragraph's original `4f6ac3e`-era claim below):** Both
+  worlds now go to **20 chapters/floors**, not 10 — Elite Academy gained a
+  full "Year Two" (Chapters 11–20, commit `63b80f5`) and Aincrad gained
+  Floors 11–20 (commit `bfbe3fa`), confirmed by grepping
+  `chapter.ts`/`floors.ts` this pass (`ea-ch1`…`ea-ch20`,
+  `floor-1`…`floor-20`). Since then the project has also picked up: real
+  anime-cast names (`75bd892`), full menu/exploration colorization
+  (`97bbfa5`, `f29e992`), a `portraitImageUrl`/`backgroundImageUrl` real-art
+  override system (`46bcebe`, `33d7967`) with a matching prompt sheet at
+  `docs/PORTRAIT_PROMPTS.md`, a repeatable Combat Arena (`46bcebe`), two
+  rounds of portrait-rendering bug fixes (`92e211f`, `12296ff`), a fixed
+  dead-end room plus real per-objective quest tracking (`0f72792`), a
+  chapter-level waypoint/guidance system with door-graph BFS pathing and a
+  dialogue-UI redesign (`33d7967`), and synthesized background music plus
+  a HUD "Guide" button/keybind (`b0a4dbe`, the current `HEAD`). None of
+  this later work has been re-audited feature-by-feature in `FEATURES.md`
+  yet — see `PROJECT_STATE.md` and `TASKS.md` for what's confirmed vs.
+  still open. Original (`4f6ac3e`-era) claim, now superseded: "Full
+  10-chapter/10-floor content arc in both worlds… Chapters 2–10 in both
+  worlds are moderate-depth… Chapter One in each world remains the
+  deepest single chapter." That depth claim has **not** been re-verified
+  for Chapters/Floors 11–20 this pass.
 - **Production status:** **Deployed.** Live at
   `https://anime-sim-eta.vercel.app` (Vercel project `anime-sim`, linked
-  via `.vercel/project.json`), confirmed `200` as of commit `46bcebe`
-  (2026-08-06, Session 3 — see `SESSION_LOG.md`). The repository has a
+  via `.vercel/project.json`), re-confirmed `200` via `curl` on
+  **2026-08-07** (a "final transfer checkpoint" pass — see
+  `PROJECT_STATE.md`) with `HEAD` at `b0a4dbe`. The repository has a
   GitHub remote (`https://github.com/Gariyuuu/anime-sim.git`, branch
-  `main`) but `main` was 4 commits ahead of `origin/main` and unpushed as
-  of that same commit — the Vercel deploy was run directly via
-  `vercel --prod`, not triggered by a git push. Re-check `git status`/
-  `PROJECT_STATE.md` before assuming the live URL matches the exact
-  commit you're reading.
+  `main`) but `main` was **11 commits ahead of `origin/main` and unpushed**
+  as of that same check — the Vercel deploy was run directly via
+  `vercel --prod`, not triggered by a git push, so the live URL can be
+  (and currently is) ahead of what's on GitHub. Re-check `git status`/
+  `git log origin/main..HEAD --oneline`/`PROJECT_STATE.md` before assuming
+  either the live URL or `origin/main` matches the exact commit you're
+  reading — this count changes every session and must be re-verified, not
+  trusted from this file.
 - **Repository type:** Single Next.js app, not a monorepo. `pnpm-workspace.yaml`
   exists but only contains `allowBuilds` package-approval settings — it does
   not declare any actual workspace packages; there is exactly one
@@ -86,18 +102,39 @@ and is left as-is.
 
 ## Current status
 
-**Re-synced 2026-08-06.** The prior version of this section described a
-working tree that was changing live, mid-documentation-session (grew from
-10 to 20 modified files while being audited) — that in-progress work has
-since been finished and **committed** as `4f6ac3e`, "Expand to 10 full
-chapters/floors in both worlds." See `PROJECT_STATE.md` for the full
-re-verification detail and `SESSION_LOG.md`'s Session 2 for what changed
-between passes.
+**Re-verified 2026-08-07** (a "final transfer checkpoint" documentation
+pass — no application code touched). The paragraph below this one is the
+original `4f6ac3e`-era narrative, kept for history; treat the bullets
+directly below as current truth.
 
-- **`HEAD` (commit `4f6ac3e`):** typechecks clean, lints clean, tests
-  clean (62/62), and builds clean — all four re-verified fresh this
-  session against the real working tree, not inferred from the commit
-  message.
+- **`HEAD` (commit `b0a4dbe`, "Add background music, a compass/guide
+  system, and another visual pass"):** typechecks clean (`tsc --noEmit`, 0
+  errors), lints clean (`eslint`, 0 errors/warnings), tests clean
+  (**83/83**, 12 test files), and builds clean (`next build`) — all four
+  re-verified fresh 2026-08-07 against the real working tree.
+- **`main` is 11 commits ahead of `origin/main`, unpushed.** Confirmed via
+  `git status` and `git log origin/main..HEAD --oneline` on 2026-08-07.
+  This number changes every session — re-run those two commands yourself
+  rather than trusting this file. See `PROJECT_STATE.md` for the full
+  commit list and what each one actually shipped.
+- **Working tree at this checkpoint had exactly 2 untracked items**,
+  neither of which is mid-work: `docs/PORTRAIT_PROMPTS.md` (a finished
+  AI-image-prompt reference sheet, generated from the real NPC data) and
+  `public/backgrounds/.gitkeep` (a placeholder for the
+  `backgroundImageUrl` map-art-override system shipped in `33d7967`,
+  mirroring the already-tracked `public/portraits/.gitkeep`). Both were
+  committed as part of this checkpoint pass — see `SESSION_LOG.md`.
+- Prior (`4f6ac3e`-era) narrative, superseded: the working tree was
+  changing live, mid-documentation-session (grew from 10 to 20 modified
+  files while being audited) — that in-progress work was finished and
+  **committed** as `4f6ac3e`, "Expand to 10 full chapters/floors in both
+  worlds." See `PROJECT_STATE.md` for the full re-verification detail and
+  `SESSION_LOG.md`'s Session 2 for what changed between passes.
+
+- **`HEAD` (commit `4f6ac3e`) — historical, no longer current:** typechecks
+  clean, lints clean, tests clean (62/62), and builds clean — all four
+  re-verified fresh that session against the real working tree, not
+  inferred from the commit message.
 - **Working tree is clean except documentation files.** `git status`
   shows `CLAUDE.md` modified and 16 other `*.md` memory files untracked —
   no `src/` files are modified or untracked. All of the former
@@ -197,18 +234,20 @@ see `DATABASE.md`). There is no codegen step beyond Next.js's own
 something you run manually — `next-env.d.ts` references it and is itself
 gitignored/regenerated).
 
-**Verification results from the re-sync pass (2026-08-06), run against the
-actual working tree exactly as found (`HEAD` = `4f6ac3e`), without
-modifying anything:**
+**Verification results from the checkpoint pass (2026-08-07), run against
+the actual working tree exactly as found (`HEAD` = `b0a4dbe`), without
+modifying application code:**
 
 | Command | Result |
 |---|---|
 | `npx tsc --noEmit -p tsconfig.json` | **PASSES** — 0 errors |
 | `pnpm lint` (`eslint .`) | **PASSES** — 0 errors, 0 warnings |
-| `pnpm test` (`vitest run`) | **PASSES** — 62/62 tests (7 test files) |
+| `pnpm test` (`vitest run`) | **PASSES** — 83/83 tests (12 test files) |
 | `pnpm build` (`next build`) | **PASSES** — compiles, typechecks, and generates static pages cleanly |
 
-See `PROJECT_STATE.md` for the exact commands and output.
+(Superseded prior result, 2026-08-06 pass at `HEAD` = `4f6ac3e`: 62/62
+tests, 7 test files — kept for history only.) See `PROJECT_STATE.md` for
+the exact commands and output.
 
 ## Repository structure
 
@@ -456,24 +495,36 @@ pnpm test
 pnpm build
 ```
 
-**As of the re-sync pass (2026-08-06), on the working tree exactly as
-found (`HEAD` = `4f6ac3e`):** all four commands pass clean — `tsc` 0
-errors, `lint` 0 errors/warnings, `test` 62/62, `build` succeeds — see
-"Essential commands" above. Do not report "typechecks/builds cleanly" for
-this repo without re-running these four commands yourself first — this
-repo has a documented history of the tree changing substantially between
-audits (see `SESSION_LOG.md`).
+**As of the checkpoint pass (2026-08-07), on the working tree exactly as
+found (`HEAD` = `b0a4dbe`):** all four commands pass clean — `tsc` 0
+errors, `lint` 0 errors/warnings, `test` **83/83** (12 files), `build`
+succeeds. (Prior recorded result, now superseded: 2026-08-06 re-sync pass
+at `HEAD` = `4f6ac3e`, `test` 62/62.) Do not report "typechecks/builds
+cleanly" for this repo without re-running these four commands yourself
+first — this repo has a documented history of the tree changing
+substantially between audits (see `SESSION_LOG.md`).
 
 ## Deployment
 
-Full detail in `DEPLOYMENT.md`. Summary: **not currently deployed anywhere.**
-`README.md` describes a zero-config Vercel deploy (`vercel deploy` /
-`vercel --prod`, or connecting the GitHub repo in the Vercel dashboard), and
-that would in principle work today for the committed baseline (static,
-client-only Next.js app, no env vars required) — but there is no evidence
-in this repo (`.vercel/`, `vercel.json`, or a referenced live URL) that it
-has actually been run. Treat any claim of a live URL for this project as
-unverified until you see it yourself.
+Full detail in `DEPLOYMENT.md`. Summary: **deployed and live** at
+`https://anime-sim-eta.vercel.app` (Vercel project `anime-sim`, linked via
+`.vercel/project.json`), re-confirmed `200` via `curl` on 2026-08-07. This
+supersedes the file's older "not currently deployed anywhere" claim
+(left below for history — it was true as of the original `4f6ac3e`-era
+audit, before the first `vercel --prod` run in a later session). Deploys
+are run manually via `vercel --prod`, **not** triggered by a GitHub push —
+`main` is currently 11 commits ahead of `origin/main` (unpushed), so the
+live Vercel deploy can be, and currently is, ahead of what's on GitHub.
+Always `curl`/open the live URL yourself rather than trusting this file's
+last-checked date.
+
+Original (superseded) claim: "not currently deployed anywhere." `README.md`
+describes a zero-config Vercel deploy (`vercel deploy` / `vercel --prod`,
+or connecting the GitHub repo in the Vercel dashboard), and that would in
+principle work today for the committed baseline (static, client-only
+Next.js app, no env vars required) — but there was no evidence in this repo
+(`.vercel/`, `vercel.json`, or a referenced live URL) that it had actually
+been run at that time.
 
 ## Critical rules — DO NOT CHANGE WITHOUT REVIEW
 
