@@ -6,6 +6,7 @@ import { getMap, getNpc, maps } from "@/content/registry";
 import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, buildDoorGraph, nextDoorTowardMap, type MoveInput } from "@/engine/exploration";
 import { getGuidanceTarget } from "@/lib/guidance";
 import { generateScenery, type Prop } from "@/engine/scenery";
+import { GLYPH_SPRITES, PROP_SPRITES } from "@/content/iconSprites";
 import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
@@ -474,13 +475,24 @@ export function ExplorationView() {
       }
 
       // floor-scattered scenery (trees, furniture, crates, ...) — the actual "real location"
-      // upgrade: layered shapes instead of a flat color, deterministically placed per map.
+      // upgrade: real Kenney sprites where PROP_SPRITES has a clean match, hand-drawn canvas
+      // shapes (drawProp) everywhere else.
       for (const prop of sceneProps) {
         if (prop.wallMounted) continue;
-        ctx.save();
-        ctx.translate(prop.x * ts + ts / 2 - camera.x, prop.y * ts + ts / 2 - camera.y);
-        drawProp(ctx, prop, ts, now);
-        ctx.restore();
+        const cx = prop.x * ts + ts / 2 - camera.x;
+        const cy = prop.y * ts + ts / 2 - camera.y;
+        const spriteUrl = PROP_SPRITES[prop.kind];
+        const sprite = spriteUrl ? getCachedImage(spriteUrl, () => forceTick((t) => (t + 1) % 100000)) : undefined;
+        if (sprite) {
+          const s = ts * prop.scale * 1.3;
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(sprite, cx - s / 2, cy - s / 2, s, s);
+        } else {
+          ctx.save();
+          ctx.translate(cx, cy);
+          drawProp(ctx, prop, ts, now);
+          ctx.restore();
+        }
       }
     }
 
@@ -502,7 +514,10 @@ export function ExplorationView() {
       ctx.fillRect(px + ts - bevel, py, bevel, ts);
     }
 
-    // wall-mounted scenery (windows, torches) — drawn on top of the wall bevels above.
+    // wall-mounted scenery (windows, torches) — drawn on top of the wall bevels above. No
+    // wall-mounted PropKind has a PROP_SPRITES entry yet (see the note there — torch's only
+    // available sprite came from an opaque, non-transparent tile), so this stays purely
+    // procedural for now; revisit if a properly-isolated torch/window sprite gets added later.
     if (!bgImage) {
       for (const prop of sceneProps) {
         if (!prop.wallMounted) continue;
@@ -599,6 +614,7 @@ export function ExplorationView() {
               const isSwitch = it.kind === "puzzle-switch";
               const switchLit = isSwitch && it.puzzleId != null && it.puzzleOrder != null && (save.puzzleProgress[it.puzzleId] ?? 0) >= it.puzzleOrder;
               const color = switchLit ? "var(--accent-success)" : npc?.portraitColor ?? MARKER_COLOR[it.kind];
+              const glyphSprite = !npc ? GLYPH_SPRITES[it.glyph] : undefined;
               const isNear = it.id === nearbyId;
               const isLiving = it.kind === "npc" || it.kind === "monster";
               const isDoor = it.kind === "door" || it.kind === "transition";
@@ -623,7 +639,7 @@ export function ExplorationView() {
                       isDoor && !isNear && "marker-idle",
                     )}
                     style={{
-                      background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : color,
+                      background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : glyphSprite ? "var(--paper-0)" : color,
                       borderColor: isNear ? "var(--accent-warning)" : isGuidanceDoor ? "var(--accent-success)" : "var(--paper-0)",
                       transform: isNear ? "scale(1.15)" : "scale(1)",
                     }}
@@ -633,6 +649,9 @@ export function ExplorationView() {
                       <img src={npc.portraitImageUrl} alt={npc.fullName} className="h-full w-full object-cover" />
                     ) : npc ? (
                       <PortraitFace hairColor={npc.hairColor} hairstyle={npc.hairstyle} eyeColor={npc.eyeColor} skinTone={npc.skinTone} accentColor={npc.portraitColor} expression="neutral" size={26} />
+                    ) : glyphSprite ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={glyphSprite} alt={it.label} className="h-full w-full object-contain p-0.5" style={{ imageRendering: "pixelated" }} />
                     ) : (
                       <Icon name={it.glyph} size={12} color="var(--paper-0)" />
                     )}
