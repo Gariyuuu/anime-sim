@@ -64,13 +64,16 @@ and is left as-is.
   design, per `patchnotes.ts`'s own `v0.2.0` known-issues note — Chapter
   One in each world remains the deepest single chapter. See
   `PROJECT_STATE.md` and `TASKS.md`.
-- **Production status:** **Not deployed.** The repository has a GitHub
-  remote (`https://github.com/Gariyuuu/anime-sim.git`, branch `main`, in
-  sync with `origin/main` for the one existing commit) but there is no
-  `.vercel/` directory, no `vercel.json`, and no deployed URL referenced
-  anywhere in the repo. Despite `README.md`'s "Deployment" section
-  describing a zero-config Vercel deploy, that deploy has evidently never
-  been run from this machine/repo. Do not assume a live URL exists.
+- **Production status:** **Deployed.** Live at
+  `https://anime-sim-eta.vercel.app` (Vercel project `anime-sim`, linked
+  via `.vercel/project.json`), confirmed `200` as of commit `46bcebe`
+  (2026-08-06, Session 3 — see `SESSION_LOG.md`). The repository has a
+  GitHub remote (`https://github.com/Gariyuuu/anime-sim.git`, branch
+  `main`) but `main` was 4 commits ahead of `origin/main` and unpushed as
+  of that same commit — the Vercel deploy was run directly via
+  `vercel --prod`, not triggered by a git push. Re-check `git status`/
+  `PROJECT_STATE.md` before assuming the live URL matches the exact
+  commit you're reading.
 - **Repository type:** Single Next.js app, not a monorepo. `pnpm-workspace.yaml`
   exists but only contains `allowBuilds` package-approval settings — it does
   not declare any actual workspace packages; there is exactly one

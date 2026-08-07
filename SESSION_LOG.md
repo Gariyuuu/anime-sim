@@ -330,3 +330,48 @@ at the bottom; never overwrite prior entries.
   "Next up" — there is no single blocking item the way `TASK-001` was for
   Session 1; this is now a "choose what's next" handoff, not a
   "fix what's broken" one.
+
+## Session 3 — 2026-08-06 — Real-name cast, chapters 11-20, colorization, viewport fix, portraits, Combat Arena, first deploy
+
+- **Account/agent:** unknown (Claude Code session, no persistent
+  identifier available in this environment).
+- **Goal:** User-driven feature session, not documentation — renamed both
+  casts to real anime character names for this private project, added 10
+  more chapters/floors to each world, fixed a real bug (exploration view
+  rendering as a fixed 640×420 box instead of filling the viewport),
+  colorized every room/menu screen, added a first-time tutorial and
+  explicit Save/Main-Menu buttons, added a `portraitImageUrl` override so
+  real PNG art can replace the procedural portraits, added a repeatable
+  Combat Arena (re-fight any reached floor's non-boss encounters), and
+  deployed the project live for the first time.
+- **Work completed (commits, oldest to newest):** `87c3784` class rename,
+  `7915b66` sprite animation + switch puzzles, `f29e992` portraits +
+  room colorization + tutorial, `75bd892` real-name cast rename + Save/
+  Main-Menu buttons, `e115b74` viewport fill fix, `bfbe3fa` Aincrad
+  Floors 11-20, `63b80f5` Elite Academy Chapters 11-20, `97bbfa5` menu
+  screen colorization, `46bcebe` `portraitImageUrl` + Combat Arena. All
+  four verification commands (`tsc`/`lint`/`test`/`build`) re-run clean
+  after the final commit (66/66 tests, up from 62). The Arena feature was
+  additionally verified in a real browser via Playwright — real UI clicks
+  (not store manipulation) through New Game → Aincrad → dialogue →
+  exploration → Arena marker → fight select → live combat — zero console
+  errors. Deployed via `vercel --prod` to the pre-linked Vercel project;
+  `https://anime-sim-eta.vercel.app` confirmed `200`.
+- **Work remaining:** `main` is 4 commits ahead of `origin/main` and has
+  not been pushed to GitHub this session (user-driven action, not done
+  automatically). `CLAUDE.md`'s "Production status: Not deployed" line is
+  now stale and should be corrected next time that file is touched. No
+  NPC has a real `portraitImageUrl` set yet — `public/portraits/` only
+  has a placeholder `.gitkeep`; the fallback (procedural portrait)
+  render path was confirmed to still work, but the override path itself
+  is unverified since no image file exists to test it with. The other 14
+  memory-system docs (`ARCHITECTURE.md`, `FEATURES.md`, `TASKS.md`, etc.)
+  were not re-synced this session — only `PROJECT_STATE.md` and this log
+  were updated, given the session's focus was shipping the feature, not a
+  full documentation audit.
+- **Recommended next action:** if a real image-art workflow becomes a
+  priority, drop a test PNG into `public/portraits/` and set one NPC's
+  `portraitImageUrl` to confirm the override path renders correctly, not
+  just the fallback. Otherwise, push `main` to `origin` when the user
+  asks, and do a full doc re-sync (all 16 files) before the next major
+  content push if the docs need to stay trustworthy for a handoff.

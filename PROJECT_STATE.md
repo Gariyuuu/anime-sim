@@ -1,14 +1,63 @@
 # PROJECT_STATE.md — Exact Snapshot
 
-**Audit timestamp:** 2026-08-06, re-sync pass (this session). The
-2026-08-06 documentation session (same calendar day, earlier) wrote this
-file while the working tree was being edited live underneath it. That
-in-flight work has since been **committed** as `4f6ac3e` — "Expand to 10
-full chapters/floors in both worlds." This pass re-verified the repo
-against the actual committed state and rewrote the sections below that had
-gone stale. Everything below was re-checked directly against the
-repository at this timestamp — do not assume it stays current forever;
-re-run the commands in this file before trusting it in a future session.
+**Audit timestamp:** 2026-08-06, later same-day pass (this session).
+Everything below the "Superseded" notice further down predates a large
+burst of work done later on 2026-08-06 that is **not** reflected in that
+older narrative — real anime character names, chapters/floors 11-20 in
+both worlds, full colorization of menus + exploration maps, a dynamic
+viewport fix, a first-time tutorial, Save/Main Menu buttons, a
+`portraitImageUrl` override system (drop a file in `public/portraits/` to
+replace an NPC's procedural art), a repeatable Combat Arena (re-fight any
+reached floor's common/mini-boss encounters), and the project's **first
+deploy**. See "Current state (this pass)" immediately below for what's
+actually true now; treat everything after it as historical record only.
+
+## Current state (this pass)
+
+- **Latest commit:** `46bcebe` — "Add real-portrait override support and a
+  repeatable Combat Arena" (10 commits total in `git log --oneline`, up
+  from the 2 described in the older sections below).
+- **Branch `main` is 4 commits ahead of `origin/main`** (not pushed this
+  pass — push is a user-driven action, not done automatically).
+- **Working tree: clean.** No uncommitted `src/` or doc changes.
+- **Deployed and live:** `https://anime-sim-eta.vercel.app` (Vercel
+  project `anime-sim`, already linked via `.vercel/project.json` from an
+  earlier point in this same day's work) — confirmed `200` via `curl`
+  immediately after this pass's `vercel --prod` run. The "Production
+  status: Not deployed" claim elsewhere in this file (and in `CLAUDE.md`)
+  is now **stale** — update `CLAUDE.md`'s "Production status" line
+  next time it's touched.
+- **Verification this pass, run fresh against `46bcebe`:** `npx tsc
+  --noEmit` — 0 errors. `pnpm lint` — 0 errors/warnings. `pnpm test` —
+  66/66 passing (8 test files, up from 62/7). `pnpm build` — clean.
+  Additionally **live-browser-verified** (Playwright, real UI clicks, not
+  store manipulation) end-to-end: New Game → World Select → Aincrad →
+  Character Creator → dialogue → Debug Panel flag/teleport → exploration
+  view (confirmed it now fills the full viewport with a colorful map and
+  distinct per-kind marker icons, not the old fixed 640×420 box) →
+  clicked the Combat Arena marker in Town of Beginnings → modal opened →
+  selected a fight → `startCombat` fired and CombatView rendered with
+  live HP bars and the full action menu (Attack/Skill/Guard/Dodge/Item/
+  Analyze/Escape). Zero console errors across the whole run.
+- **Not yet verified:** the `portraitImageUrl` override itself rendering a
+  real image (no NPC has one set yet — no image files exist in
+  `public/portraits/` beyond the placeholder `.gitkeep`). Only the
+  fallback path (procedural `PortraitFace`) has been confirmed to still
+  render correctly with the new conditional in place.
+
+---
+
+## Superseded — narrative below is from an earlier point in 2026-08-06
+
+**Audit timestamp:** 2026-08-06, re-sync pass. The 2026-08-06
+documentation session (same calendar day, earlier) wrote this file while
+the working tree was being edited live underneath it. That in-flight work
+has since been **committed** as `4f6ac3e` — "Expand to 10 full
+chapters/floors in both worlds." This pass re-verified the repo against
+the actual committed state and rewrote the sections below that had gone
+stale. Everything below was re-checked directly against the repository at
+that (earlier) timestamp — it has since been superseded by "Current state
+(this pass)" above.
 
 ## What happened between the last write of this file and now
 
