@@ -28,7 +28,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     defaultSpawn: "default",
     ambientLabel: "Midday chatter echoes off polished floors.",
     interactables: [
-      { id: "door-classroom", kind: "door", x: 2, y: 4, label: "Classroom 1-C", targetMapId: "ea-map-classroom", targetSpawnId: "fromHallway", glyph: "door-open" },
+      { id: "door-classroom", kind: "door", x: 2, y: 4, label: "Classroom 1-D", targetMapId: "ea-map-classroom", targetSpawnId: "fromHallway", glyph: "door-open" },
       { id: "door-cafeteria", kind: "door", x: 5, y: 4, label: "Cafeteria", targetMapId: "ea-map-cafeteria", targetSpawnId: "fromHallway", glyph: "door-open" },
       { id: "door-library", kind: "door", x: 8, y: 4, label: "Library", targetMapId: "ea-map-library", targetSpawnId: "fromHallway", glyph: "door-open" },
       { id: "door-council", kind: "door", x: 11, y: 4, label: "Student Council Room", targetMapId: "ea-map-council", targetSpawnId: "fromHallway", glyph: "door-open" },
@@ -43,7 +43,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
   {
     id: "ea-map-classroom",
     worldId: "elite-academy",
-    name: "Classroom 1-C",
+    name: "Classroom 1-D",
     widthTiles: 12,
     heightTiles: 9,
     background: "#f2f1ea",

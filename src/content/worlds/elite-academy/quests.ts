@@ -6,7 +6,7 @@ export const eliteAcademyQuests: QuestDefinitionInput[] = [
     worldId: "elite-academy",
     title: "The First Ranking",
     type: "main",
-    description: "Find your footing in Class 1-C before the first special exam decides who gets left behind.",
+    description: "Find your footing in Class 1-D before the first special exam decides who gets left behind.",
     objectives: [
       { id: "meet-classmates", text: "Meet your new classmates." },
       { id: "learn-points", text: "Understand how private points and class points work." },

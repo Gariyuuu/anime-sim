@@ -1,7 +1,7 @@
 import type { NpcDefinitionInput } from "@/types";
 
 /**
- * Elite Academy — Class 1-C major NPCs.
+ * Elite Academy — Class 1-D major NPCs.
  * All characters are original creations; any resemblance to existing works is coincidental
  * atmospheric homage, not reproduction.
  */
@@ -87,7 +87,7 @@ export const eliteAcademyNpcs: NpcDefinitionInput[] = [
     fullName: "Nao Ichijou",
     shortName: "Nao",
     role: "classmate",
-    personality: "Blunt, competitive, secretly the strongest academic mind in 1-C.",
+    personality: "Blunt, competitive, secretly the strongest academic mind in 1-D.",
     motivation: "Refuses to be defined by her older sister's reputation in Class A.",
     secret: "Deliberately under-performs on some exams to avoid council attention.",
     strength: "Raw intelligence, pattern recognition.",
@@ -143,7 +143,7 @@ export const eliteAcademyNpcs: NpcDefinitionInput[] = [
     role: "mentor",
     personality: "Homeroom teacher, unreadable, tests students more than she teaches them.",
     motivation: "Believes the school's ranking system reveals true character under pressure.",
-    secret: "Personally lobbied to have the player placed in Class 1-C instead of 1-A.",
+    secret: "Personally lobbied to have the player placed in Class 1-D instead of 1-A.",
     strength: "Total institutional knowledge; sees everything happening in her class.",
     weakness: "Will not intervene even when a student is being set up to fail.",
     speechStyle: "Flat, clinical, occasionally cutting.",
