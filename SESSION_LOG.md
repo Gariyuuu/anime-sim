@@ -375,3 +375,53 @@ at the bottom; never overwrite prior entries.
   just the fallback. Otherwise, push `main` to `origin` when the user
   asks, and do a full doc re-sync (all 16 files) before the next major
   content push if the docs need to stay trustworthy for a handoff.
+
+## Session 4 — 2026-08-06 — Fixed a real "bald NPC" rendering bug, textured rooms, persistent objective HUD
+
+- **Account/agent:** unknown (Claude Code session, no persistent
+  identifier available in this environment).
+- **Goal:** User reported "Suzune is not an old man" (a portrait-rendering
+  bug), the exploration background still reading as "a grid with two
+  colors," and not understanding how to progress past talking to NPCs.
+- **Root causes found (via live browser testing, not just code reading):**
+  (1) `PortraitFace.tsx`'s hair-top SVG path was a near-degenerate crescent
+  sliver that rendered as functionally invisible — every NPC appeared bald
+  regardless of `hairColor`/`hairstyle`, worst-case for silver/ash-blonde
+  hair which also blended into the washed-out portrait card background.
+  (2) `ExplorationView.tsx`'s canvas render was a literal single flat
+  `fillRect` for the floor plus a 5%-opacity grid line — there was no
+  second color, texture, or depth cue at all. (3) The quest log lived only
+  inside the phone menu; the HUD had zero persistent indication of what to
+  do, and quest objectives have no per-item completion tracking in the
+  data model (`completedObjectiveIds` is set but never populated —
+  pre-existing dead field, not something this session fixed).
+- **Work completed:** rewrote `PortraitFace.tsx`'s hair rendering as a
+  silhouette-behind-face layer with an outline stroke (guarantees
+  visibility regardless of background color); gave `ExplorationView.tsx`'s
+  canvas a two-tone floor checker, beveled walls, and a radial vignette
+  (`shadeColor`/`shadeFloor` helpers, no new art assets); added a
+  persistent objective strip to `HUD.tsx` showing the active quest's
+  title+description, or a generic "talk to people / interact with
+  objects" nudge when nothing is active yet. All four verification
+  commands re-run clean (66/66 tests). Live-browser-verified via
+  Playwright — walked into Class 1-D, screenshotted Suzune's and Ms.
+  Chabashira's portraits before/after (both now show visible hair), and
+  the classroom floor now checkers instead of one flat color. Deployed via
+  `vercel --prod`; `https://anime-sim-eta.vercel.app` confirmed `200`.
+- **Work remaining:** the "png-like" bar the user set for backgrounds is
+  still a procedural/vector improvement, not real texture art — there are
+  no image assets in this repo to draw from (see `portraitImageUrl` from
+  Session 3, still unused). The HUD objective strip shows the whole
+  quest's goal, not a specific next-step checklist item, because
+  per-objective completion isn't tracked anywhere in the codebase; making
+  that granular would mean adding a new effect type and wiring it through
+  every quest-relevant scene node — a bigger content-authoring task, not
+  attempted here. `main` is still unpushed to `origin` (5 commits ahead as
+  of this session's start, 6 after this session's commit).
+- **Recommended next action:** if "why is nothing happening" complaints
+  continue, the next lever is probably a lightweight visual cue on
+  interactable markers themselves (e.g. a pulsing ring on anything tied to
+  an unstarted/active quest) rather than more HUD text — the data model
+  would need a `relatedInteractableId` or similar on `QuestObjective` to
+  do this precisely; right now there's no structured link from a quest
+  objective back to the map object that satisfies it.
