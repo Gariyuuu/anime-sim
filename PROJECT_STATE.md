@@ -1,11 +1,58 @@
 # PROJECT_STATE.md — Exact Snapshot
 
-**Audit timestamp: 2026-08-07 — "final transfer checkpoint" pass.** This
-is now the third layer of updates to this file; everything below the next
-"---" predates this pass and is historical record only (each older layer
-already says the same about the layer before it — this is a documented
-pattern in this repo, not a one-off). See "Current state (checkpoint pass,
-2026-08-07)" immediately below for what's actually true now.
+**Audit timestamp: 2026-08-07 — real floor textures + a redraw-bug fix
+(Session 7 in `SESSION_LOG.md`).** This is now the fourth layer of updates
+to this file; everything below the next "---" predates this pass and is
+historical record only. See "Current state (Session 7, 2026-08-07)"
+immediately below for what's actually true now.
+
+## Current state (Session 7, 2026-08-07)
+
+- **Latest commit at the start of this pass:** `084b575` — "Wire real
+  Kenney sprites into interactable icons and scenery props" (committed in
+  an earlier, unlogged turn of this same session — see `SESSION_LOG.md`
+  Session 7 for why it predates this log entry). This pass adds one more
+  commit on top for the floor-texture work described there; **re-run
+  `git log -1 --oneline` yourself before trusting any specific hash.**
+- **`main` is 14 commits ahead of `origin/main`, unpushed, as of this
+  pass — re-verify via `git log origin/main..HEAD --oneline` before
+  trusting that number, standing reminder from every prior layer of this
+  file.** Not pushed this pass; that decision is the user's.
+- **What changed this pass:** four real, pixel-verified Kenney floor
+  textures (`public/sprites/kenney/floors/{grass,plaza,indoor,dungeon}.png`)
+  wired via a new `FLOOR_TEXTURES` table (`src/content/iconSprites.ts`)
+  into `ExplorationView.tsx`'s canvas floor-render loop, replacing the flat
+  procedural tone for any map whose `sceneType` has a mapped texture.
+  Fixed two real bugs surfaced while building this (full detail in
+  `SESSION_LOG.md` Session 7, not repeated here): (1) the canvas
+  render effect's dependency array never actually included the frame-tick
+  counter meant to trigger it, so a teleport into a room with a
+  still-loading image and no subsequent player movement got stuck showing
+  the fallback forever — affected `backgroundImageUrl` and `PROP_SPRITES`
+  too, not just the new floor textures; (2) `tree-pine.png`'s canopy fill
+  and the new grass texture shared an identical RGB value from the same
+  Kenney palette, so trees on grass nearly vanished into the floor —
+  recolored the sprite and added a grounding shadow behind all
+  sprite-rendered props.
+- **Verification this pass, run fresh after every substantive edit (not
+  just once at the end):** `npx tsc --noEmit` — 0 errors. `pnpm lint` — 0
+  errors/warnings. `pnpm test` — 83/83 passing, 12 files (unchanged from
+  the prior layer — no new test files added this pass, all coverage is
+  the pre-existing suite). `pnpm build` — clean. **Live-Playwright-
+  verified in a real browser this time** (unlike the Session 6 checkpoint,
+  which explicitly did not): Elite Academy's Outdoor Courtyard, Classroom
+  1-D, Gym, Aincrad's Town of Beginnings, and Floor 1 Dungeon — The Root
+  Halls — zero console/page errors across all of it.
+- **Not touched, not asked for:** the other `sceneType`s without a
+  `FLOOR_TEXTURES` entry still use the procedural tone (this was
+  deliberate — `forest`/`courtyard` share the grass texture, `boss`
+  shares the dungeon texture, everything else has no obviously-matching
+  Kenney tile). `backgroundImageUrl` (full real-art-per-map override)
+  remains unused infrastructure, same as every prior layer of this file
+  has noted. `FEATURES.md`/`ROADMAP.md` re-audit still not done — same
+  standing gap as the Session 6 layer below.
+
+---
 
 ## Current state (checkpoint pass, 2026-08-07)
 

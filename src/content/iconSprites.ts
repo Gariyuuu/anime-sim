@@ -45,3 +45,23 @@ export const PROP_SPRITES: Record<string, string> = {
   bush: "/sprites/kenney/bush.png",
   crate: "/sprites/kenney/crate.png",
 };
+
+/** Real seamless-tileable floor textures (native 16x16 Kenney tiles), keyed by `sceneType`.
+ * Rendered via `ctx.createPattern()` in place of the flat `floorTileTone()` fill. Every source
+ * tile here was verified with `PIL.Image.getcolors()` before use — this tileset mixes opaque
+ * plain-floor tiles with near-identical-looking wall/window tiles a few coordinates away, and
+ * eyeballing a small crop was wrong twice before pixel-color verification caught it. Any
+ * `sceneType` not listed here keeps the procedural `floorTileTone()` fill unchanged. */
+export const FLOOR_TEXTURES: Partial<Record<string, string>> = {
+  forest: "/sprites/kenney/floors/grass.png",
+  courtyard: "/sprites/kenney/floors/grass.png",
+  town: "/sprites/kenney/floors/plaza.png",
+  shop: "/sprites/kenney/floors/plaza.png",
+  dungeon: "/sprites/kenney/floors/dungeon.png",
+  boss: "/sprites/kenney/floors/dungeon.png",
+  classroom: "/sprites/kenney/floors/indoor.png",
+  library: "/sprites/kenney/floors/indoor.png",
+  gym: "/sprites/kenney/floors/indoor.png",
+  cafeteria: "/sprites/kenney/floors/indoor.png",
+  dorm: "/sprites/kenney/floors/indoor.png",
+};

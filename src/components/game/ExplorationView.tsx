@@ -6,7 +6,7 @@ import { getMap, getNpc, maps } from "@/content/registry";
 import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, buildDoorGraph, nextDoorTowardMap, type MoveInput } from "@/engine/exploration";
 import { getGuidanceTarget } from "@/lib/guidance";
 import { generateScenery, type Prop } from "@/engine/scenery";
-import { GLYPH_SPRITES, PROP_SPRITES } from "@/content/iconSprites";
+import { GLYPH_SPRITES, PROP_SPRITES, FLOOR_TEXTURES } from "@/content/iconSprites";
 import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
@@ -276,7 +276,7 @@ export function ExplorationView() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [viewSize, setViewSize] = useState({ w: MIN_VIEW_W, h: MIN_VIEW_H });
   const viewSizeRef = useRef(viewSize);
-  const [, forceTick] = useState(0);
+  const [tick, forceTick] = useState(0);
   const [compassVisible, setCompassVisible] = useState(false);
   const compassTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showCompass = useCallback(() => {
@@ -440,36 +440,64 @@ export function ExplorationView() {
       // procedural scenery is skipped entirely for this map (see the `sceneProps` memo above).
       ctx.drawImage(bgImage, 0, 0, map.widthTiles * ts, map.heightTiles * ts);
     } else {
-      // floor: mottled, organic per-tile tone (see floorTileTone) instead of a flat fill or a
-      // rigid alternating checker — a strict checker still reads as "a grid of blocks" no matter
-      // what's drawn on top of it; this looks like natural ground/flooring variation instead.
       const firstCol = Math.max(0, Math.floor(camera.x / ts) - 1);
       const lastCol = Math.min(map.widthTiles, Math.ceil((camera.x + worldViewW) / ts) + 1);
       const firstRow = Math.max(0, Math.floor(camera.y / ts) - 1);
       const lastRow = Math.min(map.heightTiles, Math.ceil((camera.y + worldViewH) / ts) + 1);
+
+      // floor: a real seamless-tileable Kenney texture (grass/plaza/dungeon stone/indoor tile)
+      // keyed off the map's sceneType, when one is mapped in FLOOR_TEXTURES — this is the "real
+      // location, not colored blocks" upgrade. Falls back to the mottled procedural tone
+      // (floorTileTone) for any sceneType without a mapped texture, or while the image loads.
+      const floorTextureUrl = FLOOR_TEXTURES[map.sceneType];
+      const floorTexture = floorTextureUrl ? getCachedImage(floorTextureUrl, () => forceTick((t) => (t + 1) % 100000)) : undefined;
+      ctx.imageSmoothingEnabled = false;
       for (let ty = firstRow; ty < lastRow; ty++) {
         for (let tx = firstCol; tx < lastCol; tx++) {
           if (wallSet.has(`${tx},${ty}`)) continue;
-          ctx.fillStyle = floorTileTone(map.background, map.id, tx, ty);
-          ctx.fillRect(tx * ts - camera.x, ty * ts - camera.y, ts, ts);
+          const px = tx * ts - camera.x;
+          const py = ty * ts - camera.y;
+          if (floorTexture) {
+            // A single small tile drawn identically on every cell reads as an obvious repeat —
+            // exactly the "grid" look this was meant to fix. Randomly rotate/mirror each tile
+            // (hash-seeded, so it's stable across re-renders) instead of tinting a flat overlay
+            // on top: it breaks up the repeat using the texture's own detail rather than washing
+            // it out with a color wash, which is what actually made grass.png (mostly flat green
+            // with sparse tufts) look like a checkerboard on the first pass.
+            const seed = hashString(`${map.id}:rot:${tx}:${ty}`);
+            const rotation = (seed % 4) * (Math.PI / 2);
+            const flipX = (seed >> 2) % 2 === 0 ? 1 : -1;
+            ctx.save();
+            ctx.translate(px + ts / 2, py + ts / 2);
+            ctx.rotate(rotation);
+            ctx.scale(flipX, 1);
+            ctx.drawImage(floorTexture, -ts / 2, -ts / 2, ts, ts);
+            ctx.restore();
+          } else {
+            ctx.fillStyle = floorTileTone(map.background, map.id, tx, ty);
+            ctx.fillRect(px, py, ts, ts);
+          }
         }
       }
 
       // fine speckle texture on top — a handful of tiny dots per visible tile, alternating
       // slightly lighter/darker than that tile's own tone, so the floor reads as a textured
-      // surface (grass, stone, wood) up close instead of a smooth flat color.
-      for (let ty = firstRow; ty < lastRow; ty++) {
-        for (let tx = firstCol; tx < lastCol; tx++) {
-          if (wallSet.has(`${tx},${ty}`)) continue;
-          const seed = hashString(`${map.id}:speck:${tx}:${ty}`);
-          const speckCount = 2 + (seed % 3);
-          for (let i = 0; i < speckCount; i++) {
-            const sx = tx * ts - camera.x + ((seed >> (i * 4 + 1)) % 100) * 0.01 * ts;
-            const sy = ty * ts - camera.y + ((seed >> (i * 4 + 5)) % 100) * 0.01 * ts;
-            ctx.fillStyle = i % 2 === 0 ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.06)";
-            ctx.beginPath();
-            ctx.arc(sx, sy, ts * 0.02, 0, Math.PI * 2);
-            ctx.fill();
+      // surface up close instead of a smooth flat color. Skipped over a real floor texture,
+      // which already carries its own surface detail — extra speckle just muddied it.
+      if (!floorTexture) {
+        for (let ty = firstRow; ty < lastRow; ty++) {
+          for (let tx = firstCol; tx < lastCol; tx++) {
+            if (wallSet.has(`${tx},${ty}`)) continue;
+            const seed = hashString(`${map.id}:speck:${tx}:${ty}`);
+            const speckCount = 2 + (seed % 3);
+            for (let i = 0; i < speckCount; i++) {
+              const sx = tx * ts - camera.x + ((seed >> (i * 4 + 1)) % 100) * 0.01 * ts;
+              const sy = ty * ts - camera.y + ((seed >> (i * 4 + 5)) % 100) * 0.01 * ts;
+              ctx.fillStyle = i % 2 === 0 ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.06)";
+              ctx.beginPath();
+              ctx.arc(sx, sy, ts * 0.02, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
         }
       }
@@ -485,6 +513,23 @@ export function ExplorationView() {
         const sprite = spriteUrl ? getCachedImage(spriteUrl, () => forceTick((t) => (t + 1) % 100000)) : undefined;
         if (sprite) {
           const s = ts * prop.scale * 1.3;
+          // Some Kenney sprites (tree-pine.png's canopy, notably) reuse the exact same RGB as
+          // this floor texture's dominant color — literally the same shared-palette green in both
+          // packs — so the sprite's fill nearly vanishes into the floor, leaving just its dark
+          // outline reading as a hollow shape. A ground-contact shadow alone doesn't fix that (it
+          // only darkens the base, not the body), so this is a soft halo behind the whole sprite:
+          // enough to guarantee contrast against any floor tone without reading as an odd blob
+          // behind naturally-dark props like crates.
+          ctx.save();
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + s * 0.08, s * 0.46, s * 0.42, 0, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(0,0,0,0.16)";
+          ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(cx, cy + s * 0.34, s * 0.34, s * 0.13, 0, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(0,0,0,0.2)";
+          ctx.fill();
+          ctx.restore();
           ctx.imageSmoothingEnabled = false;
           ctx.drawImage(sprite, cx - s / 2, cy - s / 2, s, s);
         } else {
@@ -539,7 +584,13 @@ export function ExplorationView() {
     ctx.fillRect(camera.x, camera.y, worldViewW, worldViewH);
 
     ctx.restore();
-  }, [map, pos, viewSize, sceneProps]);
+    // `tick` (bumped every animation frame by the main loop above) is intentionally a dependency
+    // here, not just of the main loop: it's what turns a late-arriving image load (floor texture,
+    // backgroundImageUrl, a prop sprite — anything going through getCachedImage's onload->forceTick
+    // callback) into an actual redraw. Without it, a teleport into a room with an unloaded texture
+    // and no further movement leaves this effect's other deps (map/pos/viewSize/sceneProps) all
+    // unchanged, so it never reruns and the fallback render sticks forever.
+  }, [map, pos, viewSize, sceneProps, tick]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {

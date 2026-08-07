@@ -524,3 +524,85 @@ at the bottom; never overwrite prior entries.
   (content cross-reference integrity check, still not implemented and
   now covering roughly double the content it did when written) or a real
   feature-by-feature re-audit of `FEATURES.md`/`ROADMAP.md`.
+
+## Session 7 — 2026-08-07 — Real floor textures + a real redraw bug fix
+
+- **Account/agent:** unknown (Claude Code session, no persistent
+  identifier available in this environment).
+- **Goal:** user reported the exploration floor still "looks like a
+  grid" / "the map is ugly" across several consecutive rounds despite
+  prior mottled-tone and denser-scenery passes, and asked either for a
+  genuine grass-field look or a real background image per map. This
+  picks up from the icon-sprite work already committed at `084b575`
+  (not this pass's work, done in a prior, unlogged turn of the same
+  session) and adds the same "real Kenney art" treatment to the floor
+  itself.
+- **Work completed:** extracted and pixel-verified (via
+  `PIL.Image.getcolors()`/alpha-channel checks, not eyeballing — this
+  tileset had already burned two coordinate mistakes this session) four
+  seamless floor textures into `public/sprites/kenney/floors/`: grass,
+  plaza, indoor-tile, dungeon-stone. The first dungeon-floor coordinate
+  picked turned out to be a wall/window tile (confirmed via
+  `getcolors()` — 4 distinct colors including light gray-blue window
+  pixels); re-derived the correct flat single-color tile before use. Added
+  `FLOOR_TEXTURES` (`src/content/iconSprites.ts`) mapping `sceneType` to
+  a texture path, wired into `ExplorationView.tsx`'s canvas floor loop via
+  per-tile `drawImage` with a hash-seeded rotation/mirror per tile (not a
+  flat color-tint overlay — an early version of that made the texture
+  look *more* grid-like, not less, since it painted a uniform wash over
+  each cell). Falls back to the existing procedural `floorTileTone` for
+  any `sceneType` without a mapped texture.
+- **Two real bugs found and fixed, not just the texture feature itself:**
+  (1) **A latent redraw bug affecting every image-based render path,**
+  not just floor textures — `const [, forceTick] = useState(0)`
+  discarded the tick value, and the canvas-render `useEffect`'s
+  dependency array (`[map, pos, viewSize, sceneProps]`) never included
+  it, even though the main loop bumps it every animation frame. Lazy
+  image loads (`getCachedImage`'s `onload` → `forceTick`) rely on that
+  tick to trigger a redraw once the image is ready; without it in the
+  deps, a teleport into a room with an unloaded texture and *no
+  subsequent player movement* (pos otherwise never changes) left the
+  stale fallback on screen forever — caught via an automated Playwright
+  teleport-then-screenshot test that doesn't move the player, which a
+  human tester moving immediately after every scene change would likely
+  never trigger. Fixed by capturing the tick value (`const [tick,
+  forceTick] = useState(0)`) and adding it to the render effect's deps —
+  this now redraws continuously at the main loop's frame rate, which
+  also means any other `now`-driven animation in `drawProp` that was
+  silently frozen between movements is fixed as a side effect. (2)
+  **`tree-pine.png`'s canopy fill and the new `grass.png` floor texture
+  shared the exact same RGB value** (`132,198,105` — both Kenney packs
+  draw from the same palette), so trees rendered on grass nearly
+  vanished, leaving only their dark outline visible — read as a hollow
+  purple/maroon arch, not a tree. A ground-contact shadow alone didn't
+  fix it (the collision was body-wide, not just at the base); fixed by
+  recoloring `tree-pine.png`'s two green tones to values with no
+  cross-pack collision, plus a soft two-layer shadow behind all
+  `PROP_SPRITES`-rendered props for general contrast against any floor
+  tone going forward.
+- **Verification:** `npx tsc --noEmit`, `pnpm lint`, `pnpm test` (still
+  83/83, 12 files), `pnpm build` all clean, run fresh after every
+  substantive change (not just once at the end). Live-Playwright-verified
+  in a real browser (zero console/page errors throughout): Elite
+  Academy's Outdoor Courtyard (grass), Classroom 1-D and Gym (indoor
+  tile), Aincrad's Town of Beginnings (plaza), and Floor 1 Dungeon — The
+  Root Halls (dungeon stone) — all four mapped textures confirmed
+  rendering correctly post-fix, trees reading as trees, no leftover
+  checkerboard look. Dev server flakiness this pass: port 3000 kept
+  getting silently reclaimed by a stray already-running
+  `buildstrike-arena` dev server between restarts (a different
+  ~/Projects sibling) — worked around by pinning anime-sim's dev server
+  to port 3050 explicitly (`next dev -p 3050`) for the rest of the
+  session; not an anime-sim bug.
+- **Work remaining:** the other `sceneType`s without a `FLOOR_TEXTURES`
+  entry (`boss` reuses dungeon-stone; `forest` reuses grass; everything
+  else — `generic`, and any future scene type — still falls back to the
+  procedural tone) haven't been given real textures and weren't asked
+  for. `backgroundImageUrl` (the full-map real-art override) remains
+  unused by any actual map — still just infrastructure. Not committed to
+  `origin/main` this pass; `main` is 14 commits ahead of `origin/main` as
+  of this entry (re-verify before trusting that number).
+- **Recommended next action:** re-verify the ahead-of-origin count before
+  doing anything with git history, same standing reminder as every prior
+  session entry. Otherwise, the user's own words after this pass are the
+  best guide to what's next.
