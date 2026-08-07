@@ -186,7 +186,13 @@ export function DialogueView() {
             exit={{ opacity: 0 }}
             className="absolute bottom-40 right-6 z-10 flex flex-col items-center sm:right-10"
           >
-            <div className="flex h-28 w-28 items-center justify-center rounded-lg border-4 border-paper-0 sm:h-36 sm:w-36" style={{ background: speakerNpc.portraitColor }}>
+            <div
+              className={cn(
+                "flex h-28 w-28 items-center justify-center rounded-lg border-4 border-paper-0 sm:h-36 sm:w-36",
+                fullyRevealed ? "portrait-idle" : "portrait-talk",
+              )}
+              style={{ background: speakerNpc.portraitColor }}
+            >
               <Icon name={speakerNpc.portraitGlyph} size={40} color="var(--paper-0)" />
             </div>
             <div className="mt-1 flex items-center gap-1 rounded-full border-2 border-paper-0 bg-ink-950 px-2 py-0.5">

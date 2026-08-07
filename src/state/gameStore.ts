@@ -4,6 +4,7 @@ import { createPlayerFromCreator } from "@/types/character";
 import { defaultSettings } from "@/types/settings";
 import { evaluateConditions } from "@/lib/conditions";
 import { applyEffects, type EffectCommand } from "@/lib/effects";
+import type { Effect } from "@/types/narrative";
 import { checkGenericAchievements } from "@/lib/achievements";
 import { persistSave, loadSaveSlot, AUTOSAVE_SLOT_ID } from "@/lib/save";
 import { uid } from "@/lib/utils";
@@ -15,6 +16,7 @@ import {
   getAchievement,
   getEnemy,
   getItem,
+  getPuzzle,
 } from "@/content/registry";
 import {
   buildEncounter,
@@ -82,6 +84,7 @@ interface GameStoreState {
 
   moveToMap: (mapId: string, spawnId?: string) => void;
   interact: (interactableId: string) => void;
+  triggerPuzzleSwitch: (puzzleId: string, order: number) => void;
 
   startCombat: (encounterId: string) => void;
   doPlayerAttack: (targetId: string, timingBonus?: boolean) => void;
@@ -220,6 +223,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       dialogueHistory: [],
       choiceLog: [],
       messages: [],
+      puzzleProgress: {},
       settings: defaultSettings(),
     };
     set({ screen: "game" });
@@ -348,9 +352,51 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
       });
       return;
     }
+    if (it.kind === "puzzle-switch" && it.puzzleId && it.puzzleOrder != null) {
+      get().triggerPuzzleSwitch(it.puzzleId, it.puzzleOrder);
+      return;
+    }
     if (it.sceneId) {
       get().goToScene(it.sceneId);
     }
+  },
+
+  triggerPuzzleSwitch: (puzzleId, order) => {
+    const { save } = get();
+    if (!save) return;
+    const puzzle = getPuzzle(puzzleId);
+    if (!puzzle) return;
+    if (save.flags.includes(puzzle.successFlag)) return; // already solved — switches go inert
+
+    const progress = save.puzzleProgress[puzzleId] ?? 0;
+    if (order === progress) return; // re-confirming the last correct switch — harmless no-op
+
+    if (order !== progress + 1) {
+      // wrong order — reset back to the start
+      if (progress === 0) return;
+      set({ save: { ...save, puzzleProgress: { ...save.puzzleProgress, [puzzleId]: 0 } } });
+      get().pushNotification({ kind: "info", title: "Wrong order", detail: puzzle.failMessage });
+      return;
+    }
+
+    const nextProgress = progress + 1;
+    if (nextProgress < puzzle.totalSwitches) {
+      set({ save: { ...save, puzzleProgress: { ...save.puzzleProgress, [puzzleId]: nextProgress } } });
+      return;
+    }
+
+    // final switch — solved
+    const effects: Effect[] = [{ type: "setFlag", flag: puzzle.successFlag }];
+    if (puzzle.successAchievementId) effects.push({ type: "unlockAchievement", achievementId: puzzle.successAchievementId });
+    const { save: afterEffects, commands } = applyEffects(
+      { ...save, puzzleProgress: { ...save.puzzleProgress, [puzzleId]: nextProgress } },
+      effects,
+    );
+    get().pushNotification({ kind: "info", title: "Solved", detail: puzzle.successMessage });
+    get()._resolveEffects(afterEffects, commands, (settled) => {
+      set({ save: settled });
+      get().saveGame();
+    });
   },
 
   startCombat: (encounterId) => {

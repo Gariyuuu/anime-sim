@@ -15,6 +15,7 @@ export const achievements: AchievementDefinitionInput[] = [
   { id: "ach-class-savior", title: "Class Savior", description: "Resolve the point-leak investigation the honest way.", worldId: "elite-academy", icon: "graduation-cap" },
   { id: "ach-unreadable", title: "Unreadable", description: "Keep a secret as leverage instead of spending it.", worldId: "elite-academy", icon: "eye-off", hidden: true },
   { id: "ach-hidden-truth", title: "Hidden Truth", description: "Reach the end of Chapter One and learn someone's been watching.", worldId: "elite-academy", icon: "eye" },
+  { id: "ach-archive-unlocked", title: "Weakest Survives Longest", description: "Solve the library archive's four-lever puzzle.", worldId: "elite-academy", icon: "key" },
 
   // --- Aincrad (scene-triggered) ---
   { id: "ach-locked-in", title: "Locked In", description: "Learn the truth about logout on Floor 1.", worldId: "aincrad", icon: "lock" },
@@ -24,6 +25,7 @@ export const achievements: AchievementDefinitionInput[] = [
   { id: "ach-lone-swordsman", title: "Lone Swordsman", description: "Refuse all three guilds and stay solo.", worldId: "aincrad", icon: "sword" },
   { id: "ach-unlikely-ally", title: "Unlikely Ally", description: "Recruit a player who swore off partying entirely.", worldId: "aincrad", icon: "user-plus", hidden: true },
   { id: "ach-off-the-map", title: "Off the Map", description: "Find a location that isn't on any quest marker.", worldId: "aincrad", icon: "map-pin", hidden: true },
+  { id: "ach-vault-cracked", title: "Frost-Locked", description: "Solve the Frost Vaults' old lever puzzle.", worldId: "aincrad", icon: "key" },
 
   // --- Generic (checked live against save state, see lib/achievements.ts) ---
   { id: "ach-first-ally", title: "First Ally", description: "Reach 50 trust or affection with an NPC for the first time.", worldId: "shared", icon: "handshake" },

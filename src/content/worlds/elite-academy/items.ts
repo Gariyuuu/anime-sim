@@ -52,4 +52,14 @@ export const eliteAcademyItems: ItemDefinitionInput[] = [
     value: 0,
     icon: "file-text",
   },
+  {
+    id: "ea-item-founders-record",
+    name: "The Founders' Ledger Page",
+    description: "A single preserved page from the academy's founding ledger. It describes a ranking system built specifically to reward the classes willing to climb from nothing — word for word, the same philosophy behind this year's unexplained point penalty.",
+    kind: "quest",
+    slot: "none",
+    rarity: "legendary",
+    value: 0,
+    icon: "scroll",
+  },
 ];

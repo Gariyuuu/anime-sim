@@ -32,11 +32,14 @@ export function nearestInteractable(
   interactables: Interactable[],
   tileSize: number,
   maxDistPx: number,
+  unlockedFlags: string[] = [],
 ): Interactable | null {
   let best: Interactable | null = null;
   let bestDist = Infinity;
   for (const it of interactables) {
-    if (it.hidden) continue;
+    // `hidden` items intentionally stay reachable here (no visible marker, but findable by
+    // walking near them and pressing interact) — only flag-gating actually blocks discovery.
+    if (it.requiresFlag && !unlockedFlags.includes(it.requiresFlag)) continue;
     const cx = it.x * tileSize + tileSize / 2;
     const cy = it.y * tileSize + tileSize / 2;
     const dist = Math.hypot(cx - playerCenterX, cy - playerCenterY);

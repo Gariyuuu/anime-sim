@@ -43,6 +43,9 @@ export const SaveGameSchema = z.object({
     .array(z.object({ id: z.string(), messageId: z.string(), npcId: z.string(), timestamp: z.number(), read: z.boolean().default(false) }))
     .default([]),
   choiceLog: z.array(z.object({ sceneId: z.string(), choiceId: z.string(), text: z.string() })).default([]),
+  /** Per-puzzle progress: how many switches have been correctly activated in sequence so far,
+   * keyed by PuzzleDefinition id. Wrong-order activation resets the count back to 0. */
+  puzzleProgress: z.record(z.string(), z.number()).default({}),
   settings: SettingsSchema,
 });
 export type SaveGame = z.infer<typeof SaveGameSchema>;

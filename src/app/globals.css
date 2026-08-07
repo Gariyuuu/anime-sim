@@ -147,3 +147,75 @@ body {
 [data-tab-hidden="true"] * {
   animation-play-state: paused !important;
 }
+
+/* ---- Lightweight sprite/portrait animation, 60fps compositor-driven CSS keyframes.
+   No new art assets — just motion applied to the existing flat SVG/CSS layers. ---- */
+@keyframes sprite-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+.sprite-idle {
+  animation: sprite-idle-bob 1.8s ease-in-out infinite;
+}
+@keyframes sprite-leg-swing-a {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.6px); }
+}
+@keyframes sprite-leg-swing-b {
+  0%, 100% { transform: translateY(-1.6px); }
+  50% { transform: translateY(0); }
+}
+.sprite-leg-a {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sprite-leg-swing-a 360ms steps(2) infinite;
+}
+.sprite-leg-b {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sprite-leg-swing-b 360ms steps(2) infinite;
+}
+.sprite-facing-left {
+  transform: scaleX(-1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes sprite-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.15); }
+}
+.sprite-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sprite-blink 4.2s ease-in-out infinite;
+}
+@keyframes portrait-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.portrait-idle {
+  animation: portrait-idle-bob 2.4s ease-in-out infinite;
+}
+@keyframes portrait-talk {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-1px) scale(1.015); }
+}
+.portrait-talk {
+  animation: portrait-talk 220ms ease-in-out infinite;
+}
+@keyframes marker-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.marker-idle {
+  animation: marker-idle-bob 1.6s ease-in-out infinite;
+}
+[data-reduced-motion="true"] .sprite-idle,
+[data-reduced-motion="true"] .sprite-leg-a,
+[data-reduced-motion="true"] .sprite-leg-b,
+[data-reduced-motion="true"] .sprite-blink,
+[data-reduced-motion="true"] .portrait-idle,
+[data-reduced-motion="true"] .portrait-talk,
+[data-reduced-motion="true"] .marker-idle {
+  animation: none;
+}

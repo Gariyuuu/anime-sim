@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const InteractableSchema = z.object({
   id: z.string(),
-  kind: z.enum(["npc", "object", "door", "quest-marker", "hidden-item", "shop", "trigger", "transition", "monster"]),
+  kind: z.enum(["npc", "object", "door", "quest-marker", "hidden-item", "shop", "trigger", "transition", "monster", "puzzle-switch"]),
   x: z.number(),
   y: z.number(),
   label: z.string(),
@@ -16,8 +16,27 @@ export const InteractableSchema = z.object({
   respawns: z.boolean().default(true),
   hidden: z.boolean().default(false),
   glyph: z.string().default("circle"),
+  /** `kind: "puzzle-switch"` only — which PuzzleDefinition this switch belongs to, and this
+   * switch's 1-indexed position in that puzzle's required activation order. */
+  puzzleId: z.string().optional(),
+  puzzleOrder: z.number().optional(),
 });
 export type Interactable = z.infer<typeof InteractableSchema>;
+
+export const PuzzleDefinitionSchema = z.object({
+  id: z.string(),
+  worldId: z.enum(["elite-academy", "aincrad"]),
+  /** How many switches must be activated, in order, to solve this puzzle. */
+  totalSwitches: z.number().int().min(2),
+  /** Story flag set the moment the puzzle is solved — gate a door/interactable on it via
+   * `requiresFlag`, exactly like any other flag-gated content. */
+  successFlag: z.string(),
+  hint: z.string().optional(),
+  failMessage: z.string().default("Wrong order — the pattern resets."),
+  successMessage: z.string().default("The pattern locks into place."),
+  successAchievementId: z.string().optional(),
+});
+export type PuzzleDefinition = z.infer<typeof PuzzleDefinitionSchema>;
 
 export const MapDefinitionSchema = z.object({
   id: z.string(),

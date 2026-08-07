@@ -6,6 +6,7 @@ import {
   ChapterDefinitionSchema,
   FloorDefinitionSchema,
   GuildDefinitionSchema,
+  PuzzleDefinitionSchema,
   SceneSchema,
   SkillSchema,
   EnemyDefinitionSchema,
@@ -20,6 +21,7 @@ import {
   type FloorDefinition,
   type GuildDefinition,
   type ClassDefinition,
+  type PuzzleDefinition,
   type Scene,
   type Skill,
   type EnemyDefinition,
@@ -34,6 +36,7 @@ import { eliteAcademyQuests } from "./worlds/elite-academy/quests";
 import { eliteAcademyMaps } from "./worlds/elite-academy/maps";
 import { eliteAcademyScenes } from "./worlds/elite-academy/scenes";
 import { eliteAcademyClasses } from "./worlds/elite-academy/classes";
+import { eliteAcademyPuzzles } from "./worlds/elite-academy/puzzles";
 import { eliteAcademyChapters, determineEliteChapterOutcome } from "./worlds/elite-academy/chapter";
 
 import { aincradNpcs } from "./worlds/aincrad/npcs";
@@ -46,6 +49,7 @@ import { aincradEnemies } from "./worlds/aincrad/enemies";
 import { aincradGuilds } from "./worlds/aincrad/guilds";
 import { aincradFloors } from "./worlds/aincrad/floors";
 import { aincradEncounters } from "./worlds/aincrad/encounters";
+import { aincradPuzzles } from "./worlds/aincrad/puzzles";
 import { aincradChapters, determineAincradChapterOutcome } from "./worlds/aincrad/chapter";
 
 import { achievements as achievementsInput } from "./achievements";
@@ -63,6 +67,7 @@ export const maps: MapDefinition[] = parseAll(MapDefinitionSchema, [...eliteAcad
 export const scenes: Scene[] = parseAll(SceneSchema, [...eliteAcademyScenes, ...aincradScenes]);
 export const chapters: ChapterDefinition[] = parseAll(ChapterDefinitionSchema, [...eliteAcademyChapters, ...aincradChapters]);
 export const classes: ClassDefinition[] = eliteAcademyClasses;
+export const puzzles: PuzzleDefinition[] = parseAll(PuzzleDefinitionSchema, [...eliteAcademyPuzzles, ...aincradPuzzles]);
 export const skills: Skill[] = parseAll(SkillSchema, aincradSkills);
 export const enemies: EnemyDefinition[] = parseAll(EnemyDefinitionSchema, aincradEnemies);
 export const guilds: GuildDefinition[] = parseAll(GuildDefinitionSchema, aincradGuilds);
@@ -80,6 +85,7 @@ const mapById = new Map(maps.map((m) => [m.id, m]));
 const sceneById = new Map(scenes.map((s) => [s.id, s]));
 const chapterById = new Map(chapters.map((c) => [c.id, c]));
 const classById = new Map(classes.map((c) => [c.id, c]));
+const puzzleById = new Map(puzzles.map((p) => [p.id, p]));
 const skillById = new Map(skills.map((s) => [s.id, s]));
 const enemyById = new Map(enemies.map((e) => [e.id, e]));
 const guildById = new Map(guilds.map((g) => [g.id, g]));
@@ -95,6 +101,7 @@ export const getMap = (id: string): MapDefinition | undefined => mapById.get(id)
 export const getScene = (id: string): Scene | undefined => sceneById.get(id);
 export const getChapter = (id: string): ChapterDefinition | undefined => chapterById.get(id);
 export const getClass = (id: string): ClassDefinition | undefined => classById.get(id);
+export const getPuzzle = (id: string): PuzzleDefinition | undefined => puzzleById.get(id);
 export const getSkill = (id: string): Skill | undefined => skillById.get(id);
 export const getEnemy = (id: string): EnemyDefinition | undefined => enemyById.get(id);
 export const getGuild = (id: string): GuildDefinition | undefined => guildById.get(id);

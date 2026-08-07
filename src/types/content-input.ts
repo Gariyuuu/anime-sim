@@ -12,6 +12,7 @@ import type {
   GuildDefinitionSchema,
   ClassDefinitionSchema,
   InteractableSchema,
+  PuzzleDefinitionSchema,
 } from "./world";
 import type { SceneSchema, DialogueLineSchema, ChoiceSchema } from "./narrative";
 import type { AchievementDefinitionSchema, CodexEntrySchema } from "./achievements";
@@ -33,6 +34,7 @@ export type ChapterDefinitionInput = z.input<typeof ChapterDefinitionSchema>;
 export type FloorDefinitionInput = z.input<typeof FloorDefinitionSchema>;
 export type GuildDefinitionInput = z.input<typeof GuildDefinitionSchema>;
 export type ClassDefinitionInput = z.input<typeof ClassDefinitionSchema>;
+export type PuzzleDefinitionInput = z.input<typeof PuzzleDefinitionSchema>;
 export type SceneInput = z.input<typeof SceneSchema>;
 export type DialogueLineInput = z.input<typeof DialogueLineSchema>;
 export type ChoiceInput = z.input<typeof ChoiceSchema>;

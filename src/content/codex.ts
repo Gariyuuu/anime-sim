@@ -3,8 +3,8 @@ import type { CodexEntryInput } from "@/types";
 export const codexEntries: CodexEntryInput[] = [
   /* ================================ Elite Academy ================================ */
   { id: "ea-codex-academy", category: "location", title: "Advanced Integrated Academy", body: "A government-funded boarding school where students are split into four ranked classes. Officially, the ranking exists to identify talent. Unofficially, it exists to see how far students will go to keep their place in it.", worldId: "elite-academy" },
-  { id: "ea-codex-arase", category: "character", title: "Fumiko Arase", body: "Homeroom teacher of Class 1-C. Institutionally powerful, personally unreadable. Watches more than she teaches.", worldId: "elite-academy" },
-  { id: "ea-codex-rei", category: "character", title: "Rei Kagayama", body: "Class 1-C's representative. Cold, precise, treats every interaction as an audit.", worldId: "elite-academy" },
+  { id: "ea-codex-arase", category: "character", title: "Fumiko Arase", body: "Homeroom teacher of Class 1-D. Institutionally powerful, personally unreadable. Watches more than she teaches.", worldId: "elite-academy" },
+  { id: "ea-codex-rei", category: "character", title: "Rei Kagayama", body: "Class 1-D's representative. Cold, precise, treats every interaction as an audit.", worldId: "elite-academy" },
   { id: "ea-codex-rei-secret", category: "secret", title: "Rei's Reserve List", body: "Rei's transcript doesn't match her reputation — she's clinging to a reserve spot in Class A's shadow roster, one bad exam from losing it entirely.", worldId: "elite-academy" },
   { id: "ea-codex-yuzuki", category: "character", title: "Yuzuki Hoshino", body: "Gentle, perceptive, keeps a private notebook of classmate observations. Everyone underestimates her.", worldId: "elite-academy" },
   { id: "ea-codex-daichi", category: "character", title: "Daichi Onodera", body: "Student council vice-president. Magnetic, calculating, sells information to those who can afford it.", worldId: "elite-academy" },
@@ -21,8 +21,9 @@ export const codexEntries: CodexEntryInput[] = [
   { id: "ea-codex-away-exam", category: "term", title: "The Away Exam", body: "A multi-day survival-and-cooperation retreat held off-campus, with teams randomly assigned across all four classes.", worldId: "elite-academy" },
   { id: "ea-codex-kenta-secret", category: "secret", title: "Kenta's Old School", body: "Kenta transferred after a fight that hurt someone badly. He still sends money to that person's family, anonymously, every month.", worldId: "elite-academy" },
   { id: "ea-codex-trade-exam", category: "term", title: "The Point Exchange", body: "A special exam that opens private points to direct trade between all four classes, with no faculty oversight until the window closes.", worldId: "elite-academy" },
-  { id: "ea-codex-watcher-revealed", category: "secret", title: "The Watcher, Revealed", body: "Ms. Arase lobbied to have the player placed in Class 1-C instead of 1-A, specifically to see what they'd become without an easy path handed to them.", worldId: "elite-academy" },
+  { id: "ea-codex-watcher-revealed", category: "secret", title: "The Watcher, Revealed", body: "Ms. Arase lobbied to have the player placed in Class 1-D instead of 1-A, specifically to see what they'd become without an easy path handed to them.", worldId: "elite-academy" },
   { id: "ea-codex-final-ranking", category: "term", title: "The Final Ranking Exam", body: "The year-end exam that determines final class standing, final private points, and — unofficially — settles who each student turned out to be.", worldId: "elite-academy" },
+  { id: "ea-codex-archive", category: "secret", title: "The Restricted Archive", body: "A locked back room in the library, sealed by four levers that only open in one specific order. Nobody currently enrolled seems to know why it's there.", worldId: "elite-academy" },
 
   /* ================================== Aincrad ==================================== */
   { id: "ai-codex-aincrad", category: "location", title: "Aincrad", body: "A floating castle of one hundred floors, home to a full-dive MMORPG that ten thousand players logged into on launch day. Nobody expected it to become a prison.", worldId: "aincrad" },
@@ -45,6 +46,7 @@ export const codexEntries: CodexEntryInput[] = [
   { id: "ai-codex-sylvan-guardian", category: "monster", title: "Sylvan Guardian", body: "Floor 1's boss. An ancient construct grown into the forest itself, with bark plating that must be broken before its core is vulnerable.", worldId: "aincrad" },
   { id: "ai-codex-mistfallen-warden", category: "monster", title: "Mistfallen Warden", body: "Floor 2's boss. A knight-shaped mass of fog and old armor guarding the Frozen Court.", worldId: "aincrad" },
   { id: "ai-codex-mistfallen-fog", category: "secret", title: "The Fog Doesn't Forget", body: "Hollow's warning about the Frozen Court: a clean tactical read still means nothing if you stop moving to admire it.", worldId: "aincrad" },
+  { id: "ai-codex-frost-vault", category: "secret", title: "The Frost Vaults' Old Locks", body: "Three frost-sealed levers hidden in Floor 2's dungeon, deliberately built to only open in one specific order. Nobody knows who built them, or what they were guarding before players ever arrived.", worldId: "aincrad" },
   { id: "ai-codex-ashen-hollow-king", category: "monster", title: "Ashen Hollow King", body: "Floor 3's boss. A self-declared ruler of a hollow nobody else wanted.", worldId: "aincrad" },
   { id: "ai-codex-guilds", category: "guild", title: "Floor 1 Guilds", body: "Iron Vanguard (combat-focused), Hearthlight (survival-focused), and the Stonebreakers (logistics-focused) are Floor 1's three founding guilds.", worldId: "aincrad", unlockedByDefault: true },
 

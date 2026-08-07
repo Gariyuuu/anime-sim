@@ -42,6 +42,7 @@ export const aincradItems: ItemDefinitionInput[] = [
   { id: "ai-item-iron-ore", name: "Iron Ore", description: "Raw crafting material dropped by field enemies.", kind: "material", slot: "none", rarity: "common", value: 10, icon: "box" },
   { id: "ai-item-beast-hide", name: "Beast Hide", description: "Tough hide used in armor crafting.", kind: "material", slot: "none", rarity: "common", value: 15, icon: "box" },
   { id: "ai-item-frost-crystal", name: "Frost Crystal", description: "Floor 2 crafting material. Cold enough to hurt.", kind: "material", slot: "none", rarity: "uncommon", value: 40, icon: "box" },
+  { id: "ai-item-warden-seal", name: "Warden's Seal", description: "Sealed behind three frost-locked levers in the Vaults. Whoever built this mechanism didn't want it found by accident.", kind: "equipment", slot: "accessory", rarity: "epic", value: 0, icon: "gem", statBonuses: { defense: 6, agility: 3 } },
 
   /* --------------------------------- Quest items --------------------------------- */
   { id: "ai-item-torans-tags", name: "Toran's Old Tags", description: "Dog tags from a guild that no longer exists. He never talks about them.", kind: "quest", slot: "none", rarity: "rare", value: 0, icon: "tag" },

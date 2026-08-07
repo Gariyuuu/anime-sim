@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import type { Appearance } from "@/types";
 
 const SKIN: Record<Appearance["skinTone"], string> = {
@@ -34,8 +35,23 @@ const OUTFIT: Record<Appearance["outfit"], string> = {
  * Original, modular placeholder "sprite" built from flat geometric layers driven by
  * character-creator data — not derived from any copyrighted artwork. Layers are simple
  * enough to swap for licensed/hand-drawn sprites later without touching the data model.
+ *
+ * `walking` / `facingLeft` drive small CSS-keyframe motion (leg-swing, idle bob, blink,
+ * horizontal mirror) — compositor-driven, no per-frame JS, so it stays cheap at 60fps.
  */
-export function PixelAvatar({ appearance, size = 96, animated = false }: { appearance: Appearance; size?: number; animated?: boolean }) {
+export function PixelAvatar({
+  appearance,
+  size = 96,
+  animated = false,
+  walking = false,
+  facingLeft = false,
+}: {
+  appearance: Appearance;
+  size?: number;
+  animated?: boolean;
+  walking?: boolean;
+  facingLeft?: boolean;
+}) {
   const skin = SKIN[appearance.skinTone];
   const hair = HAIR[appearance.hairColor];
   const eye = EYE[appearance.eyeColor];
@@ -47,16 +63,19 @@ export function PixelAvatar({ appearance, size = 96, animated = false }: { appea
       viewBox="0 0 32 32"
       width={size}
       height={size}
-      className={animated ? "pixel-fade-in" : undefined}
+      className={cn(animated ? "pixel-fade-in" : undefined, facingLeft ? "sprite-facing-left" : undefined, !walking ? "sprite-idle" : undefined)}
       shapeRendering="crispEdges"
       role="img"
-      aria-label="Character portrait"
+      aria-label="Character sprite"
     >
       <rect x="0" y="0" width="32" height="32" fill="none" />
-      {/* body / outfit */}
-      <rect x="9" y="20" width="14" height="10" fill={outfit} />
+      {/* legs, animated independently so they swing while walking */}
+      <rect x="10" y="25" width="5" height="5" fill={outfit} className={walking ? "sprite-leg-a" : undefined} />
+      <rect x="17" y="25" width="5" height="5" fill={outfit} className={walking ? "sprite-leg-b" : undefined} />
+      {/* torso */}
+      <rect x="9" y="19" width="14" height="7" fill={outfit} />
       {/* accessory: accent trim */}
-      {appearance.accessory !== "none" && <rect x="9" y="20" width="14" height="2" fill="var(--accent-warning, #a3762c)" />}
+      {appearance.accessory !== "none" && <rect x="9" y="19" width="14" height="2" fill="var(--accent-warning, #a3762c)" />}
       {/* neck */}
       <rect x="13" y="17" width="6" height="4" fill={skin} />
       {/* head */}
@@ -69,9 +88,9 @@ export function PixelAvatar({ appearance, size = 96, animated = false }: { appea
       <rect x="9" y="5" width="14" height="5" fill={hair} />
       {appearance.hairstyle === "buzzcut" ? null : <rect x="9" y="7" width="3" height="6" fill={hair} />}
       <rect x="20" y="7" width="3" height="6" fill={hair} />
-      {/* eyes */}
-      <rect x="13" y="12" width="2" height="2" fill={eye} />
-      <rect x="18" y="12" width="2" height="2" fill={eye} />
+      {/* eyes, blink periodically */}
+      <rect x="13" y="12" width="2" height="2" fill={eye} className="sprite-blink" />
+      <rect x="18" y="12" width="2" height="2" fill={eye} className="sprite-blink" />
       {/* accessory: glasses */}
       {appearance.accessory === "glasses" && (
         <>

@@ -50,6 +50,7 @@ export function makeSave(overrides: Partial<SaveGame> = {}): SaveGame {
     dialogueHistory: [],
     choiceLog: [],
     messages: [],
+    puzzleProgress: {},
     settings: defaultSettings(),
     ...overrides,
   };

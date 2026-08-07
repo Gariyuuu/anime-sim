@@ -6,6 +6,8 @@ import { getMap, getNpc } from "@/content/registry";
 import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, type MoveInput } from "@/engine/exploration";
 import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
+import { PixelAvatar } from "@/components/game/PixelAvatar";
+import { cn } from "@/lib/utils";
 
 const PLAYER_SIZE = 20;
 const SPEED = 150; // px/sec
@@ -29,14 +31,20 @@ export function ExplorationView() {
   const posRef = useRef(pos);
   const keysRef = useRef<MoveInput>({ up: false, down: false, left: false, right: false });
   const clickTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const flagsRef = useRef<string[]>(save?.flags ?? []);
+  const [walking, setWalking] = useState(false);
+  const [facingLeft, setFacingLeft] = useState(false);
   const [nearbyId, setNearbyId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [, forceTick] = useState(0);
 
-  // Keep the ref mirror of `pos` in sync for the rAF loop to read without re-subscribing.
+  // Keep ref mirrors of state the rAF loop reads without re-subscribing to, in sync.
   useEffect(() => {
     posRef.current = pos;
   }, [pos]);
+  useEffect(() => {
+    flagsRef.current = save?.flags ?? [];
+  }, [save?.flags]);
 
   // Reset player position when the map changes. Adjusted during render (React's documented
   // pattern for "state that depends on a changing prop") rather than in an effect, since this
@@ -107,6 +115,10 @@ export function ExplorationView() {
         clickTargetRef.current = null;
       }
 
+      setWalking(dx !== 0 || dy !== 0);
+      if (dx < 0) setFacingLeft(true);
+      else if (dx > 0) setFacingLeft(false);
+
       if (dx !== 0 || dy !== 0) {
         const nx = posRef.current.x + dx * SPEED * dt;
         const ny = posRef.current.y + dy * SPEED * dt;
@@ -122,7 +134,7 @@ export function ExplorationView() {
         setPos(next);
       }
 
-      const near = nearestInteractable(posRef.current.x, posRef.current.y, m.interactables, m.tileSize, INTERACT_RANGE);
+      const near = nearestInteractable(posRef.current.x, posRef.current.y, m.interactables, m.tileSize, INTERACT_RANGE, flagsRef.current);
       setNearbyId((prev) => {
         const nextId = near?.id ?? null;
         return prev === nextId ? prev : nextId;
@@ -196,8 +208,13 @@ export function ExplorationView() {
               const y = it.y * map.tileSize + map.tileSize / 2 - camera.y;
               if (x < -20 || x > VIEW_W + 20 || y < -20 || y > VIEW_H + 20) return null;
               const npc = it.npcId ? getNpc(it.npcId) : undefined;
-              const color = npc?.portraitColor ?? (it.kind === "monster" ? "var(--accent-danger)" : it.kind === "door" || it.kind === "transition" ? "var(--accent-info)" : "var(--ink-700)");
+              const isSwitch = it.kind === "puzzle-switch";
+              const switchLit = isSwitch && it.puzzleId != null && it.puzzleOrder != null && (save.puzzleProgress[it.puzzleId] ?? 0) >= it.puzzleOrder;
+              const color = switchLit
+                ? "var(--accent-success, #2f7a4f)"
+                : npc?.portraitColor ?? (it.kind === "monster" ? "var(--accent-danger)" : it.kind === "door" || it.kind === "transition" ? "var(--accent-info)" : it.kind === "puzzle-switch" ? "var(--ink-500)" : "var(--ink-700)");
               const isNear = it.id === nearbyId;
+              const isLiving = it.kind === "npc" || it.kind === "monster";
               return (
                 <div
                   key={it.id}
@@ -206,7 +223,7 @@ export function ExplorationView() {
                   onClick={() => interact(it.id)}
                 >
                   <div
-                    className="flex h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm transition-transform"
+                    className={cn("flex h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm transition-transform", isLiving && "marker-idle")}
                     style={{ background: color, borderColor: isNear ? "var(--accent-warning)" : "var(--ink-950)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
                   >
                     <Icon name={it.glyph} size={12} color="var(--paper-0)" />
@@ -217,10 +234,11 @@ export function ExplorationView() {
             })}
           {/* player */}
           <div
-            className="absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-paper-0 bg-ink-950"
-            style={{ left: pos.x - camera.x, top: pos.y - camera.y, width: PLAYER_SIZE, height: PLAYER_SIZE }}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: pos.x - camera.x, top: pos.y - camera.y, width: PLAYER_SIZE * 1.8, height: PLAYER_SIZE * 1.8 }}
           >
-            <Icon name="user" size={11} color="var(--paper-0)" />
+            <div className="absolute inset-x-0 bottom-0 mx-auto h-1.5 w-3.5 rounded-full bg-black/25 blur-[1px]" />
+            <PixelAvatar appearance={save.player.appearance} size={PLAYER_SIZE * 1.8} walking={walking} facingLeft={facingLeft} />
           </div>
         </div>
       </div>

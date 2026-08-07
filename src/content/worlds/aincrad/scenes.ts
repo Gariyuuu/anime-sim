@@ -730,6 +730,25 @@ export const aincradScenes: SceneInput[] = [
     ],
   },
   {
+    id: "ai-scene-vault-hint",
+    worldId: W,
+    chapterId: "ai-ch2",
+    title: "Frost-Etched Instructions",
+    startNode: "n1",
+    nodes: [
+      {
+        id: "n1",
+        expression: "neutral",
+        isInnerMonologue: true,
+        text: "\"Rime-covered first. Cracked, second. Untouched, last.\" Three levers are set into the far walls, each frosted over in a different pattern. Whoever built this clearly expected someone to eventually come looking.",
+        isInterruption: false,
+        effects: [{ type: "unlockCodex", entryId: "ai-codex-frost-vault" }],
+        conditions: [],
+        choices: [],
+      },
+    ],
+  },
+  {
     id: "ai-scene-vigil",
     worldId: W,
     chapterId: C,
