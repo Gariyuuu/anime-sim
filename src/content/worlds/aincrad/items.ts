@@ -13,7 +13,7 @@ export const aincradItems: ItemDefinitionInput[] = [
   { id: "ai-item-leather-vest", name: "Leather Vest", description: "Basic protection. Better than a hoodie.", kind: "equipment", slot: "armor", rarity: "common", value: 60, icon: "shirt", statBonuses: { defense: 4 } },
   { id: "ai-item-reinforced-coat", name: "Reinforced Coat", description: "Padded and plated in the right places.", kind: "equipment", slot: "armor", rarity: "uncommon", value: 350, icon: "shirt", statBonuses: { defense: 8 } },
   { id: "ai-item-vanguard-plate", name: "Vanguard Plate", description: "Guild-crafted heavy armor. Marked with the Iron Vanguard emblem whether you like it or not.", kind: "equipment", slot: "armor", rarity: "rare", value: 950, icon: "shirt", statBonuses: { defense: 15, agility: -2 } },
-  { id: "ai-item-hearthlight-robe", name: "Hearthlight Robe", description: "Support-focused robe favored by Nell's guild.", kind: "equipment", slot: "armor", rarity: "rare", value: 800, icon: "shirt", statBonuses: { defense: 9, maxStamina: 15 } },
+  { id: "ai-item-hearthlight-robe", name: "Hearthlight Robe", description: "Support-focused robe favored by Sachi's guild.", kind: "equipment", slot: "armor", rarity: "rare", value: 800, icon: "shirt", statBonuses: { defense: 9, maxStamina: 15 } },
   { id: "ai-item-floorguard-mail", name: "Floorguard Mail", description: "Floor 2 unique armor. Slows you down, but you'll live longer.", kind: "equipment", slot: "armor", rarity: "epic", value: 2100, icon: "shirt", statBonuses: { defense: 20 } },
 
   /* -------------------------------- Gloves / Boots -------------------------------- */
@@ -32,7 +32,7 @@ export const aincradItems: ItemDefinitionInput[] = [
   { id: "ai-item-stamina-draught", name: "Stamina Draught", description: "Bitter, effective, faintly metallic.", kind: "consumable", slot: "none", rarity: "common", value: 25, icon: "flask", useEffect: { staminaRestore: 50 } },
   { id: "ai-item-antidote-herb", name: "Antidote Herb", description: "Cures poison. Smells worse than the poison does.", kind: "consumable", slot: "none", rarity: "common", value: 20, icon: "leaf", useEffect: { cureStatus: true } },
   { id: "ai-item-field-rations", name: "Field Rations", description: "Simple cooked food. Restores a little of everything.", kind: "consumable", slot: "none", rarity: "common", value: 15, icon: "utensils", useEffect: { healthRestore: 10, staminaRestore: 20 } },
-  { id: "ai-item-mei-stew", name: "Mei's Stew", description: "Mei's own recipe. Tastes like someone still cares whether you eat well.", kind: "consumable", slot: "none", rarity: "uncommon", value: 60, icon: "utensils", useEffect: { healthRestore: 30, staminaRestore: 30 } },
+  { id: "ai-item-mei-stew", name: "Lisbeth's Stew", description: "Lisbeth's own recipe. Tastes like someone still cares whether you eat well.", kind: "consumable", slot: "none", rarity: "uncommon", value: 60, icon: "utensils", useEffect: { healthRestore: 30, staminaRestore: 30 } },
   { id: "ai-item-teleport-crystal", name: "Teleport Crystal", description: "One-way ticket back to the last town you registered at.", kind: "consumable", slot: "none", rarity: "uncommon", value: 200, icon: "sparkles" },
   { id: "ai-item-whetstone", name: "Whetstone", description: "Temporary attack boost for the next fight.", kind: "consumable", slot: "none", rarity: "common", value: 40, icon: "flask" },
   { id: "ai-item-guard-tonic", name: "Guard Tonic", description: "Temporary defense boost for the next fight.", kind: "consumable", slot: "none", rarity: "common", value: 40, icon: "flask" },
@@ -45,7 +45,7 @@ export const aincradItems: ItemDefinitionInput[] = [
   { id: "ai-item-warden-seal", name: "Warden's Seal", description: "Sealed behind three frost-locked levers in the Vaults. Whoever built this mechanism didn't want it found by accident.", kind: "equipment", slot: "accessory", rarity: "epic", value: 0, icon: "gem", statBonuses: { defense: 6, agility: 3 } },
 
   /* --------------------------------- Quest items --------------------------------- */
-  { id: "ai-item-torans-tags", name: "Toran's Old Tags", description: "Dog tags from a guild that no longer exists. He never talks about them.", kind: "quest", slot: "none", rarity: "rare", value: 0, icon: "tag" },
+  { id: "ai-item-torans-tags", name: "Klein's Old Tags", description: "Dog tags from a guild that no longer exists. He never talks about them.", kind: "quest", slot: "none", rarity: "rare", value: 0, icon: "tag" },
   { id: "ai-item-hollow-locket", name: "Cracked Locket", description: "Found near the site of a wipe on Floor 1's field. It won't open.", kind: "quest", slot: "none", rarity: "rare", value: 0, icon: "lock" },
   { id: "ai-item-floor1-unique", name: "Sylvan Guardian's Core", description: "Unique drop from Floor 1's boss. Warm, faintly pulsing.", kind: "quest", slot: "none", rarity: "epic", value: 0, icon: "gem" },
 ];

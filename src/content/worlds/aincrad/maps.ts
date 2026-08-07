@@ -31,16 +31,16 @@ export const aincradMaps: MapDefinitionInput[] = [
       { id: "door-field1", kind: "door", x: 9, y: 1, label: "To the Field", targetMapId: "ai-map-field1", targetSpawnId: "fromTown", glyph: "trees" },
       { id: "door-training", kind: "door", x: 2, y: 9, label: "Training Field", targetMapId: "ai-map-training-field", targetSpawnId: "fromTown", glyph: "target" },
       { id: "obj-inn", kind: "object", x: 4, y: 4, label: "The Last Light Inn", sceneId: "ai-scene-inn", glyph: "bed" },
-      { id: "obj-blacksmith", kind: "shop", x: 8, y: 4, label: "Mei's Forge", npcId: "ai-mei", sceneId: "ai-scene-mei-forge", glyph: "hammer" },
-      { id: "obj-mei-secret", kind: "trigger", x: 8, y: 3, label: "Ask Mei about her brother", sceneId: "ai-scene-mei-brother", requiresFlag: "ai-flag-mei-hint", glyph: "eye" },
+      { id: "obj-blacksmith", kind: "shop", x: 8, y: 4, label: "Lisbeth's Forge", npcId: "ai-mei", sceneId: "ai-scene-mei-forge", glyph: "hammer" },
+      { id: "obj-mei-secret", kind: "trigger", x: 8, y: 3, label: "Ask Lisbeth about her brother", sceneId: "ai-scene-mei-brother", requiresFlag: "ai-flag-mei-hint", glyph: "eye" },
       { id: "obj-item-shop", kind: "shop", x: 12, y: 4, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
       { id: "obj-tavern", kind: "object", x: 12, y: 8, label: "The Cracked Bell Tavern", sceneId: "ai-scene-tavern", glyph: "beer" },
       { id: "obj-guild-board", kind: "quest-marker", x: 15, y: 7, label: "Guild Recruitment Board", sceneId: "ai-scene-guild-board", glyph: "flag" },
-      { id: "npc-kirei", kind: "npc", x: 6, y: 7, label: "Kirei Sanjo", npcId: "ai-kirei", sceneId: "ai-scene-kirei-intro", glyph: "zap" },
-      { id: "npc-kirei-secret", kind: "trigger", x: 6, y: 6, label: "Talk to Kirei privately", sceneId: "ai-scene-kirei-secret", requiresFlag: "ai-flag-met-kirei", glyph: "eye" },
-      { id: "npc-toran", kind: "npc", x: 10, y: 7, label: "Toran Voss", npcId: "ai-toran", sceneId: "ai-scene-toran-intro", glyph: "shield" },
-      { id: "npc-hollow", kind: "npc", x: 15, y: 3, label: "\"Hollow\"", npcId: "ai-hollow", sceneId: "ai-scene-hollow-intro", glyph: "user-x" },
-      { id: "npc-archivist", kind: "npc", x: 9, y: 6, label: "Archivist", npcId: "ai-arch", sceneId: "ai-scene-archivist-intro", glyph: "sparkles" },
+      { id: "npc-kirei", kind: "npc", x: 6, y: 7, label: "Silica", npcId: "ai-kirei", sceneId: "ai-scene-kirei-intro", glyph: "zap" },
+      { id: "npc-kirei-secret", kind: "trigger", x: 6, y: 6, label: "Talk to Silica privately", sceneId: "ai-scene-kirei-secret", requiresFlag: "ai-flag-met-kirei", glyph: "eye" },
+      { id: "npc-toran", kind: "npc", x: 10, y: 7, label: "Klein", npcId: "ai-toran", sceneId: "ai-scene-toran-intro", glyph: "shield" },
+      { id: "npc-hollow", kind: "npc", x: 15, y: 3, label: "\"Yuuki\"", npcId: "ai-hollow", sceneId: "ai-scene-hollow-intro", glyph: "user-x" },
+      { id: "npc-archivist", kind: "npc", x: 9, y: 6, label: "Yui", npcId: "ai-arch", sceneId: "ai-scene-archivist-intro", glyph: "sparkles" },
     ],
   },
   {
@@ -76,9 +76,9 @@ export const aincradMaps: MapDefinitionInput[] = [
       { id: "mon-imp", kind: "monster", x: 14, y: 9, label: "Thicket Imp", encounterId: "ai-enc-field1-imp", glyph: "sprout" },
       { id: "mon-boar", kind: "monster", x: 4, y: 4, label: "Wild Boar", encounterId: "ai-enc-field1-boar", glyph: "footprints" },
       { id: "mon-serpent", kind: "monster", x: 16, y: 5, label: "Marsh Serpent", encounterId: "ai-enc-field1-serpent", glyph: "wind" },
-      { id: "npc-hollow-field", kind: "npc", x: 3, y: 11, label: "\"Hollow\"", npcId: "ai-hollow", sceneId: "ai-scene-hollow-field", requiresFlag: "ai-flag-met-hollow", glyph: "user-x" },
+      { id: "npc-hollow-field", kind: "npc", x: 3, y: 11, label: "\"Yuuki\"", npcId: "ai-hollow", sceneId: "ai-scene-hollow-field", requiresFlag: "ai-flag-met-hollow", glyph: "user-x" },
       { id: "hidden-locket", kind: "hidden-item", x: 3, y: 12, label: "Something half-buried in the dirt", itemId: "ai-item-hollow-locket", hidden: true, glyph: "lock" },
-      { id: "npc-hollow-recruit", kind: "trigger", x: 3, y: 10, label: "Talk to Hollow about the locket", sceneId: "ai-scene-hollow-recruit", requiresFlag: "ai-flag-hollow-wipe-mentioned", glyph: "heart" },
+      { id: "npc-hollow-recruit", kind: "trigger", x: 3, y: 10, label: "Talk to Yuuki about the locket", sceneId: "ai-scene-hollow-recruit", requiresFlag: "ai-flag-hollow-wipe-mentioned", glyph: "heart" },
       { id: "hidden-shrine", kind: "trigger", x: 18, y: 11, label: "A clearing that isn't on the map", sceneId: "ai-scene-hidden-shrine", hidden: true, glyph: "sparkles" },
       { id: "door-dungeon1", kind: "door", x: 17, y: 2, label: "Dungeon Entrance", targetMapId: "ai-map-dungeon1", targetSpawnId: "fromField", glyph: "door-open" },
       { id: "door-town1", kind: "door", x: 10, y: 13, label: "Back to Town", targetMapId: "ai-map-town1", targetSpawnId: "fromField", glyph: "chevrons-down" },
@@ -138,10 +138,10 @@ export const aincradMaps: MapDefinitionInput[] = [
       { id: "door-field2", kind: "door", x: 7, y: 1, label: "To the Field", targetMapId: "ai-map-field2", targetSpawnId: "fromTown", glyph: "trees" },
       { id: "obj-item-shop-2", kind: "shop", x: 4, y: 5, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
       { id: "obj-inn-2", kind: "object", x: 10, y: 5, label: "Frostkeep Inn", sceneId: "ai-scene-inn", glyph: "bed" },
-      { id: "obj-kirei-floor2", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor2-kirei-nerves", requiresFlag: "ai-flag-floor2-arrived", glyph: "zap" },
-      { id: "obj-toran-floor2", kind: "trigger", x: 11, y: 3, label: "Toran", sceneId: "ai-scene-floor2-toran-read", requiresFlag: "ai-flag-floor2-arrived", glyph: "shield" },
-      { id: "obj-nell-floor2", kind: "trigger", x: 6, y: 7, label: "Nell", sceneId: "ai-scene-floor2-nell-check", requiresFlag: "ai-flag-floor2-arrived", glyph: "leaf" },
-      { id: "obj-hollow-floor2", kind: "trigger", x: 2, y: 8, label: "Hollow", sceneId: "ai-scene-floor2-hollow-warning", requiresFlag: "ai-flag-floor2-clue-toran", glyph: "user-x" },
+      { id: "obj-kirei-floor2", kind: "trigger", x: 3, y: 3, label: "Silica", sceneId: "ai-scene-floor2-kirei-nerves", requiresFlag: "ai-flag-floor2-arrived", glyph: "zap" },
+      { id: "obj-toran-floor2", kind: "trigger", x: 11, y: 3, label: "Klein", sceneId: "ai-scene-floor2-toran-read", requiresFlag: "ai-flag-floor2-arrived", glyph: "shield" },
+      { id: "obj-nell-floor2", kind: "trigger", x: 6, y: 7, label: "Sachi", sceneId: "ai-scene-floor2-nell-check", requiresFlag: "ai-flag-floor2-arrived", glyph: "leaf" },
+      { id: "obj-hollow-floor2", kind: "trigger", x: 2, y: 8, label: "Yuuki", sceneId: "ai-scene-floor2-hollow-warning", requiresFlag: "ai-flag-floor2-clue-toran", glyph: "user-x" },
     ],
   },
   {
@@ -232,9 +232,9 @@ export const aincradMaps: MapDefinitionInput[] = [
     interactables: [
       { id: "door-field3", kind: "door", x: 6, y: 1, label: "To the Field", targetMapId: "ai-map-field3", targetSpawnId: "fromTown", glyph: "trees" },
       { id: "obj-item-shop-3", kind: "shop", x: 3, y: 4, label: "Item Shop", sceneId: "ai-scene-item-shop", glyph: "shopping-bag" },
-      { id: "obj-mei-floor3", kind: "trigger", x: 9, y: 3, label: "Mei", sceneId: "ai-scene-floor3-mei-heat", requiresFlag: "ai-flag-floor3-arrived", glyph: "hammer" },
-      { id: "obj-hollow-floor3", kind: "trigger", x: 2, y: 6, label: "Hollow", sceneId: "ai-scene-floor3-hollow-distance", requiresFlag: "ai-flag-floor3-arrived", glyph: "user-x" },
-      { id: "obj-nell-floor3", kind: "trigger", x: 10, y: 6, label: "Nell", sceneId: "ai-scene-floor3-nell-vigil", requiresFlag: "ai-flag-floor2-met-nell", glyph: "leaf" },
+      { id: "obj-mei-floor3", kind: "trigger", x: 9, y: 3, label: "Lisbeth", sceneId: "ai-scene-floor3-mei-heat", requiresFlag: "ai-flag-floor3-arrived", glyph: "hammer" },
+      { id: "obj-hollow-floor3", kind: "trigger", x: 2, y: 6, label: "Yuuki", sceneId: "ai-scene-floor3-hollow-distance", requiresFlag: "ai-flag-floor3-arrived", glyph: "user-x" },
+      { id: "obj-nell-floor3", kind: "trigger", x: 10, y: 6, label: "Sachi", sceneId: "ai-scene-floor3-nell-vigil", requiresFlag: "ai-flag-floor2-met-nell", glyph: "leaf" },
     ],
   },
   {
@@ -277,7 +277,7 @@ export const aincradMaps: MapDefinitionInput[] = [
   {
     id: "ai-map-boss3",
     worldId: "aincrad",
-    name: "Floor 3 Boss Chamber — The Hollow Throne",
+    name: "Floor 3 Boss Chamber — The Yuuki Throne",
     widthTiles: 12,
     heightTiles: 9,
     background: "#8a4a3a",
@@ -394,38 +394,38 @@ function patchTown(floor: number, extra: import("@/types").InteractableInput[]) 
 }
 
 patchTown(4, [
-  { id: "obj-kirei-floor4", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor4-kirei-vertigo", requiresFlag: "ai-flag-floor4-arrived", glyph: "zap" },
-  { id: "obj-toran-floor4", kind: "trigger", x: 9, y: 3, label: "Toran", sceneId: "ai-scene-floor4-toran-legacy", requiresFlag: "ai-flag-floor4-arrived", glyph: "shield" },
-  { id: "obj-guard-reveal-floor4", kind: "trigger", x: 2, y: 7, label: "Toran, alone", sceneId: "ai-scene-floor4-guard-reveal", requiresFlag: "ai-flag-sena-secret", glyph: "shield" },
+  { id: "obj-kirei-floor4", kind: "trigger", x: 3, y: 3, label: "Silica", sceneId: "ai-scene-floor4-kirei-vertigo", requiresFlag: "ai-flag-floor4-arrived", glyph: "zap" },
+  { id: "obj-toran-floor4", kind: "trigger", x: 9, y: 3, label: "Klein", sceneId: "ai-scene-floor4-toran-legacy", requiresFlag: "ai-flag-floor4-arrived", glyph: "shield" },
+  { id: "obj-guard-reveal-floor4", kind: "trigger", x: 2, y: 7, label: "Klein, alone", sceneId: "ai-scene-floor4-guard-reveal", requiresFlag: "ai-flag-sena-secret", glyph: "shield" },
 ]);
 
 patchTown(5, [
-  { id: "obj-kirei-floor5", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor5-kirei-scan", requiresFlag: "ai-flag-floor5-arrived", glyph: "zap" },
-  { id: "obj-hollow-floor5", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor5-hollow-water", requiresFlag: "ai-flag-floor5-arrived", glyph: "user-x" },
-  { id: "obj-hollow-open-floor5", kind: "trigger", x: 2, y: 7, label: "Hollow, alone", sceneId: "ai-scene-floor5-hollow-open", requiresFlag: "ai-flag-bram-secret", glyph: "user-x" },
+  { id: "obj-kirei-floor5", kind: "trigger", x: 3, y: 3, label: "Silica", sceneId: "ai-scene-floor5-kirei-scan", requiresFlag: "ai-flag-floor5-arrived", glyph: "zap" },
+  { id: "obj-hollow-floor5", kind: "trigger", x: 9, y: 3, label: "Yuuki", sceneId: "ai-scene-floor5-hollow-water", requiresFlag: "ai-flag-floor5-arrived", glyph: "user-x" },
+  { id: "obj-hollow-open-floor5", kind: "trigger", x: 2, y: 7, label: "Yuuki, alone", sceneId: "ai-scene-floor5-hollow-open", requiresFlag: "ai-flag-bram-secret", glyph: "user-x" },
 ]);
 
 patchTown(6, [
-  { id: "obj-kirei-floor6", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor6-kirei-market", requiresFlag: "ai-flag-floor6-arrived", glyph: "zap" },
-  { id: "obj-nell-floor6", kind: "trigger", x: 9, y: 3, label: "Nell", sceneId: "ai-scene-floor6-nell-guild-funds", requiresFlag: "ai-flag-floor6-arrived", glyph: "leaf" },
+  { id: "obj-kirei-floor6", kind: "trigger", x: 3, y: 3, label: "Silica", sceneId: "ai-scene-floor6-kirei-market", requiresFlag: "ai-flag-floor6-arrived", glyph: "zap" },
+  { id: "obj-nell-floor6", kind: "trigger", x: 9, y: 3, label: "Sachi", sceneId: "ai-scene-floor6-nell-guild-funds", requiresFlag: "ai-flag-floor6-arrived", glyph: "leaf" },
   { id: "obj-iris-followup-floor6", kind: "trigger", x: 2, y: 7, label: "Iris, off the clock", sceneId: "ai-scene-floor6-iris-followup", requiresFlag: "ai-flag-iris-noticed", glyph: "coins" },
 ]);
 
 patchTown(7, [
-  { id: "obj-toran-floor7", kind: "trigger", x: 3, y: 3, label: "Toran", sceneId: "ai-scene-floor7-toran-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "shield" },
-  { id: "obj-nell-floor7", kind: "trigger", x: 9, y: 3, label: "Nell", sceneId: "ai-scene-floor7-nell-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "leaf" },
+  { id: "obj-toran-floor7", kind: "trigger", x: 3, y: 3, label: "Klein", sceneId: "ai-scene-floor7-toran-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "shield" },
+  { id: "obj-nell-floor7", kind: "trigger", x: 9, y: 3, label: "Sachi", sceneId: "ai-scene-floor7-nell-quiet", requiresFlag: "ai-flag-floor7-arrived", glyph: "leaf" },
   { id: "obj-choirkeeper-names-floor7", kind: "trigger", x: 2, y: 7, label: "The Choirkeeper, again", sceneId: "ai-scene-floor7-choirkeeper-names", requiresFlag: "ai-flag-floor7-met-nell", glyph: "music" },
 ]);
 
 patchTown(8, [
-  { id: "obj-kirei-floor8", kind: "trigger", x: 3, y: 3, label: "Kirei", sceneId: "ai-scene-floor8-kirei-lost", requiresFlag: "ai-flag-floor8-arrived", glyph: "zap" },
-  { id: "obj-hollow-floor8", kind: "trigger", x: 9, y: 3, label: "Hollow", sceneId: "ai-scene-floor8-hollow-scout", requiresFlag: "ai-flag-floor8-arrived", glyph: "user-x" },
-  { id: "obj-hollow-proof-floor8", kind: "trigger", x: 2, y: 7, label: "Hollow, returned", sceneId: "ai-scene-floor8-hollow-proof", requiresFlag: "ai-flag-doc-renner-theory", glyph: "user-x" },
+  { id: "obj-kirei-floor8", kind: "trigger", x: 3, y: 3, label: "Silica", sceneId: "ai-scene-floor8-kirei-lost", requiresFlag: "ai-flag-floor8-arrived", glyph: "zap" },
+  { id: "obj-hollow-floor8", kind: "trigger", x: 9, y: 3, label: "Yuuki", sceneId: "ai-scene-floor8-hollow-scout", requiresFlag: "ai-flag-floor8-arrived", glyph: "user-x" },
+  { id: "obj-hollow-proof-floor8", kind: "trigger", x: 2, y: 7, label: "Yuuki, returned", sceneId: "ai-scene-floor8-hollow-proof", requiresFlag: "ai-flag-doc-renner-theory", glyph: "user-x" },
 ]);
 
 patchTown(9, [
-  { id: "obj-mei-floor9", kind: "trigger", x: 3, y: 3, label: "Mei", sceneId: "ai-scene-floor9-mei-wind", requiresFlag: "ai-flag-floor9-arrived", glyph: "hammer" },
-  { id: "obj-toran-floor9", kind: "trigger", x: 9, y: 3, label: "Toran", sceneId: "ai-scene-floor9-toran-view", requiresFlag: "ai-flag-floor9-arrived", glyph: "shield" },
+  { id: "obj-mei-floor9", kind: "trigger", x: 3, y: 3, label: "Lisbeth", sceneId: "ai-scene-floor9-mei-wind", requiresFlag: "ai-flag-floor9-arrived", glyph: "hammer" },
+  { id: "obj-toran-floor9", kind: "trigger", x: 9, y: 3, label: "Klein", sceneId: "ai-scene-floor9-toran-view", requiresFlag: "ai-flag-floor9-arrived", glyph: "shield" },
   { id: "obj-wren-followup-floor9", kind: "trigger", x: 2, y: 7, label: "Wren", sceneId: "ai-scene-floor9-wren-followup", requiresFlag: "ai-flag-wren-secret", glyph: "feather" },
 ]);
 

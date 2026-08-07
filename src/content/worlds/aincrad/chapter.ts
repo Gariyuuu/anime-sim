@@ -31,7 +31,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch2-complete",
     nextChapterId: "ai-ch3",
     outcomes: [
-      { id: "ai-ch2-outcome-read", title: "Reading the Throne", description: "You baited its first swing exactly the way Toran predicted and controlled the whole fight from there.", requiredFlags: ["ai-flag-raid2-read"] },
+      { id: "ai-ch2-outcome-read", title: "Reading the Throne", description: "You baited its first swing exactly the way Klein predicted and controlled the whole fight from there.", requiredFlags: ["ai-flag-raid2-read"] },
       { id: "ai-ch2-outcome-tight", title: "Never Out of Reach", description: "You kept the party close through the fog, and nobody had to fight the Warden alone.", requiredFlags: ["ai-flag-raid2-tight"] },
       { id: "ai-ch2-outcome-spread", title: "Trusting the Fog", description: "You spread out and flanked it — a riskier read on the fight, and it paid off.", requiredFlags: ["ai-flag-raid2-spread"] },
     ],
@@ -40,7 +40,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     id: "ai-ch3",
     worldId: "aincrad",
     index: 3,
-    title: "The Hollow Throne",
+    title: "The Yuuki Throne",
     subtitle: "Floor 3, Ashen Hollow",
     summary: "Volcanic rock, old grief, and a vigil nobody's ever caught being kept — Floor 3 ends at the Ashen Hollow King's throne.",
     startSceneId: "ai-scene-floor3-arrival",
@@ -127,7 +127,7 @@ const laterChapters: ChapterDefinitionInput[] = [
     completionFlag: "ai-flag-ch8-complete",
     nextChapterId: "ai-ch9",
     outcomes: [
-      { id: "ai-ch8-outcome-predict", title: "Reading Its Schedule", description: "You used Hollow's proof of the maze's pattern to predict every reinforcement wave before it landed.", requiredFlags: ["ai-flag-raid8-predict"] },
+      { id: "ai-ch8-outcome-predict", title: "Reading Its Schedule", description: "You used Yuuki's proof of the maze's pattern to predict every reinforcement wave before it landed.", requiredFlags: ["ai-flag-raid8-predict"] },
       { id: "ai-ch8-outcome-fast", title: "Before It Could Rebuild", description: "You struck before the Architect could reinforce its own armor.", requiredFlags: ["ai-flag-raid8-fast"] },
       { id: "ai-ch8-outcome-patient", title: "Through the Cracks", description: "You waited for the rebuild and punished the exposed frame underneath.", requiredFlags: ["ai-flag-raid8-patient"] },
     ],

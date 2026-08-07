@@ -38,7 +38,9 @@ export function SettingsScreen() {
   const save = useGameStore((s) => s.save);
   const updateSettings = useGameStore((s) => s.updateSettings);
   const saveGame = useGameStore((s) => s.saveGame);
+  const returnToTitle = useGameStore((s) => s.returnToTitle);
   const [localSettings, setLocalSettings] = useState<Settings>(() => save?.settings ?? (loadSettingsFromLocalStorage() as Settings | null) ?? defaultSettings());
+  const [justSaved, setJustSaved] = useState(false);
 
   function set<K extends keyof Settings>(key: K, value: Settings[K]) {
     const next = { ...localSettings, [key]: value };
@@ -94,6 +96,34 @@ export function SettingsScreen() {
               </div>
             </div>
           </Panel>
+
+          {save && (
+            <Panel title="Game">
+              <div className="flex flex-col gap-2">
+                <RetroButton
+                  variant="secondary"
+                  icon={<Icon name="save" size={14} />}
+                  onClick={() => {
+                    saveGame();
+                    setJustSaved(true);
+                    setTimeout(() => setJustSaved(false), 2000);
+                  }}
+                >
+                  {justSaved ? "Saved!" : "Save Game"}
+                </RetroButton>
+                <RetroButton
+                  variant="danger"
+                  icon={<Icon name="home" size={14} />}
+                  onClick={() => {
+                    saveGame();
+                    returnToTitle();
+                  }}
+                >
+                  Save &amp; Return to Main Menu
+                </RetroButton>
+              </div>
+            </Panel>
+          )}
         </div>
 
         <RetroButton variant="ghost" className="mt-8" onClick={() => setScreen(save ? "game" : "title")} icon={<Icon name="arrow-left" size={14} />}>

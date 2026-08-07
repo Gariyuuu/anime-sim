@@ -36,6 +36,7 @@ export function DialogueView() {
   const logDialogueLine = useGameStore((s) => s.logDialogueLine);
   const toggleDevice = useGameStore((s) => s.toggleDevice);
   const saveGame = useGameStore((s) => s.saveGame);
+  const setScreen = useGameStore((s) => s.setScreen);
 
   const scene = save?.currentSceneId ? getScene(save.currentSceneId) : undefined;
   const node = scene?.nodes.find((n) => n.id === save?.currentNodeId);
@@ -173,6 +174,9 @@ export function DialogueView() {
           </button>
           <button onClick={() => toggleDevice(true)} className="rounded border-2 border-paper-0/30 bg-black/30 p-1.5 text-paper-0/80 hover:bg-black/50" aria-label="Device">
             <Icon name="smartphone" size={14} />
+          </button>
+          <button onClick={() => setScreen("settings")} className="rounded border-2 border-paper-0/30 bg-black/30 p-1.5 text-paper-0/80 hover:bg-black/50" aria-label="Settings">
+            <Icon name="settings" size={14} />
           </button>
         </div>
       </div>

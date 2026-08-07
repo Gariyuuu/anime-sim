@@ -28,7 +28,7 @@ export const eliteAcademyQuests: QuestDefinitionInput[] = [
       { id: "find-evidence", text: "Find physical evidence connecting the leak to its source." },
       { id: "confront-or-report", text: "Decide whether to confront, report, or use what you know." },
     ],
-    rewardSummary: "Determines Daichi's fate and how much leverage you hold over the student council.",
+    rewardSummary: "Determines Ryuen's fate and how much leverage you hold over the student council.",
   },
   {
     id: "ea-q-yuzuki-notebook",
@@ -36,12 +36,12 @@ export const eliteAcademyQuests: QuestDefinitionInput[] = [
     type: "character",
     giverNpcId: "ea-yuzuki",
     title: "The Private Notebook",
-    description: "Yuzuki's notebook of classmate observations has gone missing — and if it surfaces publicly, it will end friendships.",
+    description: "Kei's notebook of classmate observations has gone missing — and if it surfaces publicly, it will end friendships.",
     objectives: [
       { id: "find-notebook", text: "Find out who has the notebook." },
       { id: "retrieve-or-negotiate", text: "Retrieve it, negotiate for it, or decide it isn't your problem." },
     ],
-    rewardSummary: "Deepens or damages your relationship with Yuzuki depending on your approach.",
+    rewardSummary: "Deepens or damages your relationship with Kei depending on your approach.",
   },
   {
     id: "ea-q-rei-reserve",
@@ -50,12 +50,12 @@ export const eliteAcademyQuests: QuestDefinitionInput[] = [
     hidden: true,
     giverNpcId: "ea-rei",
     title: "Reserve List",
-    description: "You've noticed Rei's grades don't match her reputation. Something doesn't add up.",
+    description: "You've noticed Suzune's grades don't match her reputation. Something doesn't add up.",
     objectives: [
-      { id: "notice-discrepancy", text: "Piece together why Rei is so afraid of a single bad exam." },
+      { id: "notice-discrepancy", text: "Piece together why Suzune is so afraid of a single bad exam." },
       { id: "decide-secret", text: "Decide what to do with what you've learned." },
     ],
-    rewardSummary: "A hidden thread that can turn Rei from rival into ally — or into an enemy who knows you know.",
+    rewardSummary: "A hidden thread that can turn Suzune from rival into ally — or into an enemy who knows you know.",
   },
   {
     id: "ea-q-side-lost-hairpin",
