@@ -87,6 +87,17 @@ export function applyEffects(save: SaveGame, effects: Effect[]): { save: SaveGam
         }
         break;
       }
+      case "completeObjective": {
+        let quest = next.quests.find((q) => q.questId === effect.questId);
+        if (!quest) {
+          quest = { questId: effect.questId, state: "active", completedObjectiveIds: [] };
+          next.quests.push(quest);
+        }
+        if (!quest.completedObjectiveIds.includes(effect.objectiveId)) {
+          quest.completedObjectiveIds.push(effect.objectiveId);
+        }
+        break;
+      }
       case "changeLocation":
         commands.push({ type: "changeLocation", mapId: effect.mapId, spawnId: effect.spawnId });
         break;

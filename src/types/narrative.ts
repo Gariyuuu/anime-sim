@@ -28,6 +28,7 @@ export const EffectSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("clearFlag"), flag: z.string() }),
   z.object({ type: z.literal("startQuest"), questId: z.string() }),
   z.object({ type: z.literal("completeQuest"), questId: z.string(), outcome: z.string().optional() }),
+  z.object({ type: z.literal("completeObjective"), questId: z.string(), objectiveId: z.string() }),
   z.object({ type: z.literal("changeLocation"), mapId: z.string(), spawnId: z.string().optional() }),
   z.object({ type: z.literal("triggerBattle"), encounterId: z.string() }),
   z.object({ type: z.literal("sendMessage"), npcId: z.string(), messageId: z.string() }),

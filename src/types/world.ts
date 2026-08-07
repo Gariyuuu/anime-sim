@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { EffectSchema } from "./narrative";
 
 export const InteractableSchema = z.object({
   id: z.string(),
@@ -52,6 +53,11 @@ export const MapDefinitionSchema = z.object({
   defaultSpawn: z.string(),
   interactables: z.array(InteractableSchema).default([]),
   ambientLabel: z.string().optional(),
+  /** Effects applied every time a player enters this map (e.g. `setFlag`/`completeObjective` to
+   * mark a floor as "arrived" or a quest step as done). Re-applied on every entry, not just the
+   * first, so only include idempotent effects here (setFlag/completeObjective/unlockCodex) —
+   * never addItem/modifyStat, which would double-grant on repeat visits. */
+  arrivalEffects: z.array(EffectSchema).default([]),
 });
 export type MapDefinition = z.infer<typeof MapDefinitionSchema>;
 

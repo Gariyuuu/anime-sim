@@ -2,6 +2,7 @@
 
 import { useGameStore } from "@/state/gameStore";
 import { getQuest } from "@/content/registry";
+import { getNextObjective } from "@/lib/quests";
 import { Icon } from "@/components/ui/Icon";
 import { StatBar } from "@/components/ui/StatBar";
 
@@ -12,8 +13,12 @@ export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; a
   const setScreen = useGameStore((s) => s.setScreen);
   if (!save) return null;
   const isElite = save.worldId === "elite-academy";
-  const activeQuest = save.quests.find((q) => q.state === "active");
+  const activeQuests = save.quests.filter((q) => q.state === "active");
+  // Prefer the main story quest over side/character quests when both are active — that's the
+  // one a lost player most needs pointed out.
+  const activeQuest = activeQuests.find((q) => getQuest(q.questId)?.type === "main") ?? activeQuests[0];
   const activeQuestDef = activeQuest ? getQuest(activeQuest.questId) : undefined;
+  const nextObjective = activeQuest ? getNextObjective(save, activeQuest.questId) : undefined;
 
   return (
     <div className="border-b-2 border-ink-950 bg-paper-0 text-ink-950">
@@ -51,10 +56,10 @@ export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; a
         </div>
       </div>
       {/* Persistent objective strip — the quest log used to live only inside the phone menu, so a
-          player exploring with no active quest had nothing telling them what to actually do.
-          `def.objectives` has no per-item completion tracking (see `completedObjectiveIds`'s
-          always-empty state in `lib/effects.ts`), so this shows the quest's overall goal rather
-          than a specific "next step" checklist item. */}
+          player exploring with no active quest (or unsure what to do next within one) had
+          nothing on screen telling them. Shows the specific next incomplete objective when one
+          can be determined (see `lib/quests.ts`), falling back to the quest's overall
+          description for quests/objectives this system can't resolve. */}
       <button
         onClick={() => toggleDevice(true)}
         className="flex w-full items-center gap-1.5 border-t border-ink-200 bg-ink-100 px-3 py-1 text-left hover:bg-ink-200"
@@ -62,7 +67,7 @@ export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; a
         <Icon name={activeQuestDef ? "target" : "compass"} size={11} className="shrink-0 text-ink-500" />
         {activeQuestDef ? (
           <span className="truncate text-[10px] text-ink-700">
-            <span className="font-bold uppercase tracking-wide">{activeQuestDef.title}:</span> {activeQuestDef.description}
+            <span className="font-bold uppercase tracking-wide">{activeQuestDef.title}:</span> {nextObjective?.text ?? activeQuestDef.description}
           </span>
         ) : (
           <span className="truncate text-[10px] text-ink-500">No active lead — talk to people and interact with objects around you to find your next step.</span>

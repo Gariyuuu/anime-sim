@@ -330,6 +330,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
     set({
       save: { ...save, currentMapId: mapId, currentSpawnId: spawn, mode: "exploration", currentSceneId: undefined, currentNodeId: undefined },
     });
+    if (map?.arrivalEffects.length) get().applyEffectsBatch(map.arrivalEffects);
     get().saveGame();
   },
 

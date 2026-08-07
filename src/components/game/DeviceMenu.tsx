@@ -10,6 +10,7 @@ import { RetroButton } from "@/components/ui/RetroButton";
 import { getNpc, getItem, getQuest, getMap, chaptersForWorld } from "@/content/registry";
 import { MARKER_COLOR } from "@/components/game/ExplorationView";
 import { getMessageDefinition } from "@/content/messages";
+import { getCompletedObjectiveIds } from "@/lib/quests";
 import { CORE_STAT_KEYS } from "@/types/common";
 import { RELATIONSHIP_AXES } from "@/types/common";
 import { cn } from "@/lib/utils";
@@ -206,12 +207,15 @@ function QuestsTab() {
             </div>
             <p className="mb-1 text-[10px] text-ink-500">{def.type} quest</p>
             <ul className="space-y-0.5">
-              {def.objectives.map((o) => (
-                <li key={o.id} className="flex items-center gap-1.5 text-[11px] text-ink-700">
-                  <Icon name={qp.state === "complete" ? "check-square" : "square"} size={11} />
-                  {o.text}
-                </li>
-              ))}
+              {(() => {
+                const completed = new Set(getCompletedObjectiveIds(save, qp.questId));
+                return def.objectives.map((o) => (
+                  <li key={o.id} className={cn("flex items-center gap-1.5 text-[11px]", completed.has(o.id) ? "text-ink-400 line-through" : "text-ink-700")}>
+                    <Icon name={completed.has(o.id) ? "check-square" : "square"} size={11} />
+                    {o.text}
+                  </li>
+                ));
+              })()}
             </ul>
           </div>
         );

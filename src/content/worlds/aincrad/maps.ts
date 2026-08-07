@@ -57,6 +57,10 @@ export const aincradMaps: MapDefinitionInput[] = [
     ambientLabel: "Practice dummies and a bored-looking system NPC running the tutorial loop.",
     interactables: [
       { id: "obj-tutorial", kind: "trigger", x: 6, y: 3, label: "Begin Training Quest", sceneId: "ai-scene-tutorial-quest", glyph: "target" },
+      // Town of Beginnings already defines a `fromTraining` spawn point for this exact return
+      // trip — this room just never had a door back to it, making it a dead end with no way out
+      // except a dev-only debug teleport.
+      { id: "door-town1-from-training", kind: "door", x: 6, y: 7, label: "Back to Town", targetMapId: "ai-map-town1", targetSpawnId: "fromTraining", glyph: "chevrons-down" },
     ],
   },
   {
@@ -71,6 +75,7 @@ export const aincradMaps: MapDefinitionInput[] = [
     spawns: { fromTown: [10, 12], fromDungeon: [16, 2] },
     defaultSpawn: "fromTown",
     ambientLabel: "Sunlight through the canopy. Somewhere close, something is watching.",
+    arrivalEffects: [{ type: "setFlag", flag: "ai-flag-floor1-arrived" }, { type: "completeObjective", questId: "ai-q-main-locked-sky", objectiveId: "explore-field" }],
     interactables: [
       { id: "mon-wolves", kind: "monster", x: 6, y: 8, label: "Timber Wolf pack", encounterId: "ai-enc-field1-wolves", glyph: "paw-print" },
       { id: "mon-imp", kind: "monster", x: 14, y: 9, label: "Thicket Imp", encounterId: "ai-enc-field1-imp", glyph: "sprout" },
@@ -116,6 +121,9 @@ export const aincradMaps: MapDefinitionInput[] = [
     spawns: { fromDungeon: [6, 8] },
     defaultSpawn: "fromDungeon",
     ambientLabel: "A vast round chamber lit by bioluminescent moss. This is where Floor 1 ends, one way or another.",
+    // Reaching this room requires the dungeon door's `requiresFlag: "ai-flag-alpha-defeated"` to
+    // already be true, so arriving here is a safe proxy for "the dungeon is cleared."
+    arrivalEffects: [{ type: "completeObjective", questId: "ai-q-main-locked-sky", objectiveId: "clear-dungeon" }],
     interactables: [
       { id: "obj-raid-prep", kind: "trigger", x: 6, y: 6, label: "Prepare for the Boss Raid", sceneId: "ai-scene-boss1-prep", glyph: "alert-triangle" },
     ],
