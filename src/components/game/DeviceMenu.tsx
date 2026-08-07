@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { StatBar } from "@/components/ui/StatBar";
 import { RetroButton } from "@/components/ui/RetroButton";
 import { getNpc, getItem, getQuest, getMap, chaptersForWorld } from "@/content/registry";
+import { MARKER_COLOR } from "@/components/game/ExplorationView";
 import { getMessageDefinition } from "@/content/messages";
 import { CORE_STAT_KEYS } from "@/types/common";
 import { RELATIONSHIP_AXES } from "@/types/common";
@@ -287,19 +288,30 @@ function MapTab() {
   const save = useGameStore((s) => s.save)!;
   const map = save.currentMapId ? getMap(save.currentMapId) : undefined;
   if (!map) return <p className="text-xs text-ink-500">No location data available.</p>;
+  const visible = map.interactables.filter((i) => !i.hidden && (!i.requiresFlag || save.flags.includes(i.requiresFlag)));
+
   return (
     <div>
       <p className="mb-1 text-xs font-bold">{map.name}</p>
       <p className="mb-2 text-[10px] text-ink-500">{map.ambientLabel}</p>
-      <ul className="space-y-1">
-        {map.interactables
-          .filter((i) => !i.hidden)
-          .map((i) => (
-            <li key={i.id} className="flex items-center gap-1.5 text-[11px] text-ink-700">
-              <Icon name={i.glyph} size={11} />
-              {i.label}
-            </li>
+      <div className="mb-3 overflow-hidden rounded border-2 border-ink-950">
+        <svg viewBox={`0 0 ${map.widthTiles} ${map.heightTiles}`} className="block w-full" style={{ background: map.background, aspectRatio: `${map.widthTiles} / ${map.heightTiles}` }}>
+          {map.walls.map(([wx, wy], i) => (
+            <rect key={i} x={wx} y={wy} width={1} height={1} fill={map.wallColor} />
           ))}
+          {visible.map((it) => (
+            <circle key={it.id} cx={it.x + 0.5} cy={it.y + 0.5} r={0.32} fill={MARKER_COLOR[it.kind]} stroke="var(--paper-0)" strokeWidth={0.06} />
+          ))}
+        </svg>
+      </div>
+      <ul className="space-y-1">
+        {visible.map((i) => (
+          <li key={i.id} className="flex items-center gap-1.5 text-[11px] text-ink-700">
+            <span className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border border-ink-950" style={{ background: MARKER_COLOR[i.kind] }} />
+            <Icon name={i.glyph} size={11} />
+            {i.label}
+          </li>
+        ))}
       </ul>
     </div>
   );

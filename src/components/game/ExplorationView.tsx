@@ -14,10 +14,35 @@ import type { Interactable } from "@/types";
 const PLAYER_SIZE = 20;
 const SPEED = 150; // px/sec
 const INTERACT_RANGE = 46;
-const VIEW_W = 640;
-const VIEW_H = 420;
+const MIN_VIEW_W = 320;
+const MIN_VIEW_H = 240;
 
-const MARKER_COLOR: Record<Interactable["kind"], string> = {
+const MAX_ZOOM = 2.2;
+
+/** Picks a zoom level that fits the room to however much space the view actually has (never
+ * shrinking below 1x), then returns the camera position in world units for that zoom — small
+ * rooms fill the screen instead of sitting tiny in a corner of an otherwise-empty canvas. */
+function computeCameraAndZoom(
+  mapWidthTiles: number,
+  mapHeightTiles: number,
+  tileSize: number,
+  posX: number,
+  posY: number,
+  viewW: number,
+  viewH: number,
+) {
+  const mapPxW = mapWidthTiles * tileSize;
+  const mapPxH = mapHeightTiles * tileSize;
+  const zoom = Math.min(MAX_ZOOM, Math.max(1, Math.min(viewW / mapPxW, viewH / mapPxH)));
+  const worldViewW = viewW / zoom;
+  const worldViewH = viewH / zoom;
+  const raw = clampCamera(posX, posY, mapPxW, mapPxH, worldViewW, worldViewH);
+  const x = mapPxW <= worldViewW ? (mapPxW - worldViewW) / 2 : raw.x;
+  const y = mapPxH <= worldViewH ? (mapPxH - worldViewH) / 2 : raw.y;
+  return { zoom, camera: { x, y } };
+}
+
+export const MARKER_COLOR: Record<Interactable["kind"], string> = {
   npc: "var(--ink-700)",
   monster: "#d6453a",
   object: "#b8842e",
@@ -51,6 +76,9 @@ export function ExplorationView() {
   const [facingLeft, setFacingLeft] = useState(false);
   const [nearbyId, setNearbyId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [viewSize, setViewSize] = useState({ w: MIN_VIEW_W, h: MIN_VIEW_H });
+  const viewSizeRef = useRef(viewSize);
   const [, forceTick] = useState(0);
 
   // Keep ref mirrors of state the rAF loop reads without re-subscribing to, in sync.
@@ -60,6 +88,24 @@ export function ExplorationView() {
   useEffect(() => {
     flagsRef.current = save?.flags ?? [];
   }, [save?.flags]);
+  useEffect(() => {
+    viewSizeRef.current = viewSize;
+  }, [viewSize]);
+
+  // Fill whatever space the layout actually gives this view, instead of a fixed-size box —
+  // tracks the container's real dimensions so the canvas and camera math stay in sync with it.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    function update() {
+      const rect = el!.getBoundingClientRect();
+      setViewSize({ w: Math.max(MIN_VIEW_W, Math.floor(rect.width)), h: Math.max(MIN_VIEW_H, Math.floor(rect.height)) });
+    }
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Reset player position when the map changes. Adjusted during render (React's documented
   // pattern for "state that depends on a changing prop") rather than in an effect, since this
@@ -168,23 +214,29 @@ export function ExplorationView() {
     if (!canvas || !map) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const camera = clampCamera(pos.x, pos.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
+    const { w: VIEW_W, h: VIEW_H } = viewSize;
+    const { zoom, camera } = computeCameraAndZoom(map.widthTiles, map.heightTiles, map.tileSize, pos.x, pos.y, VIEW_W, VIEW_H);
 
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = map.background;
     ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+    ctx.save();
+    ctx.scale(zoom, zoom);
+    const worldViewW = VIEW_W / zoom;
+    const worldViewH = VIEW_H / zoom;
 
     // subtle grid
     ctx.strokeStyle = "rgba(0,0,0,0.05)";
     for (let x = 0; x < map.widthTiles * map.tileSize; x += map.tileSize) {
       ctx.beginPath();
       ctx.moveTo(x - camera.x, 0);
-      ctx.lineTo(x - camera.x, VIEW_H);
+      ctx.lineTo(x - camera.x, worldViewH);
       ctx.stroke();
     }
     for (let y = 0; y < map.heightTiles * map.tileSize; y += map.tileSize) {
       ctx.beginPath();
       ctx.moveTo(0, y - camera.y);
-      ctx.lineTo(VIEW_W, y - camera.y);
+      ctx.lineTo(worldViewW, y - camera.y);
       ctx.stroke();
     }
 
@@ -192,35 +244,38 @@ export function ExplorationView() {
     for (const [wx, wy] of map.walls) {
       ctx.fillRect(wx * map.tileSize - camera.x, wy * map.tileSize - camera.y, map.tileSize, map.tileSize);
     }
-  }, [map, pos]);
+    ctx.restore();
+  }, [map, pos, viewSize]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!map) return;
       const rect = e.currentTarget.getBoundingClientRect();
-      const camera = clampCamera(posRef.current.x, posRef.current.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
-      const wx = e.clientX - rect.left + camera.x;
-      const wy = e.clientY - rect.top + camera.y;
+      const { w: VIEW_W, h: VIEW_H } = viewSizeRef.current;
+      const { zoom, camera } = computeCameraAndZoom(map.widthTiles, map.heightTiles, map.tileSize, posRef.current.x, posRef.current.y, VIEW_W, VIEW_H);
+      const wx = (e.clientX - rect.left) / zoom + camera.x;
+      const wy = (e.clientY - rect.top) / zoom + camera.y;
       clickTargetRef.current = { x: wx, y: wy };
     },
     [map],
   );
 
   if (!map || !save) return null;
-  const camera = clampCamera(pos.x, pos.y, map.widthTiles * map.tileSize, map.heightTiles * map.tileSize, VIEW_W, VIEW_H);
+  const { w: VIEW_W, h: VIEW_H } = viewSize;
+  const { zoom, camera } = computeCameraAndZoom(map.widthTiles, map.heightTiles, map.tileSize, pos.x, pos.y, VIEW_W, VIEW_H);
   const nearby = nearbyId ? map.interactables.find((i) => i.id === nearbyId) : null;
 
   return (
     <div className="flex h-dvh w-full flex-col bg-ink-100">
       <HUD locationLabel={map.name} ambientLabel={map.ambientLabel} />
-      <div className="relative mx-auto my-2 w-full max-w-[640px] flex-1 overflow-hidden rounded-md border-2 border-ink-950" style={{ maxHeight: VIEW_H }}>
+      <div ref={containerRef} className="relative w-full flex-1 overflow-hidden">
         <canvas ref={canvasRef} width={VIEW_W} height={VIEW_H} onClick={handleClick} className="block h-full w-full cursor-pointer" />
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {map.interactables
             .filter((it) => !it.hidden && (!it.requiresFlag || save.flags.includes(it.requiresFlag)))
             .map((it) => {
-              const x = it.x * map.tileSize + map.tileSize / 2 - camera.x;
-              const y = it.y * map.tileSize + map.tileSize / 2 - camera.y;
+              const x = (it.x * map.tileSize + map.tileSize / 2 - camera.x) * zoom;
+              const y = (it.y * map.tileSize + map.tileSize / 2 - camera.y) * zoom;
               if (x < -20 || x > VIEW_W + 20 || y < -20 || y > VIEW_H + 20) return null;
               const npc = it.npcId ? getNpc(it.npcId) : undefined;
               const isSwitch = it.kind === "puzzle-switch";
@@ -264,10 +319,15 @@ export function ExplorationView() {
           {/* player */}
           <div
             className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: pos.x - camera.x, top: pos.y - camera.y, width: PLAYER_SIZE * 1.8, height: PLAYER_SIZE * 1.8 }}
+            style={{
+              left: (pos.x - camera.x) * zoom,
+              top: (pos.y - camera.y) * zoom,
+              width: PLAYER_SIZE * 1.8 * zoom,
+              height: PLAYER_SIZE * 1.8 * zoom,
+            }}
           >
             <div className="absolute inset-x-0 bottom-0 mx-auto h-1.5 w-3.5 rounded-full bg-black/25 blur-[1px]" />
-            <PixelAvatar appearance={save.player.appearance} size={PLAYER_SIZE * 1.8} walking={walking} facingLeft={facingLeft} />
+            <PixelAvatar appearance={save.player.appearance} size={PLAYER_SIZE * 1.8 * zoom} walking={walking} facingLeft={facingLeft} />
           </div>
         </div>
       </div>
