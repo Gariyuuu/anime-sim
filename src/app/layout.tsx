@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Mono, Press_Start_2P } from "next/font/google";
+import { JetBrains_Mono, Rajdhani } from "next/font/google";
 import "./globals.css";
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
 });
 
-const pressStart = Press_Start_2P({
-  variable: "--font-press-start",
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${spaceMono.variable} ${pressStart.variable} h-full antialiased`}>
+    <html lang="en" className={`${jetbrainsMono.variable} ${rajdhani.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col overflow-hidden">{children}</body>
     </html>
   );

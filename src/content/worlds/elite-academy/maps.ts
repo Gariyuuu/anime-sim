@@ -27,6 +27,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { default: [8, 7], fromClassroom: [3, 7], fromLibrary: [13, 7] },
     defaultSpawn: "default",
     ambientLabel: "Midday chatter echoes off polished floors.",
+    sceneType: "generic",
     interactables: [
       { id: "door-classroom", kind: "door", x: 2, y: 4, label: "Classroom 1-D", targetMapId: "ea-map-classroom", targetSpawnId: "fromHallway", glyph: "door-open" },
       { id: "door-cafeteria", kind: "door", x: 5, y: 4, label: "Cafeteria", targetMapId: "ea-map-cafeteria", targetSpawnId: "fromHallway", glyph: "door-open" },
@@ -52,6 +53,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [6, 7] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Rows of desks face a wall-mounted ranking board.",
+    sceneType: "classroom",
     interactables: [
       { id: "npc-rei", kind: "npc", x: 3, y: 3, label: "Suzune Horikita", npcId: "ea-rei", sceneId: "ea-scene-rei-intro", glyph: "user" },
       { id: "npc-rei-secret", kind: "trigger", x: 3, y: 2, label: "Talk to Suzune privately", sceneId: "ea-scene-rei-secret-followup", requiresFlag: "ea-flag-noticed-rei-discrepancy", glyph: "eye" },
@@ -111,6 +113,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [6, 6] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Trays clatter. Every table is its own little kingdom.",
+    sceneType: "cafeteria",
     interactables: [
       { id: "npc-yuzuki", kind: "npc", x: 4, y: 3, label: "Kei Karuizawa", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-intro", glyph: "heart" },
       { id: "obj-food-counter", kind: "shop", x: 8, y: 2, label: "Lunch Counter", sceneId: "ea-scene-lunch-counter", glyph: "utensils" },
@@ -136,6 +139,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [6, 7], fromArchive: [11, 7] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Rows of shelves. Somebody is always watching who reads what.",
+    sceneType: "library",
     interactables: [
       { id: "npc-nao-library", kind: "npc", x: 6, y: 2, label: "Mio Ibuki", npcId: "ea-nao", sceneId: "ea-scene-nao-library", glyph: "book" },
       { id: "obj-study-desk", kind: "object", x: 10, y: 6, label: "Study Carrel", sceneId: "ea-scene-study-minigame", glyph: "brain" },
@@ -159,6 +163,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromLibrary: [5, 7] },
     defaultSpawn: "fromLibrary",
     ambientLabel: "Four brass levers, unlabeled but clearly meant to be used in some order.",
+    sceneType: "library",
     interactables: [
       { id: "door-library-back", kind: "door", x: 5, y: 8, label: "Back to the Library", targetMapId: "ea-map-library", targetSpawnId: "fromArchive", glyph: "chevrons-down" },
       { id: "obj-archive-hint", kind: "object", x: 5, y: 1, label: "A brass plaque", sceneId: "ea-scene-archive-hint", glyph: "scroll" },
@@ -191,6 +196,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [5, 6] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Immaculate. Every surface polished. Nothing out of place, which is itself suspicious.",
+    sceneType: "classroom",
     interactables: [
       { id: "npc-daichi", kind: "npc", x: 5, y: 2, label: "Kakeru Ryuen", npcId: "ea-daichi", sceneId: "ea-scene-daichi-intro", glyph: "crown" },
       { id: "hidden-hairpin", kind: "hidden-item", x: 8, y: 5, label: "A hairpin on the floor", itemId: "ea-item-hairpin", hidden: true, glyph: "sparkle" },
@@ -213,6 +219,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [7, 7] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Squeaking shoes. Someone is always training past when they should stop.",
+    sceneType: "gym",
     interactables: [
       { id: "npc-kenta-gym", kind: "npc", x: 7, y: 3, label: "Ken Sudou", npcId: "ea-kenta", sceneId: "ea-scene-kenta-gym", glyph: "shield" },
       { id: "obj-training", kind: "trigger", x: 3, y: 6, label: "Train (Courage / Discipline)", sceneId: "ea-scene-train-gym", glyph: "dumbbell" },
@@ -236,6 +243,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [5, 6] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Wind and quiet. The one place nobody is keeping score.",
+    sceneType: "courtyard",
     interactables: [
       { id: "npc-yuzuki-roof", kind: "npc", x: 5, y: 3, label: "Kei Karuizawa", npcId: "ea-yuzuki", sceneId: "ea-scene-yuzuki-rooftop", glyph: "heart", requiresFlag: "ea-flag-met-yuzuki" },
       { id: "obj-view", kind: "trigger", x: 2, y: 2, label: "Look out over the campus", sceneId: "ea-scene-rooftop-monologue", glyph: "cloud" },
@@ -254,6 +262,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [7, 8] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Benches under thin trees. A popular spot to be overheard.",
+    sceneType: "courtyard",
     interactables: [
       { id: "npc-hikari-yard", kind: "npc", x: 4, y: 4, label: "Kikyou Kushida", npcId: "ea-hikari", sceneId: "ea-scene-hikari-courtyard", glyph: "message-circle" },
       { id: "obj-ch2-hikari", kind: "trigger", x: 9, y: 4, label: "Kikyou's rumor", sceneId: "ea-scene-ch2-hikari-gossip", requiresFlag: "ea-flag-ch2-arrived", glyph: "eye" },
@@ -273,6 +282,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [5, 5] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Everything here can be bought with private points — including, some say, favors.",
+    sceneType: "shop",
     interactables: [
       { id: "obj-shop", kind: "shop", x: 5, y: 2, label: "Shop Counter", sceneId: "ea-scene-shop", glyph: "shopping-bag" },
       { id: "obj-ch8-event", kind: "quest-marker", x: 8, y: 4, label: "Market intel from Kikyou", sceneId: "ea-scene-ch8-hikari-intel", requiresFlag: "ea-flag-ch8-arrived", glyph: "alert-triangle" },
@@ -292,6 +302,7 @@ export const eliteAcademyMaps: MapDefinitionInput[] = [
     spawns: { fromHallway: [4, 5] },
     defaultSpawn: "fromHallway",
     ambientLabel: "Your room. Quiet enough to think, which is sometimes the problem.",
+    sceneType: "dorm",
     interactables: [
       { id: "obj-bed", kind: "trigger", x: 2, y: 2, label: "Rest until tomorrow", sceneId: "ea-scene-rest", glyph: "bed" },
       { id: "obj-desk-dorm", kind: "trigger", x: 6, y: 4, label: "Review your notes", sceneId: "ea-scene-review-notes", glyph: "notebook" },

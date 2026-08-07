@@ -48,8 +48,8 @@
   --color-accent-success: var(--accent-success);
   --color-accent-warning: var(--accent-warning);
   --color-accent-info: var(--accent-info);
-  --font-display: var(--font-press-start);
-  --font-body: var(--font-space-mono);
+  --font-display: var(--font-rajdhani);
+  --font-body: var(--font-jetbrains-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -210,12 +210,21 @@ body {
 .marker-idle {
   animation: marker-idle-bob 1.6s ease-in-out infinite;
 }
+@keyframes beacon-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.beacon-pulse {
+  animation: beacon-bob 0.9s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px var(--accent-warning));
+}
 [data-reduced-motion="true"] .sprite-idle,
 [data-reduced-motion="true"] .sprite-leg-a,
 [data-reduced-motion="true"] .sprite-leg-b,
 [data-reduced-motion="true"] .sprite-blink,
 [data-reduced-motion="true"] .portrait-idle,
 [data-reduced-motion="true"] .portrait-talk,
-[data-reduced-motion="true"] .marker-idle {
+[data-reduced-motion="true"] .marker-idle,
+[data-reduced-motion="true"] .beacon-pulse {
   animation: none;
 }

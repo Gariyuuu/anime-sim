@@ -1,4 +1,4 @@
-import type { Interactable } from "@/types";
+import type { Interactable, MapDefinition } from "@/types";
 
 export interface Rect {
   x: number;
@@ -49,6 +49,47 @@ export function nearestInteractable(
     }
   }
   return best;
+}
+
+export interface DoorEdge {
+  mapId: string;
+  interactableId: string;
+  targetMapId: string;
+}
+
+/** Adjacency list (by source map id) of every door/transition interactable in a world, used by
+ * `nextDoorTowardMap` to route the guidance system toward an off-map target. */
+export function buildDoorGraph(maps: MapDefinition[]): Map<string, DoorEdge[]> {
+  const graph = new Map<string, DoorEdge[]>();
+  for (const map of maps) {
+    for (const it of map.interactables) {
+      if ((it.kind !== "door" && it.kind !== "transition") || !it.targetMapId) continue;
+      const edges = graph.get(map.id) ?? [];
+      edges.push({ mapId: map.id, interactableId: it.id, targetMapId: it.targetMapId });
+      graph.set(map.id, edges);
+    }
+  }
+  return graph;
+}
+
+/** BFS shortest path from `fromMapId` to `targetMapId`; returns the first-hop door edge to walk
+ * through right now, or `undefined` if they're the same map or no path exists. */
+export function nextDoorTowardMap(fromMapId: string, targetMapId: string, graph: Map<string, DoorEdge[]>): DoorEdge | undefined {
+  if (fromMapId === targetMapId) return undefined;
+  const visited = new Set<string>([fromMapId]);
+  const queue: { mapId: string; firstHop: DoorEdge }[] = (graph.get(fromMapId) ?? []).map((edge) => ({ mapId: edge.targetMapId, firstHop: edge }));
+  for (const entry of queue) visited.add(entry.mapId);
+  let head = 0;
+  while (head < queue.length) {
+    const { mapId, firstHop } = queue[head++];
+    if (mapId === targetMapId) return firstHop;
+    for (const edge of graph.get(mapId) ?? []) {
+      if (visited.has(edge.targetMapId)) continue;
+      visited.add(edge.targetMapId);
+      queue.push({ mapId: edge.targetMapId, firstHop });
+    }
+  }
+  return undefined;
 }
 
 export interface MoveInput {

@@ -2,14 +2,19 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGameStore } from "@/state/gameStore";
-import { getMap, getNpc } from "@/content/registry";
-import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, type MoveInput } from "@/engine/exploration";
+import { getMap, getNpc, maps } from "@/content/registry";
+import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInput, buildDoorGraph, nextDoorTowardMap, type MoveInput } from "@/engine/exploration";
+import { getGuidanceTarget } from "@/lib/guidance";
+import { generateScenery, type Prop } from "@/engine/scenery";
 import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
 import { PortraitFace } from "@/components/game/PortraitFace";
 import { cn } from "@/lib/utils";
 import type { Interactable } from "@/types";
+
+// Static for the app's lifetime (content never changes at runtime) — build once, not per render.
+const DOOR_GRAPH = buildDoorGraph(maps);
 
 const PLAYER_SIZE = 20;
 const SPEED = 150; // px/sec
@@ -37,6 +42,179 @@ function shadeColor(hex: string, percent: number): string {
 /** Two close-but-distinct floor tones for a subtle checker, instead of one flat fill. */
 function shadeFloor(background: string): { light: string; dark: string } {
   return { light: shadeColor(background, 4), dark: shadeColor(background, -5) };
+}
+
+// Module-level cache so a background image is only ever loaded once, not re-fetched every time
+// its map is re-entered. `onLoad` is called once the image is ready, to trigger a repaint.
+const imageCache = new Map<string, HTMLImageElement>();
+function getCachedImage(url: string, onLoad: () => void): HTMLImageElement | undefined {
+  const cached = imageCache.get(url);
+  if (cached) return cached.complete ? cached : undefined;
+  const img = new Image();
+  img.onload = onLoad;
+  img.src = url;
+  imageCache.set(url, img);
+  return undefined;
+}
+
+const VARIANT_TONES = ["#4a7a3a", "#3f6a30", "#588a45"];
+
+/** Draws one procedurally-scattered scenery prop, in a coordinate space already translated so
+ * (0,0) is the prop's tile-center and scaled to a `ts`-pixel tile — every primitive below is
+ * written in that local space, then `drawProp` restores the transform. Purely decorative: never
+ * consulted for collision. `now` (ms) drives the torch flicker; everything else is static per
+ * prop (its `variant`/`scale` already bake in all the per-prop randomness). */
+function drawProp(ctx: CanvasRenderingContext2D, prop: Prop, ts: number, now: number) {
+  const s = ts * prop.scale;
+  const tone = VARIANT_TONES[prop.variant % VARIANT_TONES.length];
+  switch (prop.kind) {
+    case "tree": {
+      ctx.fillStyle = "#5a4028";
+      ctx.fillRect(-s * 0.06, -s * 0.1, s * 0.12, s * 0.4);
+      ctx.fillStyle = shadeColor(tone, prop.variant * 4 - 4);
+      for (const [dx, dy, r] of [
+        [0, -s * 0.55, s * 0.34],
+        [-s * 0.2, -s * 0.35, s * 0.26],
+        [s * 0.2, -s * 0.4, s * 0.28],
+      ] as const) {
+        ctx.beginPath();
+        ctx.arc(dx, dy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      break;
+    }
+    case "bush": {
+      ctx.fillStyle = shadeColor(tone, 6);
+      ctx.beginPath();
+      ctx.arc(-s * 0.16, -s * 0.06, s * 0.22, 0, Math.PI * 2);
+      ctx.arc(s * 0.14, -s * 0.02, s * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "rock": {
+      ctx.fillStyle = "#8a8478";
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.24, s * 0.16, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#6e6a5e";
+      ctx.beginPath();
+      ctx.ellipse(-s * 0.06, s * 0.03, s * 0.13, s * 0.08, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "tall-grass": {
+      ctx.strokeStyle = shadeColor(tone, 10);
+      ctx.lineWidth = Math.max(1, s * 0.03);
+      for (const dx of [-s * 0.12, 0, s * 0.12]) {
+        ctx.beginPath();
+        ctx.moveTo(dx, s * 0.14);
+        ctx.quadraticCurveTo(dx + s * 0.04, -s * 0.05, dx, -s * 0.2);
+        ctx.stroke();
+      }
+      break;
+    }
+    case "window-glow": {
+      ctx.fillStyle = "rgba(255, 214, 140, 0.55)";
+      ctx.fillRect(-s * 0.2, -s * 0.22, s * 0.4, s * 0.32);
+      ctx.strokeStyle = "rgba(0,0,0,0.35)";
+      ctx.lineWidth = Math.max(1, s * 0.025);
+      ctx.strokeRect(-s * 0.2, -s * 0.22, s * 0.4, s * 0.32);
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.22);
+      ctx.lineTo(0, s * 0.1);
+      ctx.moveTo(-s * 0.2, -s * 0.06);
+      ctx.lineTo(s * 0.2, -s * 0.06);
+      ctx.stroke();
+      break;
+    }
+    case "lamppost": {
+      ctx.fillStyle = "#2a2a28";
+      ctx.fillRect(-s * 0.03, -s * 0.05, s * 0.06, s * 0.4);
+      ctx.fillStyle = "rgba(255, 220, 150, 0.85)";
+      ctx.beginPath();
+      ctx.arc(0, -s * 0.14, s * 0.08, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "planter": {
+      ctx.fillStyle = "#6a4a30";
+      ctx.fillRect(-s * 0.18, -s * 0.05, s * 0.36, s * 0.16);
+      ctx.fillStyle = shadeColor(tone, 8);
+      ctx.beginPath();
+      ctx.arc(-s * 0.08, -s * 0.08, s * 0.1, 0, Math.PI * 2);
+      ctx.arc(s * 0.08, -s * 0.1, s * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "crate": {
+      ctx.fillStyle = "#8a6a3f";
+      ctx.fillRect(-s * 0.2, -s * 0.2, s * 0.4, s * 0.4);
+      ctx.strokeStyle = "rgba(0,0,0,0.3)";
+      ctx.lineWidth = Math.max(1, s * 0.025);
+      ctx.strokeRect(-s * 0.2, -s * 0.2, s * 0.4, s * 0.4);
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.2, -s * 0.2);
+      ctx.lineTo(s * 0.2, s * 0.2);
+      ctx.moveTo(s * 0.2, -s * 0.2);
+      ctx.lineTo(-s * 0.2, s * 0.2);
+      ctx.stroke();
+      break;
+    }
+    case "banner": {
+      ctx.fillStyle = shadeColor("#8a3a3a", prop.variant * 6);
+      ctx.fillRect(-s * 0.1, -s * 0.3, s * 0.2, s * 0.5);
+      break;
+    }
+    case "torch": {
+      ctx.fillStyle = "#3a3a3a";
+      ctx.fillRect(-s * 0.03, -s * 0.1, s * 0.06, s * 0.2);
+      const flicker = 0.75 + 0.25 * Math.sin(now / 140 + prop.x * 3);
+      ctx.fillStyle = `rgba(255, ${Math.round(140 * flicker)}, 60, ${0.6 + 0.3 * flicker})`;
+      ctx.beginPath();
+      ctx.ellipse(0, -s * 0.18 * flicker, s * 0.07, s * 0.12 * flicker, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "pillar": {
+      ctx.fillStyle = "#5a5a52";
+      ctx.fillRect(-s * 0.14, -s * 0.5, s * 0.28, s * 0.9);
+      ctx.fillStyle = "rgba(255,255,255,0.08)";
+      ctx.fillRect(-s * 0.14, -s * 0.5, s * 0.06, s * 0.9);
+      break;
+    }
+    case "fountain": {
+      ctx.fillStyle = "#8a8478";
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#6f9fb8";
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#5a5a52";
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.06, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "desk":
+    case "bookshelf":
+    case "bench": {
+      const w = prop.kind === "bookshelf" ? s * 0.5 : s * 0.4;
+      const h = prop.kind === "bookshelf" ? s * 0.2 : s * 0.28;
+      const base = prop.kind === "bookshelf" ? "#6a4a30" : prop.kind === "bench" ? "#7a5f3a" : "#9a8a6a";
+      ctx.fillStyle = base;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.strokeStyle = "rgba(0,0,0,0.25)";
+      ctx.lineWidth = Math.max(1, s * 0.02);
+      ctx.strokeRect(-w / 2, -h / 2, w, h);
+      if (prop.kind === "bookshelf") {
+        ctx.fillStyle = shadeColor(base, prop.variant % 2 === 0 ? 20 : -15);
+        ctx.fillRect(-w / 2 + s * 0.03, -h / 2 + s * 0.03, w - s * 0.06, h * 0.35);
+      }
+      break;
+    }
+  }
 }
 
 /** Picks a zoom level that fits the room to however much space the view actually has (never
@@ -87,6 +265,9 @@ export function ExplorationView() {
     const s = map.spawns[save?.currentSpawnId ?? map.defaultSpawn] ?? map.spawns[map.defaultSpawn];
     return s;
   }, [map, save?.currentSpawnId]);
+  // Procedural scenery (trees/furniture/etc) — computed once per map, not per render tick, since
+  // the RNG scan is more than trivially cheap. Skipped entirely when `backgroundImageUrl` is set.
+  const sceneProps = useMemo(() => (map && !map.backgroundImageUrl ? generateScenery(map) : []), [map]);
 
   const [pos, setPos] = useState({ x: (spawn?.[0] ?? 0) * (map?.tileSize ?? 32) + (map?.tileSize ?? 32) / 2, y: (spawn?.[1] ?? 0) * (map?.tileSize ?? 32) + (map?.tileSize ?? 32) / 2 });
   const posRef = useRef(pos);
@@ -248,19 +429,37 @@ export function ExplorationView() {
     const { light, dark } = shadeFloor(map.background);
     const ts = map.tileSize;
     const wallSet = new Set(map.walls.map(([wx, wy]) => `${wx},${wy}`));
+    const now = performance.now();
 
-    // floor: a soft two-tone checker instead of one flat fill, so the room reads as a textured
-    // surface rather than a solid rectangle — the "grid with two colors" complaint was really
-    // about there being only ONE floor color at all, with a near-invisible 5%-opacity grid line.
-    const firstCol = Math.max(0, Math.floor(camera.x / ts) - 1);
-    const lastCol = Math.min(map.widthTiles, Math.ceil((camera.x + worldViewW) / ts) + 1);
-    const firstRow = Math.max(0, Math.floor(camera.y / ts) - 1);
-    const lastRow = Math.min(map.heightTiles, Math.ceil((camera.y + worldViewH) / ts) + 1);
-    for (let ty = firstRow; ty < lastRow; ty++) {
-      for (let tx = firstCol; tx < lastCol; tx++) {
-        if (wallSet.has(`${tx},${ty}`)) continue;
-        ctx.fillStyle = (tx + ty) % 2 === 0 ? light : dark;
-        ctx.fillRect(tx * ts - camera.x, ty * ts - camera.y, ts, ts);
+    const bgImage = map.backgroundImageUrl ? getCachedImage(map.backgroundImageUrl, () => forceTick((t) => (t + 1) % 100000)) : undefined;
+    if (bgImage) {
+      // Real art override — mirrors the NPC portraitImageUrl pattern. Covers the floor area;
+      // procedural scenery is skipped entirely for this map (see the `sceneProps` memo above).
+      ctx.drawImage(bgImage, 0, 0, map.widthTiles * ts, map.heightTiles * ts);
+    } else {
+      // floor: a soft two-tone checker instead of one flat fill, so the room reads as a textured
+      // surface rather than a solid rectangle — the "grid with two colors" complaint was really
+      // about there being only ONE floor color at all, with a near-invisible 5%-opacity grid line.
+      const firstCol = Math.max(0, Math.floor(camera.x / ts) - 1);
+      const lastCol = Math.min(map.widthTiles, Math.ceil((camera.x + worldViewW) / ts) + 1);
+      const firstRow = Math.max(0, Math.floor(camera.y / ts) - 1);
+      const lastRow = Math.min(map.heightTiles, Math.ceil((camera.y + worldViewH) / ts) + 1);
+      for (let ty = firstRow; ty < lastRow; ty++) {
+        for (let tx = firstCol; tx < lastCol; tx++) {
+          if (wallSet.has(`${tx},${ty}`)) continue;
+          ctx.fillStyle = (tx + ty) % 2 === 0 ? light : dark;
+          ctx.fillRect(tx * ts - camera.x, ty * ts - camera.y, ts, ts);
+        }
+      }
+
+      // floor-scattered scenery (trees, furniture, crates, ...) — the actual "real location"
+      // upgrade: layered shapes instead of a flat color, deterministically placed per map.
+      for (const prop of sceneProps) {
+        if (prop.wallMounted) continue;
+        ctx.save();
+        ctx.translate(prop.x * ts + ts / 2 - camera.x, prop.y * ts + ts / 2 - camera.y);
+        drawProp(ctx, prop, ts, now);
+        ctx.restore();
       }
     }
 
@@ -282,6 +481,17 @@ export function ExplorationView() {
       ctx.fillRect(px + ts - bevel, py, bevel, ts);
     }
 
+    // wall-mounted scenery (windows, torches) — drawn on top of the wall bevels above.
+    if (!bgImage) {
+      for (const prop of sceneProps) {
+        if (!prop.wallMounted) continue;
+        ctx.save();
+        ctx.translate(prop.x * ts + ts / 2 - camera.x, prop.y * ts + ts / 2 - camera.y);
+        drawProp(ctx, prop, ts, now);
+        ctx.restore();
+      }
+    }
+
     // soft vignette so rooms have a sense of depth/light instead of totally flat, uniform color
     const cx = pos.x - camera.x;
     const cy = pos.y - camera.y;
@@ -293,7 +503,7 @@ export function ExplorationView() {
     ctx.fillRect(camera.x, camera.y, worldViewW, worldViewH);
 
     ctx.restore();
-  }, [map, pos, viewSize]);
+  }, [map, pos, viewSize, sceneProps]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -312,6 +522,12 @@ export function ExplorationView() {
   const { w: VIEW_W, h: VIEW_H } = viewSize;
   const { zoom, camera } = computeCameraAndZoom(map.widthTiles, map.heightTiles, map.tileSize, pos.x, pos.y, VIEW_W, VIEW_H);
   const nearby = nearbyId ? map.interactables.find((i) => i.id === nearbyId) : null;
+
+  // Guidance: where the player should go next for their current chapter (see lib/guidance.ts).
+  // On-map target -> beacon over that marker below; off-map target -> glow the door that leads
+  // toward it, found via BFS over the door graph.
+  const guidanceTarget = getGuidanceTarget(save);
+  const guidanceDoorHop = guidanceTarget && guidanceTarget.mapId !== map.id ? nextDoorTowardMap(map.id, guidanceTarget.mapId, DOOR_GRAPH) : undefined;
 
   return (
     <div className="flex h-dvh w-full flex-col bg-ink-100">
@@ -332,6 +548,8 @@ export function ExplorationView() {
               const isNear = it.id === nearbyId;
               const isLiving = it.kind === "npc" || it.kind === "monster";
               const isDoor = it.kind === "door" || it.kind === "transition";
+              const isGuidanceBeacon = guidanceTarget?.mapId === map.id && it.id === guidanceTarget.interactableId;
+              const isGuidanceDoor = it.id === guidanceDoorHop?.interactableId;
               return (
                 <div
                   key={it.id}
@@ -339,13 +557,22 @@ export function ExplorationView() {
                   style={{ left: x, top: y }}
                   onClick={() => interact(it.id)}
                 >
+                  {(isGuidanceBeacon || isGuidanceDoor) && (
+                    <div className="beacon-pulse absolute -top-6">
+                      <Icon name="chevron-down" size={18} color="var(--accent-warning)" />
+                    </div>
+                  )}
                   <div
                     className={cn(
                       "flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border-2 shadow-sm transition-transform",
                       isLiving && "marker-idle",
                       isDoor && !isNear && "marker-idle",
                     )}
-                    style={{ background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : color, borderColor: isNear ? "var(--accent-warning)" : "var(--paper-0)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
+                    style={{
+                      background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : color,
+                      borderColor: isNear ? "var(--accent-warning)" : isGuidanceDoor ? "var(--accent-success)" : "var(--paper-0)",
+                      transform: isNear ? "scale(1.15)" : "scale(1)",
+                    }}
                   >
                     {npc?.portraitImageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -359,7 +586,7 @@ export function ExplorationView() {
                   {(isNear || isDoor) && (
                     <span
                       className="whitespace-nowrap rounded px-1 py-0.5 text-[9px] text-paper-0"
-                      style={{ background: isDoor ? "var(--accent-info)" : "var(--ink-950)" }}
+                      style={{ background: isDoor ? (isGuidanceDoor ? "var(--accent-success)" : "var(--accent-info)") : "var(--ink-950)" }}
                     >
                       {isDoor && !isNear ? `→ ${it.label}` : it.label}
                     </span>

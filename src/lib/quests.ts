@@ -14,6 +14,12 @@ const INFERRED_OBJECTIVE_FLAGS: Record<string, Record<string, string>> = {
     "explore-field": "ai-flag-floor1-arrived",
     "clear-dungeon": "ai-flag-alpha-defeated",
   },
+  "ea-q-main-first-ranking": {
+    "meet-classmates": "ea-flag-met-rei",
+    "learn-points": "ea-flag-met-arase",
+    "investigate-penalty": "ea-flag-penalty-revealed",
+    "first-exam": "ea-flag-exam-complete",
+  },
 };
 
 /** The completed-objective IDs for a quest, merging real tracked progress with the inferred

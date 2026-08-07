@@ -189,11 +189,11 @@ export function DialogueView() {
             initial={{ opacity: 0, x: 14 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0 }}
-            className="absolute bottom-40 right-6 z-10 flex flex-col items-center sm:right-10"
+            className="absolute bottom-56 right-4 z-10 flex flex-col items-center sm:bottom-64 sm:right-10"
           >
             <div
               className={cn(
-                "flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border-4 border-paper-0 sm:h-36 sm:w-36",
+                "flex h-32 w-32 items-center justify-center overflow-hidden rounded-lg border-4 border-paper-0 sm:h-44 sm:w-44",
                 fullyRevealed ? "portrait-idle" : "portrait-talk",
               )}
               style={{ background: `color-mix(in srgb, ${speakerNpc.portraitColor} 22%, var(--paper-0))` }}
@@ -209,7 +209,7 @@ export function DialogueView() {
                   skinTone={speakerNpc.skinTone}
                   accentColor={speakerNpc.portraitColor}
                   expression={node.expression}
-                  size={144}
+                  size={176}
                 />
               )}
             </div>
@@ -222,28 +222,28 @@ export function DialogueView() {
       </AnimatePresence>
 
       {/* textbox */}
-      <div className="relative z-10 w-full px-4 pb-6">
+      <div className="relative z-10 w-full px-3 pb-5 sm:px-6 sm:pb-8">
         <div
-          className={`mx-auto max-w-3xl rounded-md border-2 bg-paper-0 p-4 shadow-[3px_3px_0_0_rgba(0,0,0,0.6)] ${node.isInnerMonologue ? "border-dashed" : ""}`}
+          className={`mx-auto w-full max-w-5xl rounded-md border-2 bg-paper-0 p-5 shadow-[3px_3px_0_0_rgba(0,0,0,0.6)] sm:p-7 ${node.isInnerMonologue ? "border-dashed" : ""}`}
           style={{ borderColor: node.isInnerMonologue ? worldAccent : "var(--ink-950)" }}
         >
           {speakerName && !node.isInnerMonologue && (
-            <p className="mb-1 text-xs font-bold uppercase tracking-wide" style={{ color: worldAccent }}>
+            <p className="mb-1.5 text-sm font-bold uppercase tracking-wide sm:text-base" style={{ color: worldAccent }}>
               {speakerName}
             </p>
           )}
-          {node.isInnerMonologue && <p className="mb-1 text-[10px] uppercase italic tracking-widest text-ink-500">Inner thought</p>}
-          <p className={`min-h-[2.5em] text-sm leading-relaxed ${node.isInnerMonologue ? "italic text-ink-700" : "text-ink-950"}`}>
+          {node.isInnerMonologue && <p className="mb-1.5 text-xs uppercase italic tracking-widest text-ink-500">Inner thought</p>}
+          <p className={`min-h-[4em] text-base leading-relaxed sm:min-h-[5em] sm:text-lg ${node.isInnerMonologue ? "italic text-ink-700" : "text-ink-950"}`}>
             {text.slice(0, revealCount)}
             {!fullyRevealed && <span className="animate-pulse">▌</span>}
           </p>
           {fullyRevealed && visibleChoices.length === 0 && (
-            <p className="mt-2 text-right text-[10px] uppercase tracking-widest text-ink-400">click to continue ▸</p>
+            <p className="mt-2 text-right text-xs uppercase tracking-widest text-ink-400">click to continue ▸</p>
           )}
         </div>
 
         {fullyRevealed && visibleChoices.length > 0 && (
-          <div className="mx-auto mt-2 flex max-w-3xl flex-col gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <div className="mx-auto mt-2 flex max-w-5xl flex-col gap-2" onClick={(e) => e.stopPropagation()}>
             {timeLeft !== null && (
               <div className="h-1 w-full overflow-hidden rounded bg-ink-300">
                 <div className="h-full bg-accent-danger transition-[width] duration-100 linear" style={{ width: `${(timeLeft / (timedChoiceSeconds ?? 1)) * 100}%` }} />
@@ -286,18 +286,18 @@ function ChoiceButton({ choice, showRequirement, met, onSelect }: { choice: Choi
       disabled={!met}
       aria-disabled={!met}
       className={cn(
-        "flex items-center justify-between gap-2 rounded border-2 px-3 py-2 text-left text-xs transition-colors",
+        "flex items-center justify-between gap-2 rounded border-2 px-4 py-3 text-left text-sm transition-colors",
         met ? "border-ink-950 bg-paper-0 hover:bg-ink-100 active:translate-y-[1px]" : "cursor-not-allowed border-ink-300 bg-ink-100 text-ink-400",
       )}
     >
-      <span className="flex items-center gap-1.5">
-        {choice.isSilence && <Icon name="volume-x" size={12} className="text-ink-500" />}
-        {choice.isBluff && <Icon name="drama" size={12} className="text-accent-warning" />}
-        {choice.importantChoice && <Icon name="star" size={12} className={met ? "text-accent-danger" : "text-ink-400"} />}
+      <span className="flex items-center gap-2">
+        {choice.isSilence && <Icon name="volume-x" size={14} className="text-ink-500" />}
+        {choice.isBluff && <Icon name="drama" size={14} className="text-accent-warning" />}
+        {choice.importantChoice && <Icon name="star" size={14} className={met ? "text-accent-danger" : "text-ink-400"} />}
         {choice.text}
       </span>
       {showRequirement && choice.requirementLabel && (
-        <span className={cn("shrink-0 text-[9px] uppercase", met ? "text-ink-400" : "text-accent-danger")}>{choice.requirementLabel}</span>
+        <span className={cn("shrink-0 text-[10px] uppercase", met ? "text-ink-400" : "text-accent-danger")}>{choice.requirementLabel}</span>
       )}
     </button>
   );

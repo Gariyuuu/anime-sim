@@ -58,6 +58,13 @@ export const MapDefinitionSchema = z.object({
    * first, so only include idempotent effects here (setFlag/completeObjective/unlockCodex) —
    * never addItem/modifyStat, which would double-grant on repeat visits. */
   arrivalEffects: z.array(EffectSchema).default([]),
+  /** Drives the procedural scenery generator (`engine/scenery.ts`) — which prop set and placement
+   * style (organic scatter vs. furniture grid) this room gets. Purely cosmetic. */
+  sceneType: z.enum(["forest", "town", "classroom", "library", "dungeon", "boss", "gym", "cafeteria", "courtyard", "dorm", "shop", "generic"]).default("generic"),
+  /** Optional real background art override — a path under /public (e.g. "/backgrounds/field1.png").
+   * When set, this image replaces the procedural floor/scenery entirely for this map. Mirrors
+   * `NpcDefinitionSchema.portraitImageUrl`'s override pattern. */
+  backgroundImageUrl: z.string().optional(),
 });
 export type MapDefinition = z.infer<typeof MapDefinitionSchema>;
 
