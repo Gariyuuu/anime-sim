@@ -46,7 +46,7 @@ export const MapDefinitionSchema = z.object({
   heightTiles: z.number(),
   tileSize: z.number().default(32),
   background: z.string().default("#e8e6df"),
-  wallColor: z.string().default("#1a1a1a"),
+  wallColor: z.string().default("#3a3630"),
   walls: z.array(z.tuple([z.number(), z.number()])).default([]),
   spawns: z.record(z.string(), z.tuple([z.number(), z.number()])),
   defaultSpawn: z.string(),

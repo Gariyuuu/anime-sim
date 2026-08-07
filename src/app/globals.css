@@ -13,14 +13,14 @@
   --ink-100: #efeee5;
   --paper-0: #f8f7f0;
 
-  --accent-elite: #7a2323;
-  --accent-elite-soft: #a8514f;
-  --accent-aincrad: #33507a;
-  --accent-aincrad-soft: #6d84ac;
-  --accent-danger: #a4302a;
-  --accent-success: #3f6b45;
-  --accent-warning: #a3762c;
-  --accent-info: #4a5a7a;
+  --accent-elite: #b8323f;
+  --accent-elite-soft: #d97a7f;
+  --accent-aincrad: #2f6fb0;
+  --accent-aincrad-soft: #7fb0e0;
+  --accent-danger: #d6453a;
+  --accent-success: #2f9e57;
+  --accent-warning: #dd9a2e;
+  --accent-info: #4f7fc4;
 
   --background: var(--paper-0);
   --foreground: var(--ink-950);

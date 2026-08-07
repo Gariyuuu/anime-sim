@@ -6,6 +6,7 @@ import { useGameStore } from "@/state/gameStore";
 import { getScene, getNpc } from "@/content/registry";
 import { evaluateConditions } from "@/lib/conditions";
 import { Icon } from "@/components/ui/Icon";
+import { PortraitFace } from "@/components/game/PortraitFace";
 import { Modal } from "@/components/ui/Modal";
 import { audioManager } from "@/audio/audioManager";
 import { cn } from "@/lib/utils";
@@ -188,12 +189,20 @@ export function DialogueView() {
           >
             <div
               className={cn(
-                "flex h-28 w-28 items-center justify-center rounded-lg border-4 border-paper-0 sm:h-36 sm:w-36",
+                "flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg border-4 border-paper-0 sm:h-36 sm:w-36",
                 fullyRevealed ? "portrait-idle" : "portrait-talk",
               )}
-              style={{ background: speakerNpc.portraitColor }}
+              style={{ background: `color-mix(in srgb, ${speakerNpc.portraitColor} 22%, var(--paper-0))` }}
             >
-              <Icon name={speakerNpc.portraitGlyph} size={40} color="var(--paper-0)" />
+              <PortraitFace
+                hairColor={speakerNpc.hairColor}
+                hairstyle={speakerNpc.hairstyle}
+                eyeColor={speakerNpc.eyeColor}
+                skinTone={speakerNpc.skinTone}
+                accentColor={speakerNpc.portraitColor}
+                expression={node.expression}
+                size={144}
+              />
             </div>
             <div className="mt-1 flex items-center gap-1 rounded-full border-2 border-paper-0 bg-ink-950 px-2 py-0.5">
               <Icon name={EXPRESSION_ICON[node.expression]} size={10} color="var(--paper-0)" />

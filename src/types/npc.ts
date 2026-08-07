@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ExpressionSchema } from "./narrative";
 import { RELATIONSHIP_AXES } from "./common";
+import { HAIRSTYLES, HAIR_COLORS, EYE_COLORS, SKIN_TONES } from "./character";
 
 export const NpcRoleSchema = z.enum([
   "classmate",
@@ -29,6 +30,12 @@ export const NpcDefinitionSchema = z.object({
   speechStyle: z.string(),
   portraitColor: z.string(),
   portraitGlyph: z.string(),
+  /** Drives the procedural face portrait (`PortraitFace`) — same trait vocabulary as the
+   * player's own character-creator `Appearance`, so NPC and player art stay consistent. */
+  hairColor: z.enum(HAIR_COLORS),
+  hairstyle: z.enum(HAIRSTYLES),
+  eyeColor: z.enum(EYE_COLORS),
+  skinTone: z.enum(SKIN_TONES),
   expressionsAvailable: z.array(ExpressionSchema).default(["neutral", "smile", "frown", "shocked"]),
   romanceable: z.boolean().default(false),
   canJoinParty: z.boolean().default(false),

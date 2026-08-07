@@ -9,17 +9,35 @@ import { DeviceMenu } from "./DeviceMenu";
 import { DebugPanel } from "./DebugPanel";
 import { ChapterRecapScreen } from "./ChapterRecapScreen";
 import { NotificationToasts } from "./NotificationToasts";
+import { HowToPlayModal } from "./HowToPlayModal";
 import { audioManager } from "@/audio/audioManager";
+
+const TUTORIAL_SEEN_KEY = "anime-sim-tutorial-seen";
 
 export function GameShell() {
   const save = useGameStore((s) => s.save);
   const showChapterRecapIfDue = useGameStore((s) => s.showChapterRecapIfDue);
   const saveGame = useGameStore((s) => s.saveGame);
+  const toggleHelp = useGameStore((s) => s.toggleHelp);
 
   useEffect(() => {
     showChapterRecapIfDue();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [save?.flags.length]);
+
+  // Show the How to Play modal once, automatically, the first time this browser ever reaches
+  // gameplay — after that it's only reachable via the HUD's help button.
+  useEffect(() => {
+    try {
+      if (!window.localStorage.getItem(TUTORIAL_SEEN_KEY)) {
+        window.localStorage.setItem(TUTORIAL_SEEN_KEY, "true");
+        toggleHelp(true);
+      }
+    } catch {
+      // localStorage unavailable (private mode, quota) — tutorial just won't auto-show once
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // playtime tracking + periodic autosave
   useEffect(() => {
@@ -80,6 +98,7 @@ export function GameShell() {
       <DeviceMenu />
       <DebugPanel />
       <NotificationToasts />
+      <HowToPlayModal />
     </div>
   );
 }

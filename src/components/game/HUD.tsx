@@ -7,15 +7,26 @@ import { StatBar } from "@/components/ui/StatBar";
 export function HUD({ locationLabel, ambientLabel }: { locationLabel?: string; ambientLabel?: string }) {
   const save = useGameStore((s) => s.save);
   const toggleDevice = useGameStore((s) => s.toggleDevice);
+  const toggleHelp = useGameStore((s) => s.toggleHelp);
   const setScreen = useGameStore((s) => s.setScreen);
   if (!save) return null;
   const isElite = save.worldId === "elite-academy";
 
   return (
     <div className="flex items-center justify-between gap-2 border-b-2 border-ink-950 bg-paper-0 px-3 py-2 text-ink-950">
-      <div className="min-w-0">
-        <p className="truncate text-xs font-bold">{locationLabel}</p>
-        {ambientLabel && <p className="truncate text-[10px] text-ink-500">{ambientLabel}</p>}
+      <div className="flex min-w-0 items-center gap-1.5">
+        <button
+          onClick={() => toggleHelp(true)}
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-ink-950 text-[11px] font-bold hover:bg-ink-100"
+          style={{ background: "var(--accent-warning)", color: "var(--paper-0)" }}
+          aria-label="How to play"
+        >
+          ?
+        </button>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-bold">{locationLabel}</p>
+          {ambientLabel && <p className="truncate text-[10px] text-ink-500">{ambientLabel}</p>}
+        </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isElite ? (

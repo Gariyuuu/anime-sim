@@ -58,6 +58,7 @@ interface GameStoreState {
   combat: CombatRuntimeState | null;
   pendingEncounterId: string | null;
   deviceOpen: boolean;
+  helpOpen: boolean;
   debugOpen: boolean;
   notifications: Notification[];
   pendingWorldId: WorldId | null;
@@ -97,6 +98,7 @@ interface GameStoreState {
   resolveCombatEnd: () => void;
 
   toggleDevice: (open?: boolean) => void;
+  toggleHelp: (open?: boolean) => void;
   toggleDebug: (open?: boolean) => void;
   updateSettings: (partial: Partial<SaveGame["settings"]>) => void;
 
@@ -176,6 +178,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   pendingEncounterId: null,
   pendingNodeNavigation: null,
   deviceOpen: false,
+  helpOpen: false,
   debugOpen: false,
   notifications: [],
   pendingWorldId: null,
@@ -522,6 +525,7 @@ export const useGameStore = create<GameStoreState>((set, get) => ({
   },
 
   toggleDevice: (open) => set((s) => ({ deviceOpen: open ?? !s.deviceOpen })),
+  toggleHelp: (open) => set((s) => ({ helpOpen: open ?? !s.helpOpen })),
   toggleDebug: (open) => set((s) => ({ debugOpen: open ?? !s.debugOpen })),
 
   updateSettings: (partial) => {

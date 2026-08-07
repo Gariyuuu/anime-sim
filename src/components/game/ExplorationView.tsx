@@ -7,13 +7,28 @@ import { rectIntersectsWalls, clampCamera, nearestInteractable, directionFromInp
 import { Icon } from "@/components/ui/Icon";
 import { HUD } from "@/components/game/HUD";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
+import { PortraitFace } from "@/components/game/PortraitFace";
 import { cn } from "@/lib/utils";
+import type { Interactable } from "@/types";
 
 const PLAYER_SIZE = 20;
 const SPEED = 150; // px/sec
 const INTERACT_RANGE = 46;
 const VIEW_W = 640;
 const VIEW_H = 420;
+
+const MARKER_COLOR: Record<Interactable["kind"], string> = {
+  npc: "var(--ink-700)",
+  monster: "#d6453a",
+  object: "#b8842e",
+  door: "#4f7fc4",
+  transition: "#4f7fc4",
+  "quest-marker": "#c73f6a",
+  "hidden-item": "#3f9fc7",
+  shop: "#2f8f6f",
+  trigger: "#7a5fc7",
+  "puzzle-switch": "#8a8a86",
+};
 
 export function ExplorationView() {
   const save = useGameStore((s) => s.save);
@@ -210,11 +225,10 @@ export function ExplorationView() {
               const npc = it.npcId ? getNpc(it.npcId) : undefined;
               const isSwitch = it.kind === "puzzle-switch";
               const switchLit = isSwitch && it.puzzleId != null && it.puzzleOrder != null && (save.puzzleProgress[it.puzzleId] ?? 0) >= it.puzzleOrder;
-              const color = switchLit
-                ? "var(--accent-success, #2f7a4f)"
-                : npc?.portraitColor ?? (it.kind === "monster" ? "var(--accent-danger)" : it.kind === "door" || it.kind === "transition" ? "var(--accent-info)" : it.kind === "puzzle-switch" ? "var(--ink-500)" : "var(--ink-700)");
+              const color = switchLit ? "var(--accent-success)" : npc?.portraitColor ?? MARKER_COLOR[it.kind];
               const isNear = it.id === nearbyId;
               const isLiving = it.kind === "npc" || it.kind === "monster";
+              const isDoor = it.kind === "door" || it.kind === "transition";
               return (
                 <div
                   key={it.id}
@@ -223,12 +237,27 @@ export function ExplorationView() {
                   onClick={() => interact(it.id)}
                 >
                   <div
-                    className={cn("flex h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm transition-transform", isLiving && "marker-idle")}
-                    style={{ background: color, borderColor: isNear ? "var(--accent-warning)" : "var(--ink-950)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border-2 shadow-sm transition-transform",
+                      isLiving && "marker-idle",
+                      isDoor && !isNear && "marker-idle",
+                    )}
+                    style={{ background: npc ? `color-mix(in srgb, ${color} 25%, var(--paper-0))` : color, borderColor: isNear ? "var(--accent-warning)" : "var(--paper-0)", transform: isNear ? "scale(1.15)" : "scale(1)" }}
                   >
-                    <Icon name={it.glyph} size={12} color="var(--paper-0)" />
+                    {npc ? (
+                      <PortraitFace hairColor={npc.hairColor} hairstyle={npc.hairstyle} eyeColor={npc.eyeColor} skinTone={npc.skinTone} accentColor={npc.portraitColor} expression="neutral" size={26} />
+                    ) : (
+                      <Icon name={it.glyph} size={12} color="var(--paper-0)" />
+                    )}
                   </div>
-                  {isNear && <span className="whitespace-nowrap rounded bg-ink-950 px-1 py-0.5 text-[9px] text-paper-0">{it.label}</span>}
+                  {(isNear || isDoor) && (
+                    <span
+                      className="whitespace-nowrap rounded px-1 py-0.5 text-[9px] text-paper-0"
+                      style={{ background: isDoor ? "var(--accent-info)" : "var(--ink-950)" }}
+                    >
+                      {isDoor && !isNear ? `→ ${it.label}` : it.label}
+                    </span>
+                  )}
                 </div>
               );
             })}
