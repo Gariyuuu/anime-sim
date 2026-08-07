@@ -4,7 +4,13 @@ import { cn } from "@/lib/utils";
 /** Shared full-viewport backdrop for menu-level screens (title, creator, codex, etc). */
 export function ScreenFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("scanlines flex h-dvh w-full flex-col items-center overflow-y-auto bg-paper-0 px-4 py-6 text-ink-950", className)}>
+    <div
+      className={cn("scanlines flex h-dvh w-full flex-col items-center overflow-y-auto px-4 py-6 text-ink-950", className)}
+      style={{
+        background:
+          "linear-gradient(135deg, color-mix(in srgb, var(--accent-elite) 20%, var(--paper-0)) 0%, var(--paper-0) 45%, color-mix(in srgb, var(--accent-aincrad) 20%, var(--paper-0)) 100%)",
+      }}
+    >
       <div className="w-full max-w-5xl">{children}</div>
     </div>
   );

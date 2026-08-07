@@ -5,7 +5,7 @@ import { audioManager } from "@/audio/audioManager";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-ink-950 text-paper-0 hover:bg-ink-800 border-ink-950",
+  primary: "bg-accent-warning text-paper-0 hover:brightness-110 border-ink-950",
   secondary: "bg-paper-0 text-ink-950 hover:bg-ink-100 border-ink-950",
   ghost: "bg-transparent text-ink-950 hover:bg-ink-100 border-transparent",
   danger: "bg-accent-danger text-paper-0 hover:brightness-110 border-ink-950",
