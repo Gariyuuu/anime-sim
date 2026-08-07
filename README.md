@@ -321,17 +321,19 @@ This is a **vertical slice**, not an infinite 100-floor/many-year game. What's g
 playable end-to-end today:
 
 - ✅ Boot → title → character creation → world choice → save/load
-- ✅ **10 full chapters in both worlds**, start to finish, each with a meaningful decision and
-  its own outcome — Elite Academy's full school year, and Aincrad's climb from Floor 1 to the
-  Tenth Gate
+- ✅ **20 full chapters in both worlds**, start to finish, each with a meaningful decision and
+  its own outcome — Elite Academy's Years One and Two, and Aincrad's climb from Floor 1 to the
+  Twentieth Spire
 - ✅ Exploration, dialogue, combat, relationships, quests, inventory, codex, achievements
 - ✅ Chapter-to-chapter progression: a "Next Chapter" flow, an unlocked-chapter list per save,
   and a Chapters tab on the in-game device
-- 🔒 Aincrad Floors 11+ aren't built; this slice's climb ends at the Tenth Gate
-- 🔒 Elite Academy's arc ends at Year's End; a second year isn't built
-- ✅ Chapters 2–10 in both worlds have been deepened to Chapter One's density — multiple NPC
-  beats, hidden/bonus scenes, a 2–4 option decision, and a reactive multi-branch close in every
-  chapter — see Patch Notes for specifics
+- 🔒 Aincrad Floors 21+ aren't built; this slice's climb ends at the Twentieth Spire
+- 🔒 Elite Academy's arc ends at Year Two's close; a third year isn't built
+- ✅ Chapters/floors 2–10 in both worlds have been deepened to Chapter One's density — multiple
+  NPC beats, hidden/bonus scenes, a 2–4 option decision, and a reactive multi-branch close in
+  every chapter
+- ℹ️ Chapters/floors 11–20 are moderate-depth (matching how 2–10 first shipped, before being
+  deepened) rather than Chapter One's full density — see Patch Notes for specifics
 
 See [`content/patchnotes.ts`](src/content/patchnotes.ts) (rendered in-game under Patch Notes)
 for the authoritative, versioned list of what's done, known issues, and what's next.

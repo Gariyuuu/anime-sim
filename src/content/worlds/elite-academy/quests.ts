@@ -69,4 +69,14 @@ export const eliteAcademyQuests: QuestDefinitionInput[] = [
     ],
     rewardSummary: "A small trust boost with whoever it belongs to.",
   },
+  {
+    id: "ea-q-towa-transfer",
+    worldId: "elite-academy",
+    type: "character",
+    giverNpcId: "ea-towa",
+    title: "The Merit Ledger",
+    description: "Towa Kishimoto is playing the new Individual Merit Tracking system harder than anyone else in the year, and she doesn't care who she has to out-perform to transfer into Class A.",
+    objectives: [{ id: "learn-motive", text: "Learn why Towa wants the transfer so badly." }, { id: "decide-approach", text: "Decide how to handle her, exam by exam." }],
+    rewardSummary: "Shapes how Year Two's central conflict resolves.",
+  },
 ];

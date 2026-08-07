@@ -3308,4 +3308,644 @@ export const eliteAcademyScenes: SceneInput[] = [
       { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "neutral", text: "Next year's placements go up next week. I already know where you're going. I'm not going to tell you — figuring that out yourself was always the actual exam.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch10-complete" }, { type: "unlockAchievement", achievementId: "ach-chapter-closed" }], choices: [], conditions: [] },
     ],
   },
+
+  /* ============================ Year Two ============================ */
+  /* ============================ Chapter 11: Second Year, New Rules ============================ */
+  {
+    id: "ea-scene-ch11-arrival",
+    worldId: W,
+    chapterId: "ea-ch11",
+    title: "Second Year, New Rules",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "A new year, the same homeroom, and a notice already posted on the board before you've even sat down: \"Individual Merit Tracking — details to follow.\" Nobody in 1-D looks thrilled about it.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "Whatever it means, it's clearly the thing everyone's actually thinking about this morning.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch11-suzune",
+    worldId: W,
+    chapterId: "ea-ch11",
+    title: "Suzune's Read on the New System",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-rei", speakerName: "Suzune", expression: "cold", text: "Individual Merit Tracking. Read between the lines — it lets any of us petition to transfer classes at year's end, based purely on our own record. No class vote, no faculty veto. Just numbers.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-met-suzune" }, { type: "unlockCodex", entryId: "ea-codex-merit-tracking" }], conditions: [], choices: [
+        { id: "c1", text: "\"That could tear this class apart.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 6 }] },
+        { id: "c2", text: "\"Or it's the fairest thing the school's ever done.\"", requirementLabel: "Requires Intelligence 6", conditions: [{ type: "minStat", stat: "intelligence", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "respect", delta: 7 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch11-kikyou",
+    worldId: W,
+    chapterId: "ea-ch11",
+    title: "Kikyou Already Knows Something",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "smile", text: "You haven't heard the actual gossip yet, have you? There's already a name attached to this — some 1-C strategist who's apparently been waiting for a system exactly like this her whole life. Towa Kishimoto. Remember it.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-met-kikyou" }, { type: "unlockCodex", entryId: "ea-codex-towa" }], conditions: [], choices: [
+        { id: "c1", text: "\"You're worried about her.\"", requirementLabel: "Requires Perception 6", conditions: [{ type: "minStat", stat: "perception", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "trust", delta: 7 }] },
+        { id: "c2", text: "\"Thanks for the heads up.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "respect", delta: 4 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch11-event",
+    worldId: W,
+    chapterId: "ea-ch11",
+    title: "The Announcement",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "neutral", text: "Individual Merit Tracking begins this term. At year's end, any student may petition to change classes based solely on their own cumulative record — not the class's. Choose what you optimize for accordingly.", next: "n2", isInterruption: false, effects: [], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", text: "The room is already fracturing into quiet side conversations about what this actually means for each of you.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Tell the class you're committing to protecting 1-D's standing over your own transfer prospects.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch11-unity" }, { type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 8 }] },
+        { id: "c2", text: "Say nothing definitive. Keep every option, including your own transfer, open.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch11-ambition" }, { type: "modifyStat", stat: "reputation", delta: 5 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch11-close",
+    worldId: W,
+    chapterId: "ea-ch11",
+    title: "What Everyone Decided",
+    startNode: "default",
+    altEntryNodes: ["unity", "ambition"],
+    nodes: [
+      { id: "unity", speakerId: "ea-yuzuki", speakerName: "Kei", expression: "smile", conditions: [{ type: "flag", flag: "ea-flag-ch11-unity" }], text: "Didn't expect you to say that out loud in front of everyone. Means a lot more than you probably think it does, honestly.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-complete" }], choices: [] },
+      { id: "ambition", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", conditions: [{ type: "flag", flag: "ea-flag-ch11-ambition" }], text: "Smart. Never commit to a position before you've seen the actual numbers. Didn't think you had that in you.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever this year turns into, it's already started moving.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch11-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 12: The Kishimoto Problem ============================ */
+  {
+    id: "ea-scene-ch12-arrival",
+    worldId: W,
+    chapterId: "ea-ch12",
+    title: "The Kishimoto Problem",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Two weeks in, and Towa Kishimoto's name is already on every exam leaderboard in the year — not just 1-C's.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A few 1-D classmates look openly rattled by it.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch12-ken",
+    worldId: W,
+    chapterId: "ea-ch12",
+    title: "Ken, Targeted",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-kenta", speakerName: "Ken", expression: "frown", text: "She's been specifically requesting exam pairings against me. Twice this week. Not sure if it's personal or if I just scored well on the wrong test at the wrong time.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-met-ken" }], conditions: [], choices: [
+        { id: "c1", text: "\"Want backup next time she requests you?\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-kenta", axis: "trust", delta: 7 }] },
+        { id: "c2", text: "\"Use it. Being underestimated is an advantage.\"", requirementLabel: "Requires Courage 6", conditions: [{ type: "minStat", stat: "courage", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-kenta", axis: "respect", delta: 7 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch12-ryuen",
+    worldId: W,
+    chapterId: "ea-ch12",
+    title: "Ryuen's Read on Towa",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", text: "She's good. Better than good — she's not even cutting corners, she's just relentless. Question is whether she's worth allying with before she becomes a permanent problem for both of us.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-met-ryuen" }], conditions: [], choices: [
+        { id: "c1", text: "\"Alliances with her sound like a short-term trap.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "trust", delta: 5 }] },
+        { id: "c2", text: "\"Feel her out. Just don't hand her anything you can't take back.\"", requirementLabel: "Requires Intelligence 7", conditions: [{ type: "minStat", stat: "intelligence", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "respect", delta: 8 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch12-event",
+    worldId: W,
+    chapterId: "ea-ch12",
+    title: "Handling Towa",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Towa's in the hallway when you finally get a real chance to say something to her directly, alone, no audience.", next: "n2", isInterruption: false, effects: [], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ea-towa", speakerName: "Towa", expression: "neutral", text: "Something to say? Say it. I don't have a lot of patience left for people who want to complain instead of compete.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "\"You're costing people more than exam scores. That matters too.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch12-confront" }, { type: "modifyRelationship", npcId: "ea-towa", axis: "respect", delta: 5 }, { type: "modifyRelationship", npcId: "ea-towa", axis: "suspicion", delta: 4 }] },
+        { id: "c2", text: "\"Then let's compete. I'll match you, exam for exam.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch12-match" }, { type: "modifyRelationship", npcId: "ea-towa", axis: "respect", delta: 8 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch12-close",
+    worldId: W,
+    chapterId: "ea-ch12",
+    title: "The Terms Set",
+    startNode: "default",
+    altEntryNodes: ["confront", "match"],
+    nodes: [
+      { id: "confront", speakerId: "ea-towa", speakerName: "Towa", expression: "cold", conditions: [{ type: "flag", flag: "ea-flag-ch12-confront" }], text: "...Noted. I won't pretend that'll change anything. But it's noted.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-complete" }], choices: [] },
+      { id: "match", speakerId: "ea-towa", speakerName: "Towa", expression: "smirk", conditions: [{ type: "flag", flag: "ea-flag-ch12-match" }], text: "Good. I was getting bored of easy targets.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever happens next, Towa Kishimoto is clearly not going away quietly.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch12-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 13: The Merit Trial ============================ */
+  {
+    id: "ea-scene-ch13-arrival",
+    worldId: W,
+    chapterId: "ea-ch13",
+    title: "The Merit Trial",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The year's first special exam under the new system posts overnight: scored individually AND by class, with the two totals weighted against each other in a formula nobody's fully cracked yet.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "Half the classroom is already doing math on scratch paper.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch13-mio",
+    worldId: W,
+    chapterId: "ea-ch13",
+    title: "Mio's Numbers",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-nao", speakerName: "Mio", expression: "thinking", text: "I've run the formula six different ways. Best individual outcome costs the class about fifteen percent of its potential ceiling. Best class outcome costs each of us roughly the same on our own transcripts. There's no version where everybody wins.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-met-mio" }], conditions: [], choices: [
+        { id: "c1", text: "\"Then we pick the loss we can actually live with.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-nao", axis: "trust", delta: 7 }] },
+        { id: "c2", text: "\"Run it a seventh way. There's always an angle.\"", requirementLabel: "Requires Intelligence 7", conditions: [{ type: "minStat", stat: "intelligence", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-nao", axis: "respect", delta: 8 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch13-kanji",
+    worldId: W,
+    chapterId: "ea-ch13",
+    title: "Kanji's Worry",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-souta", speakerName: "Kanji", expression: "worried", text: "Not gonna lie, I'm not exactly built for an individual scoring exam. If everyone's optimizing for themselves, I'm the guy who gets left behind in that math.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-met-kanji" }], conditions: [], choices: [
+        { id: "c1", text: "\"Not on my watch. We're doing this together.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-souta", axis: "trust", delta: 8 }, { type: "modifyRelationship", npcId: "ea-souta", axis: "affection", delta: 3 }] },
+        { id: "c2", text: "\"You're stronger under pressure than you think.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-souta", axis: "respect", delta: 5 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch13-event",
+    worldId: W,
+    chapterId: "ea-ch13",
+    title: "The Trial Itself",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The exam room splits into individual scoring stations. Every answer you submit updates two numbers at once, live, on the board at the front — yours, and 1-D's.", isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Split effort — protect the class floor, even if it caps your own ceiling.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch13-team" }, { type: "changeClassPoints", classId: "class-1c", delta: 35 }, { type: "modifyStat", stat: "reputation", delta: 6 }] },
+        { id: "c2", text: "Maximize your own individual score without hedging.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch13-solo" }, { type: "modifyStat", stat: "academicScore", delta: 15 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch13-close",
+    worldId: W,
+    chapterId: "ea-ch13",
+    title: "The Results Post",
+    startNode: "default",
+    altEntryNodes: ["team", "solo"],
+    nodes: [
+      { id: "team", speakerId: "ea-nao", speakerName: "Mio", expression: "smile", conditions: [{ type: "flag", flag: "ea-flag-ch13-team" }], text: "1-D's floor held. Your own number took the hit, same as I told you it would. For what it's worth, I don't think anyone in this room will forget you chose that.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-complete" }], choices: [] },
+      { id: "solo", speakerId: "ea-towa", speakerName: "Towa", expression: "smirk", conditions: [{ type: "flag", flag: "ea-flag-ch13-solo" }], text: "Now that's the kind of number I respect. Careful, though — keep scoring like that and people are going to start wondering whose side you're actually on.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "The board updates one final time, and the trial's over.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch13-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 14: What Kei Stands to Lose ============================ */
+  {
+    id: "ea-scene-ch14-arrival",
+    worldId: W,
+    chapterId: "ea-ch14",
+    title: "What Kei Stands to Lose",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Kei's individual standing took a real hit in the Merit Trial — worse than she's let on. She's been quieter than usual since the results posted.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "She's alone in the cafeteria, picking at food she clearly isn't eating.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-cafeteria", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch14-kei",
+    worldId: W,
+    chapterId: "ea-ch14",
+    title: "Kei, Quiet",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-yuzuki", speakerName: "Kei", expression: "sad", text: "It's stupid. It's just a number. I know it's just a number. But it's the first time this whole system's made me feel like I could actually lose something that matters, and I don't love how that feels.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-met-kei" }], conditions: [], choices: [
+        { id: "c1", text: "\"Whatever the number says, it doesn't change anything between us.\"", requirementLabel: "Requires Relationship: Kei 40+", conditions: [{ type: "relationship", npcId: "ea-yuzuki", axis: "affection", min: 40 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-yuzuki", axis: "affection", delta: 10 }, { type: "modifyRelationship", npcId: "ea-yuzuki", axis: "trust", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"It's not stupid. Let's actually fix the score.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-yuzuki", axis: "trust", delta: 6 }] },
+      ] },
+      { id: "n2", speakerId: "ea-yuzuki", speakerName: "Kei", expression: "blush", text: "...Thank you. I needed to actually hear that, not just assume it.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch14-suzune",
+    worldId: W,
+    chapterId: "ea-ch14",
+    title: "Suzune's Blunt Assessment",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-rei", speakerName: "Suzune", expression: "neutral", text: "Her drop wasn't a fluke and it wasn't Towa's doing either, before you ask. She's been coasting on social capital instead of raw scores for a while. That works, until a system stops counting the first thing.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-met-suzune" }], conditions: [], choices: [
+        { id: "c1", text: "\"That's a little harsh, coming from you.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 5 }] },
+        { id: "c2", text: "\"You're right. Help me put together a real study plan for her.\"", requirementLabel: "Requires Intelligence 6", conditions: [{ type: "minStat", stat: "intelligence", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "respect", delta: 7 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch14-event",
+    worldId: W,
+    chapterId: "ea-ch14",
+    title: "Helping Kei",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", text: "How do you actually want to help her heading into the next exam?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Spend your free evenings reassuring her and rebuilding her confidence.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch14-support" }, { type: "modifyRelationship", npcId: "ea-yuzuki", axis: "affection", delta: 8 }] },
+        { id: "c2", text: "Spend your free evenings running actual study sessions with her instead.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch14-practical" }, { type: "modifyStat", stat: "academicScore", delta: 8 }, { type: "modifyRelationship", npcId: "ea-yuzuki", axis: "trust", delta: 6 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch14-close",
+    worldId: W,
+    chapterId: "ea-ch14",
+    title: "Where Kei Landed",
+    startNode: "default",
+    altEntryNodes: ["support", "practical"],
+    nodes: [
+      { id: "support", speakerId: "ea-yuzuki", speakerName: "Kei", expression: "smile", conditions: [{ type: "flag", flag: "ea-flag-ch14-support" }], text: "I don't think my score's actually fixed. But I feel like myself again, and honestly that mattered more right now.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-complete" }], choices: [] },
+      { id: "practical", speakerId: "ea-yuzuki", speakerName: "Kei", expression: "determined", conditions: [{ type: "flag", flag: "ea-flag-ch14-practical" }], text: "Numbers are actually climbing back. Still scared, honestly, but scared with a plan is a lot more bearable than just scared.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever else this system costs everyone, at least Kei isn't facing it alone.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch14-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 15: The Negotiation Exam ============================ */
+  {
+    id: "ea-scene-ch15-arrival",
+    worldId: W,
+    chapterId: "ea-ch15",
+    title: "The Negotiation Exam",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "This term's special exam is scored on inter-class negotiation outcomes — 1-D paired directly against 1-C, trading resources, information, and leverage under a strict time limit.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-arrived" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", text: "1-C. Perfect. I've been waiting a full year for an official excuse to take something from them.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-council", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch15-ryuen",
+    worldId: W,
+    chapterId: "ea-ch15",
+    title: "Ryuen's Plan",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", text: "I've got a strategy that extracts everything of value 1-C has to offer and leaves them with nothing but the minimum they need to avoid failing the exam outright. Effective. Also, arguably, a little cruel.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-met-ryuen" }], conditions: [], choices: [
+        { id: "c1", text: "\"We don't need to gut them to win this.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "trust", delta: 5 }] },
+        { id: "c2", text: "\"Do it. They'd do the same to us.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "respect", delta: 7 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch15-kikyou",
+    worldId: W,
+    chapterId: "ea-ch15",
+    title: "Kikyou's Intel",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "smirk", text: "I already know exactly what 1-C's negotiating team is planning to lead with — don't ask how, just trust that I do. Use it or don't, your call.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-met-kikyou" }], conditions: [], choices: [
+        { id: "c1", text: "\"Tell me. We'll use it carefully.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "trust", delta: 6 }] },
+        { id: "c2", text: "\"Let's win this one clean, without your sources.\"", requirementLabel: "Requires Courage 6", conditions: [{ type: "minStat", stat: "courage", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "respect", delta: 6 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch15-event",
+    worldId: W,
+    chapterId: "ea-ch15",
+    title: "The Negotiation Table",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", text: "1-C's negotiators sit across the table. The exam clock starts. How do you want this to go?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Push for a fair trade both classes can actually live with.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch15-fair" }, { type: "changeClassPoints", classId: "class-1c", delta: 25 }, { type: "modifyStat", stat: "reputation", delta: 8 }] },
+        { id: "c2", text: "Let Ryuen run it his way and take everything on the table.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch15-ruthless" }, { type: "changeClassPoints", classId: "class-1c", delta: 55 }, { type: "modifyStat", stat: "suspicion", delta: 6 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch15-close",
+    worldId: W,
+    chapterId: "ea-ch15",
+    title: "After the Table Clears",
+    startNode: "default",
+    altEntryNodes: ["fair", "ruthless"],
+    nodes: [
+      { id: "fair", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "smile", conditions: [{ type: "flag", flag: "ea-flag-ch15-fair" }], text: "1-C's rep actually thanked you on the way out. Didn't think I'd see that happen in a scored exam, honestly.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-complete" }], choices: [] },
+      { id: "ruthless", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", conditions: [{ type: "flag", flag: "ea-flag-ch15-ruthless" }], text: "Told you it'd work. 1-C's not going to forget this exam for a long time. Neither, probably, should you.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "The exam clock runs out, and the results lock in.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch15-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 16: Kikyou's Exposure ============================ */
+  {
+    id: "ea-scene-ch16-arrival",
+    worldId: W,
+    chapterId: "ea-ch16",
+    title: "Kikyou's Exposure",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Towa's been quietly tracing last year's rumor campaign back toward its source — and word is she's gotten uncomfortably close to a name.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "Kikyou hasn't been her usual chatty self all morning.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch16-kikyou",
+    worldId: W,
+    chapterId: "ea-ch16",
+    title: "Kikyou, Cornered",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "worried", text: "She's not wrong, if that's what you're wondering. It was me. All of it, last year included. I've been managing it fine for a year. I don't know how much longer I can manage it against someone who actually digs.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-met-kikyou" }], conditions: [], choices: [
+        { id: "c1", text: "\"I'll handle Towa. You don't have to do this alone.\"", requirementLabel: "Requires Relationship: Kikyou 30+", conditions: [{ type: "relationship", npcId: "ea-hikari", axis: "trust", min: 30 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "trust", delta: 10 }], goTo: "n2" },
+        { id: "c2", text: "\"Maybe it's time to actually stop managing it.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-hikari", axis: "respect", delta: 6 }] },
+      ] },
+      { id: "n2", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "sad", text: "...Okay. I'll trust you on this one. Just — don't let her use it to hurt anyone else in the process, alright? That's the part I actually can't live with.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch16-chabashira",
+    worldId: W,
+    chapterId: "ea-ch16",
+    title: "Ms. Chabashira's Angle",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "cold", text: "Whatever Kishimoto's chasing, it's not officially my concern unless she brings me proof. I'd think carefully about how much you want to intervene on someone else's behalf here — this system doesn't reward that kind of thing.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-met-chabashira" }], conditions: [], choices: [
+        { id: "c1", text: "\"Some things matter more than the system rewarding them.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-fumiko", axis: "respect", delta: 6 }] },
+        { id: "c2", text: "\"Duly noted, Ms. Chabashira.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-fumiko", axis: "trust", delta: 4 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch16-event",
+    worldId: W,
+    chapterId: "ea-ch16",
+    title: "Kikyou's Secret",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", text: "You have to decide how to actually handle this before Towa finishes connecting the last piece herself.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Run interference — feed Towa a plausible dead end.", conditions: [], hiddenIfUnmet: false, isBluff: true, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch16-protect" }, { type: "modifyRelationship", npcId: "ea-hikari", axis: "trust", delta: 12 }, { type: "modifyStat", stat: "suspicion", delta: 6 }] },
+        { id: "c2", text: "Tell Kikyou to come forward herself, on her own terms, before Towa forces it.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch16-truth" }, { type: "modifyRelationship", npcId: "ea-hikari", axis: "respect", delta: 10 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch16-close",
+    worldId: W,
+    chapterId: "ea-ch16",
+    title: "How It Landed",
+    startNode: "default",
+    altEntryNodes: ["protect", "truth"],
+    nodes: [
+      { id: "protect", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "smile", conditions: [{ type: "flag", flag: "ea-flag-ch16-protect" }], text: "She bought it. Barely, but she bought it. I owe you one I genuinely don't know how to repay.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-complete" }], choices: [] },
+      { id: "truth", speakerId: "ea-hikari", speakerName: "Kikyou", expression: "determined", conditions: [{ type: "flag", flag: "ea-flag-ch16-truth" }], text: "I told her myself. Watching her face when she realized I'd gotten there first — almost worth a whole year of managing this alone.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever happens next, that particular secret is no longer entirely Kikyou's to carry alone.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch16-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 17: Suzune's Choice ============================ */
+  {
+    id: "ea-scene-ch17-arrival",
+    worldId: W,
+    chapterId: "ea-ch17",
+    title: "Suzune's Choice",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "A draft Individual Merit Tracking petition, half-filled-out, sits on Suzune's desk when you walk past. She closes the folder the second she notices you've seen it.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "That's not a petition to transfer up. It's addressed to leave 1-D entirely, for a class ranked lower.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch17-suzune",
+    worldId: W,
+    chapterId: "ea-ch17",
+    title: "Suzune's Reasoning",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-rei", speakerName: "Suzune", expression: "cold", text: "My individual score's strong enough to anchor a weaker class's average significantly. 1-D doesn't need me the way that class would. It's just math.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-met-suzune" }], conditions: [], choices: [
+        { id: "c1", text: "\"That's not just math and you know it.\"", requirementLabel: "Requires Empathy 7", conditions: [{ type: "minStat", stat: "empathy", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 9 }], goTo: "n2" },
+        { id: "c2", text: "\"If that's really your decision, I'll respect it.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-rei", axis: "respect", delta: 7 }] },
+      ] },
+      { id: "n2", speakerId: "ea-rei", speakerName: "Suzune", expression: "sad", text: "...No. It isn't. I still don't fully trust that I belong somewhere just because people are fond of me. A transfer would at least prove I'm worth something on my own terms, not just because this class happened to be kind to me.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-suzune-vulnerable" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch17-ken",
+    worldId: W,
+    chapterId: "ea-ch17",
+    title: "Ken's Take",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-kenta", speakerName: "Ken", expression: "frown", text: "She won't say it to anyone but you, probably, but losing her would gut this class. Not just the average. The actual class.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-met-ken" }], conditions: [], choices: [
+        { id: "c1", text: "\"I'm going to talk to her.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-kenta", axis: "trust", delta: 6 }] },
+        { id: "c2", text: "\"If she leaves, we adapt. That's what a class does.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-kenta", axis: "respect", delta: 5 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch17-event",
+    worldId: W,
+    chapterId: "ea-ch17",
+    title: "Talking to Suzune",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", text: "You have one real chance to say something before that petition gets submitted.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "\"Don't go. This class needs you more than the formula says.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch17-stop" }, { type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 12 }, { type: "modifyRelationship", npcId: "ea-rei", axis: "affection", delta: 6 }] },
+        { id: "c2", text: "\"It's your call. I'll support whatever you decide.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch17-support" }, { type: "modifyRelationship", npcId: "ea-rei", axis: "respect", delta: 10 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch17-close",
+    worldId: W,
+    chapterId: "ea-ch17",
+    title: "Suzune's Answer",
+    startNode: "default",
+    altEntryNodes: ["stop", "support"],
+    nodes: [
+      { id: "stop", speakerId: "ea-rei", speakerName: "Suzune", expression: "blush", conditions: [{ type: "flag", flag: "ea-flag-ch17-stop" }], text: "...The petition's in the trash. Don't make this a habit, talking me out of things. But — thank you. I needed someone to actually say it.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-complete" }], choices: [] },
+      { id: "support", speakerId: "ea-rei", speakerName: "Suzune", expression: "neutral", conditions: [{ type: "flag", flag: "ea-flag-ch17-support" }], text: "...I appreciate that more than I probably show. I'm still deciding. But knowing you'd respect it either way makes the decision feel like mine again, not just a reaction to fear.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever Suzune decides, it won't be a decision made lightly.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch17-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 18: What the System Really Wants ============================ */
+  {
+    id: "ea-scene-ch18-arrival",
+    worldId: W,
+    chapterId: "ea-ch18",
+    title: "What the System Really Wants",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Ms. Chabashira asks you to stay behind after homeroom. That's never a casual request.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "The classroom empties out slowly, and it's just the two of you.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch18-chabashira",
+    worldId: W,
+    chapterId: "ea-ch18",
+    title: "The Real Design",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "thinking", text: "Individual Merit Tracking isn't really measuring individual merit. It's measuring how much of your own advantage you're willing to spend keeping other people close to you when nothing external is forcing you to. That's the actual test.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-met-chabashira" }, { type: "unlockCodex", entryId: "ea-codex-merit-truth" }], conditions: [], choices: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch18-mio",
+    worldId: W,
+    chapterId: "ea-ch18",
+    title: "Mio Puts It Together",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-nao", speakerName: "Mio", expression: "shocked", text: "Wait. That means every single one of us who protected the class instead of our own score was actually being rewarded for it — just not in a column anyone bothered showing us. That's — actually kind of brilliant, and kind of horrifying.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-met-mio" }], conditions: [], choices: [
+        { id: "c1", text: "\"Horrifying that they'd test that on us at all.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-nao", axis: "trust", delta: 6 }] },
+        { id: "c2", text: "\"Brilliant that it actually worked on most of us.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-nao", axis: "respect", delta: 6 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch18-event",
+    worldId: W,
+    chapterId: "ea-ch18",
+    title: "Your Answer to Chabashira",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "cold", text: "So. Now you know what the exam's actually asking. What do you do with that, knowing it?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "\"I keep answering it the same way I already have been.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch18-accept" }, { type: "modifyRelationship", npcId: "ea-fumiko", axis: "respect", delta: 10 }] },
+        { id: "c2", text: "\"I think it's a cruel question to build a whole year around.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch18-reject" }, { type: "modifyRelationship", npcId: "ea-fumiko", axis: "trust", delta: 8 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch18-close",
+    worldId: W,
+    chapterId: "ea-ch18",
+    title: "Chabashira's Response",
+    startNode: "default",
+    altEntryNodes: ["accept", "reject"],
+    nodes: [
+      { id: "accept", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "smirk", conditions: [{ type: "flag", flag: "ea-flag-ch18-accept" }], text: "Good answer. Not the one most students give, for what it's worth.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-complete" }], choices: [] },
+      { id: "reject", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "thinking", conditions: [{ type: "flag", flag: "ea-flag-ch18-reject" }], text: "...Fair. I won't pretend I disagree entirely. Cruelty was never officially the design intent. That it functions that way anyway is a separate conversation, one I don't get final say over.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever you actually believe about the system, you know exactly what it's measuring now.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch18-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 19: The Transfer Ultimatum ============================ */
+  {
+    id: "ea-scene-ch19-arrival",
+    worldId: W,
+    chapterId: "ea-ch19",
+    title: "The Transfer Ultimatum",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Petitions lock in two weeks from today. Towa corners you before homeroom, no audience this time, none of her usual polish either.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "Whatever she's about to say, it's clearly been building for a while.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch19-towa",
+    worldId: W,
+    chapterId: "ea-ch19",
+    title: "Towa, Unguarded",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-towa", speakerName: "Towa", expression: "cold", text: "My scores are good enough for a Class A petition. Should be a formality. It isn't, because Class A doesn't want someone with no allies backing the transfer, and apparently I've spent this whole year making sure I don't have any. That's — a design flaw I didn't account for.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-met-towa" }], conditions: [], choices: [
+        { id: "c1", text: "\"You could have had allies. You chose not to.\"", requirementLabel: "Requires Courage 7", conditions: [{ type: "minStat", stat: "courage", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-towa", axis: "respect", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"What do you actually want from me right now?\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-towa", axis: "trust", delta: 5 }] },
+      ] },
+      { id: "n2", speakerId: "ea-towa", speakerName: "Towa", expression: "angry", text: "...Yeah. I know. Doesn't make it easier to hear from someone who apparently built the opposite reputation without even trying that hard.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-towa-vulnerable" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch19-ryuen",
+    worldId: W,
+    chapterId: "ea-ch19",
+    title: "Ryuen's Angle",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-daichi", speakerName: "Ryuen", expression: "smirk", text: "She's cornered and she knows it. Question is whether you actually want her indebted to 1-D, or whether you let Class A reject her and enjoy the show.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-met-ryuen" }], conditions: [], choices: [
+        { id: "c1", text: "\"An indebted rival's worth more than a satisfying rejection.\"", requirementLabel: "Requires Intelligence 7", conditions: [{ type: "minStat", stat: "intelligence", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "respect", delta: 9 }] },
+        { id: "c2", text: "\"I'm not doing this for leverage. It's just the right call.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ea-daichi", axis: "trust", delta: 6 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch19-event",
+    worldId: W,
+    chapterId: "ea-ch19",
+    title: "Answering the Ultimatum",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-towa", speakerName: "Towa", expression: "neutral", text: "So. Here's my actual question, since apparently I have to ask it out loud: is there a place for me in 1-D, or should I just accept my petition's dead on arrival?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "\"There's a place for you here. If you actually want it.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch19-offer" }, { type: "modifyRelationship", npcId: "ea-towa", axis: "trust", delta: 15 }, { type: "modifyRelationship", npcId: "ea-towa", axis: "loyalty", delta: 8 }] },
+        { id: "c2", text: "\"I'm not negotiating with an ultimatum. You made your choices.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch19-refuse" }, { type: "modifyRelationship", npcId: "ea-towa", axis: "respect", delta: 6 }, { type: "modifyRelationship", npcId: "ea-towa", axis: "suspicion", delta: 8 }] },
+      ] },
+    ],
+  },
+  {
+    id: "ea-scene-ch19-close",
+    worldId: W,
+    chapterId: "ea-ch19",
+    title: "What Towa Decides",
+    startNode: "default",
+    altEntryNodes: ["offer", "refuse"],
+    nodes: [
+      { id: "offer", speakerId: "ea-towa", speakerName: "Towa", expression: "shocked", conditions: [{ type: "flag", flag: "ea-flag-ch19-offer" }], text: "...I wasn't expecting a yes. I don't actually know what to do with a yes. Give me a day to figure out how to accept help without it feeling like losing.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-complete" }], choices: [] },
+      { id: "refuse", speakerId: "ea-towa", speakerName: "Towa", expression: "cold", conditions: [{ type: "flag", flag: "ea-flag-ch19-refuse" }], text: "...Fair. Honestly, fair. I built this. I'll take the petition's rejection the same way I built everything else — alone.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-complete" }], choices: [] },
+      { id: "default", expression: "neutral", isInnerMonologue: true, text: "Whatever happens next, Towa Kishimoto's year is about to be decided one way or another.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch19-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Chapter 20: Second Year, Closed ============================ */
+  {
+    id: "ea-scene-ch20-arrival",
+    worldId: W,
+    chapterId: "ea-ch20",
+    title: "Second Year, Closed",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Petition day. The board that's tracked every score all year finally posts its last update: who's staying, who's transferring, and — for the first time all year — who chose to stay even with a petition already approved.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch20-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "The whole class is gathered in the room, waiting on the same number you are.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ea-map-classroom", spawnId: "fromHallway" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch20-farewell-round",
+    worldId: W,
+    chapterId: "ea-ch20",
+    title: "Before the Board Updates",
+    startNode: "suzune",
+    nodes: [
+      { id: "suzune", speakerId: "ea-rei", speakerName: "Suzune", expression: "neutral", text: "Whatever the board says in a minute, I want it on record now: staying was my choice, not a default. I needed you to actually hear that from me directly.", next: "kanji", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch20-farewell" }], choices: [], conditions: [] },
+      { id: "kanji", speakerId: "ea-souta", speakerName: "Kanji", expression: "smile", text: "Whole year of feeling like the guy who'd get left behind by a formula, and here I am, still here, still with all of you. Turns out formulas don't actually measure the stuff that mattered most.", next: "mio", isInterruption: false, effects: [], choices: [], conditions: [] },
+      { id: "mio", speakerId: "ea-nao", speakerName: "Mio", expression: "smirk", text: "I ran the numbers on staying versus transferring about forty times this year. Every single version came back the same answer, eventually. I just needed forty tries to actually believe it.", next: "ken", isInterruption: false, effects: [], choices: [], conditions: [] },
+      { id: "ken", speakerId: "ea-kenta", speakerName: "Ken", expression: "determined", text: "Wasn't ever leaving. Didn't need a formula to tell me that.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch20-event",
+    worldId: W,
+    chapterId: "ea-ch20",
+    title: "The Board Updates",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The board flickers and resolves the year's final petition results. This is the moment the whole year's actually been building toward.", isInterruption: false, effects: [], conditions: [], choices: [
+        { id: "c1", text: "Petition for nothing. Stay exactly where you are, no conditions.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch20-together" }, { type: "modifyRelationship", npcId: "ea-rei", axis: "trust", delta: 10 }, { type: "modifyRelationship", npcId: "ea-yuzuki", axis: "affection", delta: 8 }], goTo: "together" },
+        { id: "c2", text: "Accept that this year changed things, and let the results stand as they fell.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ea-flag-ch20-changed" }, { type: "modifyStat", stat: "reputation", delta: 10 }], goTo: "changed" },
+      ] },
+      { id: "together", expression: "neutral", isInnerMonologue: true, text: "Every name on the board next to 1-D stays exactly where it was in September. Including Towa's, if she chose to — the room actually cheers when that one posts.", isInterruption: false, effects: [], choices: [], conditions: [] },
+      { id: "changed", expression: "neutral", isInnerMonologue: true, text: "A few names moved. The class that walks out of this room isn't quite the class that walked in last September — and somehow, that doesn't feel like a loss so much as just what a year actually does to people.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ea-scene-ch20-close",
+    worldId: W,
+    chapterId: "ea-ch20",
+    title: "Second Year, Closed",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ea-fumiko", speakerName: "Ms. Chabashira", expression: "smirk", text: "Two years down. Whatever you think this system was actually testing, you clearly passed something. I'm not going to tell you what — figuring that out yourself was always the point.", isInterruption: false, effects: [{ type: "setFlag", flag: "ea-flag-ch20-complete" }, { type: "unlockAchievement", achievementId: "ach-chapter-closed" }], choices: [], conditions: [] },
+    ],
+  },
 ];

@@ -9,6 +9,31 @@ export interface PatchNote {
 
 export const patchNotes: PatchNote[] = [
   {
+    version: "0.4.0",
+    date: "The Climb Continues",
+    title: "The Climb Continues",
+    completed: [
+      "Elite Academy Year Two: 10 new chapters (11-20) continuing straight out of Chapter 10's ending. A new school-wide system, Individual Merit Tracking, lets any student petition to change classes at year's end based purely on individual performance — threatening to split up the cast built across Year One. A new rival, Towa Kishimoto (Class 1-C), drives the year's central tension.",
+      "Aincrad Floors 11-20: 10 new floors continuing the climb past the Tenth Gate (Sunken Archive, Ember Foundry, Glasswind Reach, Hanging Gardens, Duskmarch, Ironclad Docks, Silent Orchard, Stormwatch Bastion, Withering Court, Twentieth Spire), each with a new local NPC, two-option boss-prep, and reactive aftermath. Floors 15 and 20 are milestone floors with an optional recruit-to-the-raid companion, matching Floor 10's pattern.",
+      "Player and NPC portraits are now procedurally drawn faces (hair, eyes, skin tone, and an expression-reactive mouth/eyebrows/eyes) instead of a flat icon in a colored box — used in dialogue, on the map, and for the player's own exploration sprite (which now has a walk cycle, idle bob, and blinking).",
+      "Every room in both worlds got a real background and wall color instead of near-identical pale beige and near-black — plus more saturated UI accent colors and distinct marker colors per interactable type.",
+      "The exploration view now fills the actual screen and zooms each room to fit it, instead of rendering into a fixed 640x420 box regardless of window size.",
+      "Added a How to Play guide (auto-shown once, reachable anytime via a new '?' button), and doors/stairs now always show where they lead instead of only when you're standing next to them.",
+      "Added explicit Save Game and Save & Return to Main Menu buttons to Settings, reachable from both exploration and dialogue.",
+      "Elite Academy's cast now uses names from Classroom of the Elite, and Aincrad's founding cast uses names from Sword Art Online, at the user's request for this personal build — personalities, secrets, and plots remain original content, not adapted from either series.",
+    ],
+    knownIssues: [
+      "Both new 10-chapter arcs are moderate-depth (arrival, one or two character beats, one decision, one reactive close) rather than the full density the original Chapter One / Floor One content has — matching how the original Chapters/Floors 2-10 first shipped before being deepened in a later pass.",
+      "No real illustrated character art exists — portraits are still procedurally drawn vector faces, since no image-generation tool is available in this environment.",
+      "Elite Academy's arc now ends at Year Two's close; a third year isn't built. Aincrad's climb now ends at Floor 20; Floors 21+ remain unbuilt.",
+    ],
+    upcoming: [
+      "Deepen chapters/floors 11-20 to Chapter-One-level density, the same way 2-10 were deepened previously.",
+      "Chapters/floors 21+ for both worlds.",
+      "Real portrait artwork, if image assets are ever provided.",
+    ],
+  },
+  {
     version: "0.3.0",
     date: "Every Chapter, In Full",
     title: "Every Chapter, In Full",
