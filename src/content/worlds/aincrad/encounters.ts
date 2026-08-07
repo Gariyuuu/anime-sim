@@ -52,7 +52,7 @@ export const aincradEncounters: EncounterDefinitionInput[] = [
 ];
 
 interface FloorEncounterSpec {
-  floor: 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  floor: 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20;
   bossName: string;
   common: [string, string];
   commonNames: [string, string];
@@ -69,6 +69,16 @@ const laterFloorSpecs: FloorEncounterSpec[] = [
   { floor: 8, bossName: "Iron Architect", common: ["en-maze-sentry", "en-rust-hound"], commonNames: ["Maze Sentry", "Rust Hound"], miniBoss: "en-labyrinth-keeper", miniBossName: "Labyrinth Keeper", floorBoss: "en-iron-architect" },
   { floor: 9, bossName: "Skybreak Sentinel", common: ["en-gale-serpent", "en-cloud-raptor"], commonNames: ["Gale Serpent", "Cloud Raptor"], miniBoss: "en-storm-harrier", miniBossName: "Storm Harrier", floorBoss: "en-skybreak-sentinel" },
   { floor: 10, bossName: "The Tenth Gatekeeper", common: ["en-gatekeeper-drone", "en-oathbound-knight"], commonNames: ["Gatekeeper Drone", "Oathbound Knight"], miniBoss: "en-gate-champion", miniBossName: "Gate Champion", floorBoss: "en-the-tenth-gatekeeper" },
+  { floor: 11, bossName: "Archive Warden", common: ["en-drowned-page", "en-archive-eel"], commonNames: ["Drowned Page", "Archive Eel"], miniBoss: "en-drowned-cataloguer", miniBossName: "Drowned Cataloguer", floorBoss: "en-archive-warden" },
+  { floor: 12, bossName: "Foundry Heart", common: ["en-slag-hound", "en-cinder-press"], commonNames: ["Slag Hound", "Cinder Press"], miniBoss: "en-slag-brute", miniBossName: "Slag Brute", floorBoss: "en-foundry-heart" },
+  { floor: 13, bossName: "Wind-Cut Colossus", common: ["en-shard-wisp", "en-glass-scorpion"], commonNames: ["Shard Wisp", "Glass Scorpion"], miniBoss: "en-glass-serpent", miniBossName: "Glass Serpent", floorBoss: "en-wind-cut-colossus" },
+  { floor: 14, bossName: "Garden Sovereign", common: ["en-thornvine-crawler", "en-bloom-wasp"], commonNames: ["Thornvine Crawler", "Bloom Wasp"], miniBoss: "en-thornback-matriarch", miniBossName: "Thornback Matriarch", floorBoss: "en-garden-sovereign" },
+  { floor: 15, bossName: "Duskmarch Sovereign", common: ["en-grave-lantern", "en-marchbound-wraith"], commonNames: ["Grave Lantern", "Marchbound Wraith"], miniBoss: "en-grave-captain", miniBossName: "Grave Captain", floorBoss: "en-duskmarch-sovereign" },
+  { floor: 16, bossName: "Dreadnought Hull", common: ["en-rust-diver", "en-chain-hauler"], commonNames: ["Rust Diver", "Chain Hauler"], miniBoss: "en-harbor-brute", miniBossName: "Harbor Brute", floorBoss: "en-dreadnought-hull" },
+  { floor: 17, bossName: "The Withered Root", common: ["en-hushblossom", "en-quiet-stalker"], commonNames: ["Hushblossom", "Quiet Stalker"], miniBoss: "en-orchard-warden", miniBossName: "Orchard Warden", floorBoss: "en-the-withered-root" },
+  { floor: 18, bossName: "Stormwatch Warlord", common: ["en-bastion-pikeman", "en-storm-drake"], commonNames: ["Bastion Pikeman", "Storm Drake"], miniBoss: "en-bastion-lieutenant", miniBossName: "Bastion Lieutenant", floorBoss: "en-stormwatch-warlord" },
+  { floor: 19, bossName: "The Faded Monarch", common: ["en-faded-attendant", "en-court-wisp"], commonNames: ["Faded Attendant", "Court Wisp"], miniBoss: "en-court-enforcer", miniBossName: "Court Enforcer", floorBoss: "en-the-faded-monarch" },
+  { floor: 20, bossName: "The Twentieth Warden", common: ["en-spire-sentinel", "en-ascendant-knight"], commonNames: ["Spire Sentinel", "Ascendant Knight"], miniBoss: "en-spire-vanguard", miniBossName: "Spire Vanguard", floorBoss: "en-the-twentieth-warden" },
 ];
 
 const laterFloorEncounters: EncounterDefinitionInput[] = laterFloorSpecs.flatMap((spec) => [

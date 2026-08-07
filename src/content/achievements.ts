@@ -37,4 +37,5 @@ export const achievements: AchievementDefinitionInput[] = [
   { id: "ach-secret-keeper", title: "Secret Keeper", description: "Learn two or more hidden secrets about the people around you.", worldId: "shared", icon: "key", hidden: true },
   { id: "ach-well-stocked", title: "Well Stocked", description: "Carry 500 or more currency at once (Private Points or Col).", worldId: "shared", icon: "coins" },
   { id: "ach-tenth-gate", title: "The Tenth Gate", description: "Clear Floor 10 and open the Tenth Gate.", worldId: "aincrad", icon: "gem" },
+  { id: "ach-twentieth-spire", title: "The Twentieth Spire", description: "Clear Floor 20, the third confirmed milestone floor.", worldId: "aincrad", icon: "gem" },
 ];

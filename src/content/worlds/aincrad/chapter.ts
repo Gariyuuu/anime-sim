@@ -157,11 +157,163 @@ const laterChapters: ChapterDefinitionInput[] = [
     summary: "The milestone floor. Gatewatch's whole population is holding its breath for whoever attempts the Gate next — and this time, that's you.",
     startSceneId: "ai-scene-floor10-arrival",
     completionFlag: "ai-flag-ch10-complete",
-    // No nextChapterId: floor 10 is the end of this vertical slice. Floors 11-99 remain unbuilt.
+    nextChapterId: "ai-ch11",
     outcomes: [
       { id: "ai-ch10-outcome-aggressive", title: "Ended It Fast", description: "You went in aggressive and closed the fight before the Gatekeeper could unseal its second weapon.", requiredFlags: ["ai-flag-raid10-aggressive"] },
       { id: "ai-ch10-outcome-patient", title: "Outlasted It", description: "You played the long game and let every phase cost the Gatekeeper something it couldn't get back.", requiredFlags: ["ai-flag-raid10-patient"] },
       { id: "ai-ch10-outcome-ilyana", title: "Finished Together", description: "Ilyana finished what she couldn't the first time — at your side, this time.", requiredFlags: ["ai-flag-ilyana-recruited"] },
+    ],
+  },
+  {
+    id: "ai-ch11",
+    worldId: "aincrad",
+    index: 11,
+    title: "The Sunken Archive",
+    subtitle: "Floor 11, Waterline Camp",
+    summary: "Ninety floors left past the Tenth Gate, and the first of them is a flooded library nobody's finished reading. It ends at the Archive Warden.",
+    startSceneId: "ai-scene-floor11-arrival",
+    completionFlag: "ai-flag-ch11-complete",
+    nextChapterId: "ai-ch12",
+    outcomes: [
+      { id: "ai-ch11-outcome-fast", title: "Before the Flood Rose", description: "You struck before the archive's water level could climb any higher.", requiredFlags: ["ai-flag-raid11-fast"] },
+      { id: "ai-ch11-outcome-careful", title: "Read Before You Fight", description: "You took the time to read the Warden's own posted archive rules first — and used them against it.", requiredFlags: ["ai-flag-raid11-careful"] },
+    ],
+  },
+  {
+    id: "ai-ch12",
+    worldId: "aincrad",
+    index: 12,
+    title: "Ember Foundry",
+    subtitle: "Floor 12, Forgeside",
+    summary: "A floor built around a furnace that's never gone cold, tended by a smith who's never told anyone why. It ends at the Foundry Heart.",
+    startSceneId: "ai-scene-floor12-arrival",
+    completionFlag: "ai-flag-ch12-complete",
+    nextChapterId: "ai-ch13",
+    outcomes: [
+      { id: "ai-ch12-outcome-cool", title: "Cooled It First", description: "You forced the furnace's heat down before committing to the fight.", requiredFlags: ["ai-flag-raid12-cool"] },
+      { id: "ai-ch12-outcome-heat", title: "Fought Through the Heat", description: "You fought at full furnace heat and simply outlasted it.", requiredFlags: ["ai-flag-raid12-heat"] },
+    ],
+  },
+  {
+    id: "ai-ch13",
+    worldId: "aincrad",
+    index: 13,
+    title: "Glasswind Reach",
+    subtitle: "Floor 13, Dunerest",
+    summary: "A desert of wind-carved glass, gorgeous and unforgiving in equal measure. It ends at the Wind-Cut Colossus.",
+    startSceneId: "ai-scene-floor13-arrival",
+    completionFlag: "ai-flag-ch13-complete",
+    nextChapterId: "ai-ch14",
+    outcomes: [
+      { id: "ai-ch13-outcome-low", title: "Stayed Low", description: "You kept below the worst of the wind and fought on stable ground.", requiredFlags: ["ai-flag-raid13-low"] },
+      { id: "ai-ch13-outcome-ride", title: "Rode the Wind", description: "You used the wind's own momentum against the Colossus.", requiredFlags: ["ai-flag-raid13-ride"] },
+    ],
+  },
+  {
+    id: "ai-ch14",
+    worldId: "aincrad",
+    index: 14,
+    title: "The Hanging Gardens",
+    subtitle: "Floor 14, Rootrest",
+    summary: "Terraced gardens suspended over open air, tended by someone who believes they're the last living thing in Aincrad. It ends at the Garden Sovereign.",
+    startSceneId: "ai-scene-floor14-arrival",
+    completionFlag: "ai-flag-ch14-complete",
+    nextChapterId: "ai-ch15",
+    outcomes: [
+      { id: "ai-ch14-outcome-spare", title: "Spared the Garden", description: "You fought carefully to avoid burning down the garden around you.", requiredFlags: ["ai-flag-raid14-spare"] },
+      { id: "ai-ch14-outcome-burn", title: "Burned a Path Through", description: "You accepted the cost and cut straight through.", requiredFlags: ["ai-flag-raid14-burn"] },
+    ],
+  },
+  {
+    id: "ai-ch15",
+    worldId: "aincrad",
+    index: 15,
+    title: "Duskmarch",
+    subtitle: "Floor 15, Lastlight",
+    summary: "The second confirmed milestone floor — a twilight march for the dead, kept by someone determined that none of them are forgotten. It ends at the Duskmarch Sovereign.",
+    startSceneId: "ai-scene-floor15-arrival",
+    completionFlag: "ai-flag-ch15-complete",
+    nextChapterId: "ai-ch16",
+    outcomes: [
+      { id: "ai-ch15-outcome-aggressive", title: "Broke the March", description: "You went in hard and scattered the march before it could close ranks.", requiredFlags: ["ai-flag-raid15-aggressive"] },
+      { id: "ai-ch15-outcome-patient", title: "Outlasted the Dusk", description: "You played the long game and let the dusk work against the Sovereign instead of you.", requiredFlags: ["ai-flag-raid15-patient"] },
+      { id: "ai-ch15-outcome-corvin", title: "Every Name Recorded", description: "Corvin stood with you at the end of the march, ledger in hand.", requiredFlags: ["ai-flag-corvin-recruited"] },
+    ],
+  },
+  {
+    id: "ai-ch16",
+    worldId: "aincrad",
+    index: 16,
+    title: "Ironclad Docks",
+    subtitle: "Floor 16, Drydock Row",
+    summary: "A harbor floor guarding a dry-docked warship hull nobody's supposed to still be inside of. It ends at the Dreadnought Hull.",
+    startSceneId: "ai-scene-floor16-arrival",
+    completionFlag: "ai-flag-ch16-complete",
+    nextChapterId: "ai-ch17",
+    outcomes: [
+      { id: "ai-ch16-outcome-board", title: "Boarded It Directly", description: "You boarded the hull directly and fought it from the inside out.", requiredFlags: ["ai-flag-raid16-board"] },
+      { id: "ai-ch16-outcome-sink", title: "Flooded It First", description: "You flooded the dry dock first and let the hull's own weight work against it.", requiredFlags: ["ai-flag-raid16-sink"] },
+    ],
+  },
+  {
+    id: "ai-ch17",
+    worldId: "aincrad",
+    index: 17,
+    title: "The Silent Orchard",
+    subtitle: "Floor 17, Quietrow",
+    summary: "Rows of blossoming trees that make no sound at all, guarded by whatever the silence is actually protecting. It ends at the Withered Root.",
+    startSceneId: "ai-scene-floor17-arrival",
+    completionFlag: "ai-flag-ch17-complete",
+    nextChapterId: "ai-ch18",
+    outcomes: [
+      { id: "ai-ch17-outcome-quiet", title: "Kept the Silence", description: "You fought as quietly as the orchard itself, out of a respect you didn't expect to feel.", requiredFlags: ["ai-flag-raid17-quiet"] },
+      { id: "ai-ch17-outcome-loud", title: "Broke the Silence", description: "You broke the orchard's silence on purpose, and it changed the fight entirely.", requiredFlags: ["ai-flag-raid17-loud"] },
+    ],
+  },
+  {
+    id: "ai-ch18",
+    worldId: "aincrad",
+    index: 18,
+    title: "Stormwatch Bastion",
+    subtitle: "Floor 18, Stormwatch Garrison",
+    summary: "A fortress floor mid-siege by a storm that's never actually broken, held by a captain who refuses to let it fall on his watch. It ends at the Stormwatch Warlord.",
+    startSceneId: "ai-scene-floor18-arrival",
+    completionFlag: "ai-flag-ch18-complete",
+    nextChapterId: "ai-ch19",
+    outcomes: [
+      { id: "ai-ch18-outcome-formation", title: "Held Formation", description: "You held tight formation and let the bastion's own defenses do half the work.", requiredFlags: ["ai-flag-raid18-formation"] },
+      { id: "ai-ch18-outcome-break", title: "Broke Formation", description: "You broke formation on purpose to hit the Warlord from an angle it never planned for.", requiredFlags: ["ai-flag-raid18-break"] },
+    ],
+  },
+  {
+    id: "ai-ch19",
+    worldId: "aincrad",
+    index: 19,
+    title: "The Withering Court",
+    subtitle: "Floor 19, Court's Edge",
+    summary: "A palace floor built for a royal court that never had any actual subjects, one floor short of the next confirmed gate. It ends at the Faded Monarch.",
+    startSceneId: "ai-scene-floor19-arrival",
+    completionFlag: "ai-flag-ch19-complete",
+    nextChapterId: "ai-ch20",
+    outcomes: [
+      { id: "ai-ch19-outcome-honor", title: "Honored the Court", description: "You played by the court's own faded rules of engagement, and it respected that more than force.", requiredFlags: ["ai-flag-raid19-honor"] },
+      { id: "ai-ch19-outcome-ignore", title: "Ignored the Ceremony", description: "You ignored every ceremonial rule and just won.", requiredFlags: ["ai-flag-raid19-ignore"] },
+    ],
+  },
+  {
+    id: "ai-ch20",
+    worldId: "aincrad",
+    index: 20,
+    title: "The Twentieth Spire",
+    subtitle: "Floor 20, Spirebase",
+    summary: "The third confirmed milestone floor. From its peak you can see farther up Aincrad than anyone's ever confirmed reaching — and this time, that's about to be you.",
+    startSceneId: "ai-scene-floor20-arrival",
+    completionFlag: "ai-flag-ch20-complete",
+    // No nextChapterId: floor 20 is the end of this vertical slice. Floors 21-99 remain unbuilt.
+    outcomes: [
+      { id: "ai-ch20-outcome-aggressive", title: "Ended It Fast", description: "You went in aggressive and closed the fight before the Warden could unseal a weapon nobody's seen it use.", requiredFlags: ["ai-flag-raid20-aggressive"] },
+      { id: "ai-ch20-outcome-patient", title: "Outlasted It", description: "You played the long game and let every phase cost the Warden something it couldn't get back.", requiredFlags: ["ai-flag-raid20-patient"] },
+      { id: "ai-ch20-outcome-renn", title: "Finished Together", description: "Renn finally didn't have to attempt this floor alone.", requiredFlags: ["ai-flag-renn-recruited"] },
     ],
   },
 ];
@@ -179,6 +331,12 @@ export function determineAincradChapterOutcome(save: SaveGame): { id: string; ti
   }
 
   if (chapter.id === "ai-ch10" && flags.includes("ai-flag-ilyana-recruited")) {
+    return chapter.outcomes[2];
+  }
+  if (chapter.id === "ai-ch15" && flags.includes("ai-flag-corvin-recruited")) {
+    return chapter.outcomes[2];
+  }
+  if (chapter.id === "ai-ch20" && flags.includes("ai-flag-renn-recruited")) {
     return chapter.outcomes[2];
   }
 

@@ -2614,4 +2614,606 @@ export const aincradScenes: SceneInput[] = [
       },
     ],
   },
+
+  /* ============================ Floor 11: The Sunken Archive ============================ */
+  {
+    id: "ai-scene-floor11-arrival",
+    worldId: W,
+    chapterId: "ai-ch11",
+    title: "Waterline Camp",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Ninety floors left past the Gate, and the first of them is already half-underwater. Waterline Camp is built entirely on stilts for exactly that reason.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor11-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "Somewhere below the camp's floorboards, an entire library is still slowly dissolving. Someone here has apparently made it their whole personality to stop that.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town11", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor11-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch11",
+    title: "Mireille Osten",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-mireille", speakerName: "Mireille", expression: "thinking", text: "Careful where you step down there. Half those shelves are one wrong current from collapsing, and I haven't finished reading most of them.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-mireille" }, { type: "unlockCodex", entryId: "ai-codex-mireille" }], conditions: [], choices: [
+        { id: "c1", text: "\"What exactly are you looking for down there?\"", requirementLabel: "Requires Empathy 6", conditions: [{ type: "minStat", stat: "empathy", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-mireille", axis: "trust", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"Noted. I'll watch my step.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-mireille", axis: "respect", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-mireille", speakerName: "Mireille", expression: "sad", text: "...A survivor's account. From a guild that got wiped clearing this floor, back when it was still new. I knew one of them, before launch. I want to know how it happened, even if it's the last thing that page ever tells anyone.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-mireille-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss11-prep",
+    worldId: W,
+    chapterId: "ai-ch11",
+    title: "Raid Preparation — Archive Warden",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warden's chamber sits at the archive's lowest point, and the water's still rising. Whatever you're going to do here, the clock's already running.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-archive-warden" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Strike immediately, before the water rises any higher.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid11-fast" }, { type: "triggerBattle", encounterId: "ai-enc-boss11" }] },
+          { id: "c2", text: "Read the archive's own posted rules first, and use them against it.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid11-careful" }, { type: "triggerBattle", encounterId: "ai-enc-boss11" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss11-aftermath",
+    worldId: W,
+    chapterId: "ai-ch11",
+    title: "After the Warden",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warden dissolves the same way everything else on this floor eventually does — slowly, and then all at once. Floor 11 clears.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-mireille", speakerName: "Mireille", expression: "smile", text: "The water level's already dropping. Give it a week and I might actually get to finish that shelf. Thank you — genuinely.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch11-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 12: Ember Foundry ============================ */
+  {
+    id: "ai-scene-floor12-arrival",
+    worldId: W,
+    chapterId: "ai-ch12",
+    title: "Forgeside",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Heat radiates through the floorboards of Forgeside long before you ever see the furnace itself. Nobody here remembers it ever being cold.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor12-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A gruff-looking smith is hammering something at an anvil that's clearly seen better decades.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town12", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor12-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch12",
+    title: "Talon Vekric",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-talon", speakerName: "Talon", expression: "cold", text: "Furnace runs hot enough to forge anything you'll need on this climb. Runs a little too hot, if you ask people who don't know why. Nobody asks me.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-talon" }, { type: "unlockCodex", entryId: "ai-codex-talon" }], conditions: [], choices: [
+        { id: "c1", text: "\"I'm asking. Why's it run so hot?\"", requirementLabel: "Requires Courage 6", conditions: [{ type: "minStat", stat: "courage", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-talon", axis: "respect", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"Not my business. I just need gear.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-talon", axis: "trust", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-talon", speakerName: "Talon", expression: "frown", text: "...I set it. Launch week, adjusting a setting I didn't understand yet. It's been running like this ever since and I don't know how to undo it without collapsing half the floor. So I just — keep forging. Feels like the only useful thing left to do about it.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-talon-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss12-prep",
+    worldId: W,
+    chapterId: "ai-ch12",
+    title: "Raid Preparation — Foundry Heart",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Heart sits at the center of the furnace itself, radiating enough heat to see the air bend around it.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-foundry-heart" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Vent the foundry's heat down before engaging.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid12-cool" }, { type: "triggerBattle", encounterId: "ai-enc-boss12" }] },
+          { id: "c2", text: "Fight at full furnace heat and simply outlast it.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid12-heat" }, { type: "triggerBattle", encounterId: "ai-enc-boss12" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss12-aftermath",
+    worldId: W,
+    chapterId: "ai-ch12",
+    title: "After the Heart",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Foundry Heart finally cools, for the first time since launch week. Floor 12 clears, and somewhere behind you, the furnace's roar drops to a low, ordinary hum.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-talon", speakerName: "Talon", expression: "shocked", text: "...It's quiet. First time in — I don't actually know how long. Guess that's one thing I don't have to feel guilty about forging around anymore.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch12-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 13: Glasswind Reach ============================ */
+  {
+    id: "ai-scene-floor13-arrival",
+    worldId: W,
+    chapterId: "ai-ch13",
+    title: "Dunerest",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Dunerest sits low and shielded, built specifically to duck under the wind that scours everything above waist height out on the reach.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor13-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A prospector is repairing a set of glass-scarred armor plates like it's a completely routine Tuesday.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town13", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor13-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch13",
+    title: "Reeve Calantha",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-reeve", speakerName: "Reeve", expression: "smirk", text: "First time on the Reach, I'm guessing. Everyone stares at the dunes the same way before they learn to respect them. Gloves on, always. That's rule one.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-reeve" }, { type: "unlockCodex", entryId: "ai-codex-reeve" }], conditions: [], choices: [
+        { id: "c1", text: "\"You've been hurt out there. Badly.\"", requirementLabel: "Requires Perception 6", conditions: [{ type: "minStat", stat: "perception", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-reeve", axis: "trust", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"Gloves on. Got it.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-reeve", axis: "respect", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-reeve", speakerName: "Reeve", expression: "worried", text: "...Two fingers, left hand. Glove hides it well enough that most people don't ask. You're the first who's noticed without me saying anything. I'd rather you not mention it to the others, if that's alright.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-reeve-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss13-prep",
+    worldId: W,
+    chapterId: "ai-ch13",
+    title: "Raid Preparation — Wind-Cut Colossus",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Colossus stands at the center of the reach's largest glass formation, wind screaming around it constantly.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-wind-cut-colossus" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Stay low, below the worst of the wind.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid13-low" }, { type: "triggerBattle", encounterId: "ai-enc-boss13" }] },
+          { id: "c2", text: "Use the wind's own momentum against it.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid13-ride" }, { type: "triggerBattle", encounterId: "ai-enc-boss13" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss13-aftermath",
+    worldId: W,
+    chapterId: "ai-ch13",
+    title: "After the Colossus",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Colossus shatters into a million pieces of ordinary sand-glass, and for a moment the wind actually goes still. Floor 13 clears.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-reeve", speakerName: "Reeve", expression: "smile", text: "Whole reach feels a little safer already. I'll get a map of the cleared paths posted by evening. Two fingers was worth this floor, at least. Most days I'm not sure it was worth anything.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch13-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 14: The Hanging Gardens ============================ */
+  {
+    id: "ai-scene-floor14-arrival",
+    worldId: W,
+    chapterId: "ai-ch14",
+    title: "Rootrest",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Rootrest hangs from the same root system as the gardens above it, and every board underfoot creaks in a way that's technically fine, apparently.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor14-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A botanist is carefully repotting something that's already easily twice her height.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town14", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor14-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch14",
+    title: "Fenna Brightleaf",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-fenna", speakerName: "Fenna", expression: "smile", text: "Oh — welcome! Careful of the root platforms near the edge, they're sturdier than they look, but 'sturdier than they look' still isn't a guarantee I'd stake my life on. Wait, I have. Several times. Ignore that.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-fenna" }, { type: "unlockCodex", entryId: "ai-codex-fenna" }], conditions: [], choices: [
+        { id: "c1", text: "\"Why do you care about this garden so much?\"", requirementLabel: "Requires Empathy 5", conditions: [{ type: "minStat", stat: "empathy", value: 5 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-fenna", axis: "trust", delta: 7 }], goTo: "n2" },
+        { id: "c2", text: "\"I'll be careful. Promise.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-fenna", axis: "respect", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-fenna", speakerName: "Fenna", expression: "thinking", text: "It's the only thing in Aincrad that's actually alive and growing on its own terms, not because a boss table says it should. I've been logging its patterns for months — and sending copies to Doc Renner on Floor 8, actually. I think this garden and that maze are connected somehow. Nobody else believes me yet.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-fenna-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss14-prep",
+    worldId: W,
+    chapterId: "ai-ch14",
+    title: "Raid Preparation — Garden Sovereign",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Sovereign's chamber is the garden's oldest bloom, grown into something that stopped being just a flower a long time ago.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-garden-sovereign" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Fight carefully, to avoid burning down the garden around you.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid14-spare" }, { type: "triggerBattle", encounterId: "ai-enc-boss14" }] },
+          { id: "c2", text: "Accept the cost and cut straight through.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid14-burn" }, { type: "triggerBattle", encounterId: "ai-enc-boss14" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss14-aftermath",
+    worldId: W,
+    chapterId: "ai-ch14",
+    title: "After the Sovereign",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Sovereign folds back into an ordinary, oversized bloom. Floor 14 clears, and the garden platform settles, finally still.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-fenna", speakerName: "Fenna", expression: "smile", text: "It's still alive — the garden, I mean, mostly. That's more than I let myself hope for, honestly. Thank you for not just torching the whole thing.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch14-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 15: Duskmarch ============================ */
+  {
+    id: "ai-scene-floor15-arrival",
+    worldId: W,
+    chapterId: "ai-ch15",
+    title: "Lastlight",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Lastlight's torches burn a little dimmer than torches should. Nobody's fixed that, or even tried. It fits the floor.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor15-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A quiet figure tends a row of markers just outside the town's edge, like it's the most important job in Aincrad.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town15", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor15-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch15",
+    title: "Corvin Ashe",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-corvin", speakerName: "Corvin", expression: "neutral", text: "You're staring at the markers. Most people walk past them without a second look. I keep a record of every name on this floor — the official one, and one the system would rather nobody kept.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-corvin" }, { type: "unlockCodex", entryId: "ai-codex-corvin" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you respond?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "\"What does the system want kept quiet?\"", requirementLabel: "Requires Perception 6", conditions: [{ type: "minStat", stat: "perception", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-corvin", axis: "trust", delta: 10 }, { type: "startQuest", questId: "ai-q-corvin-ledger" }], goTo: "n3" },
+          { id: "c2", text: "\"That sounds like important work.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-corvin", axis: "respect", delta: 5 }] },
+        ],
+      },
+      { id: "n3", speakerId: "ai-corvin", speakerName: "Corvin", expression: "sad", text: "...Certain names got quietly deleted from the official floor-clear logs after incidents the system didn't want traced back to a bug. I keep the second ledger so those names still exist somewhere. Somebody has to.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-corvin-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-corvin-join",
+    worldId: W,
+    chapterId: "ai-ch15",
+    title: "Asking Corvin to March With You",
+    startNode: "n1",
+    nodes: [
+      {
+        id: "n1", expression: "neutral", text: "You could ask Corvin to join the party for the raid on the Duskmarch Sovereign.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "\"Come with us. Add one more name to the ledger that isn't a loss.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-corvin-recruited" }, { type: "modifyRelationship", npcId: "ai-corvin", axis: "trust", delta: 12 }, { type: "modifyRelationship", npcId: "ai-corvin", axis: "loyalty", delta: 8 }, { type: "unlockAchievement", achievementId: "ach-unlikely-ally" }], goTo: "good" },
+          { id: "c2", text: "Let him keep tending the markers. That matters too.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-corvin", axis: "respect", delta: 6 }] },
+        ],
+      },
+      { id: "good", speakerId: "ai-corvin", speakerName: "Corvin", expression: "determined", text: "...All right. Let's make sure this one's a name I get to cross off a different list.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss15-prep",
+    worldId: W,
+    chapterId: "ai-ch15",
+    title: "Raid Preparation — Duskmarch Sovereign",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Sovereign leads its march at the edge of town, in a column that's been circling for longer than anyone's tracked. This is the second confirmed milestone floor, and everyone in Lastlight knows it.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-duskmarch-sovereign" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Go in hard and scatter the march before it can close ranks.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, timerSeconds: 10, effects: [{ type: "setFlag", flag: "ai-flag-raid15-aggressive" }, { type: "triggerBattle", encounterId: "ai-enc-boss15" }] },
+          { id: "c2", text: "Play the long game — let the dusk itself work against the Sovereign.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, timerSeconds: 10, effects: [{ type: "setFlag", flag: "ai-flag-raid15-patient" }, { type: "triggerBattle", encounterId: "ai-enc-boss15" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss15-aftermath",
+    worldId: W,
+    chapterId: "ai-ch15",
+    title: "After the Sovereign",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The march finally stops circling. Floor 15 clears — the second confirmed gate, and Lastlight's torches burn a little brighter for it.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-corvin", speakerName: "Corvin", expression: "smile", text: "Fifteen floors. Every name on my ledger got a little closer to meaning something other than a loss today. Thank you for that — more than the record will ever say.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch15-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 16: Ironclad Docks ============================ */
+  {
+    id: "ai-scene-floor16-arrival",
+    worldId: W,
+    chapterId: "ai-ch16",
+    title: "Drydock Row",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Drydock Row runs like an actual working harbor, minus the part where any of the ships ever leave port.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor16-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A loud foreman is directing a supply crew with the energy of someone who genuinely loves logistics.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town16", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor16-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch16",
+    title: "Brogan Steele",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-brogan", speakerName: "Brogan", expression: "smile", text: "New face! Good, we can always use more hands. Half of Aincrad thinks logistics doesn't matter until the day it's the only thing that saves them. I run this dock like it's going to be that day.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-brogan" }, { type: "unlockCodex", entryId: "ai-codex-brogan" }], conditions: [], choices: [
+        { id: "c1", text: "\"You're stockpiling for something specific, aren't you.\"", requirementLabel: "Requires Intelligence 6", conditions: [{ type: "minStat", stat: "intelligence", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-brogan", axis: "respect", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"Put me to work, then.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-brogan", axis: "trust", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-brogan", speakerName: "Brogan", expression: "determined", text: "...Yeah. A mass casualty event. I hope to every system admin who's listening we never need it. But if a floor boss ever gets loose past a raid party, this dock's got enough gear stockpiled to get every player here out fast. Nobody else has bothered to plan that far.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-brogan-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss16-prep",
+    worldId: W,
+    chapterId: "ai-ch16",
+    title: "Raid Preparation — Dreadnought Hull",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Hull looms over the whole harbor, dry-docked and clearly still occupied by something that never disembarked.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-dreadnought-hull" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Board the hull directly and fight it from the inside out.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid16-board" }, { type: "triggerBattle", encounterId: "ai-enc-boss16" }] },
+          { id: "c2", text: "Flood the dry dock first and let the hull's own weight work against it.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid16-sink" }, { type: "triggerBattle", encounterId: "ai-enc-boss16" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss16-aftermath",
+    worldId: W,
+    chapterId: "ai-ch16",
+    title: "After the Hull",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Hull finally goes still, settling into the dry dock like the ordinary wreck it should have been from the start. Floor 16 clears.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-brogan", speakerName: "Brogan", expression: "smile", text: "Whole dock's cheering. Good excuse to break into the stockpile for something other than an emergency, for once. Drinks are on the house tonight — don't tell my supply ledger I said that.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch16-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 17: The Silent Orchard ============================ */
+  {
+    id: "ai-scene-floor17-arrival",
+    worldId: W,
+    chapterId: "ai-ch17",
+    title: "Quietrow",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Quietrow has picked up the orchard's habits. Nobody here raises their voice, and after an hour, you find you don't really want to either.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor17-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A figure near the orchard's edge moves without making a single sound, even on gravel.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town17", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor17-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch17",
+    title: "Wisteria Vane",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-wisteria", speakerName: "Wisteria", expression: "neutral", text: "(...welcome to Quietrow. Please — keep your voice low, if you can. It isn't a rule. It's just what feels right, here.)", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-wisteria" }, { type: "unlockCodex", entryId: "ai-codex-wisteria" }], conditions: [], choices: [
+        { id: "c1", text: "\"Why does it feel right to you?\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-wisteria", axis: "trust", delta: 5 }], goTo: "n2" },
+        { id: "c2", text: "Match her volume. Say nothing above a whisper.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: true, effects: [{ type: "modifyRelationship", npcId: "ai-wisteria", axis: "respect", delta: 7 }] },
+      ] },
+      { id: "n2", speakerId: "ai-wisteria", speakerName: "Wisteria", expression: "worried", text: "(...I heard my name once, out among the trees. Months ago. Nobody I could find had said it. Since then I've just — matched the quiet. Felt safer than asking what said it instead.)", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-wisteria-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss17-prep",
+    worldId: W,
+    chapterId: "ai-ch17",
+    title: "Raid Preparation — The Withered Root",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Whatever's actually keeping the orchard silent waits at its center, beneath the oldest tree in the row.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-withered-root" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Fight as quietly as the orchard itself.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid17-quiet" }, { type: "triggerBattle", encounterId: "ai-enc-boss17" }] },
+          { id: "c2", text: "Break the silence on purpose and see what changes.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid17-loud" }, { type: "triggerBattle", encounterId: "ai-enc-boss17" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss17-aftermath",
+    worldId: W,
+    chapterId: "ai-ch17",
+    title: "After the Root",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Root goes still, and for the first time, the orchard's silence feels like an ordinary quiet morning instead of something being carefully held in place. Floor 17 clears.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-wisteria", speakerName: "Wisteria", expression: "smile", text: "(...it's a different quiet now. I can't explain how I know that. But I do. Thank you.)", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch17-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 18: Stormwatch Bastion ============================ */
+  {
+    id: "ai-scene-floor18-arrival",
+    worldId: W,
+    chapterId: "ai-ch18",
+    title: "Stormwatch Garrison",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The garrison is braced for a storm that's been about to break for as long as anyone's kept records here. It never quite does. That doesn't stop them bracing.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor18-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A stern captain reviews formation drills like the siege could resume any second — which, as far as anyone here knows, it could.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town18", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor18-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch18",
+    title: "Draven Kestrel",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-draven", speakerName: "Draven", expression: "cold", text: "New arrival. Good — the garrison can use every capable hand. State your business, or find a bunk. Either is acceptable. Idle wandering near the walls is not.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-draven" }, { type: "unlockCodex", entryId: "ai-codex-draven" }], conditions: [], choices: [
+        { id: "c1", text: "\"Do you actually think the storm's going to break?\"", requirementLabel: "Requires Courage 6", conditions: [{ type: "minStat", stat: "courage", value: 6 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-draven", axis: "respect", delta: 8 }], goTo: "n2" },
+        { id: "c2", text: "\"Just passing through, Captain.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-draven", axis: "trust", delta: 4 }] },
+      ] },
+      { id: "n2", speakerId: "ai-draven", speakerName: "Draven", expression: "neutral", text: "...No. Privately, no. I think we're holding a line that stopped needing holding a long time ago. I don't say that to the garrison. Morale matters more than my private theories. Keep it between us.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-draven-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss18-prep",
+    worldId: W,
+    chapterId: "ai-ch18",
+    title: "Raid Preparation — Stormwatch Warlord",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warlord commands the bastion's inner keep, backed by a garrison that's stopped needing orders to know what to do.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-stormwatch-warlord" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Hold tight formation and let the bastion's own defenses help.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid18-formation" }, { type: "triggerBattle", encounterId: "ai-enc-boss18" }] },
+          { id: "c2", text: "Break formation on purpose and hit from an angle it hasn't planned for.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid18-break" }, { type: "triggerBattle", encounterId: "ai-enc-boss18" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss18-aftermath",
+    worldId: W,
+    chapterId: "ai-ch18",
+    title: "After the Warlord",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warlord falls, and for the first time, the storm over Stormwatch Bastion actually starts to clear. Floor 18 clears with it.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-draven", speakerName: "Draven", expression: "smile", text: "The garrison can stand down, for the first time in longer than most of them can remember. I believe that's the single most satisfying order I've ever given. Well fought.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch18-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 19: The Withering Court ============================ */
+  {
+    id: "ai-scene-floor19-arrival",
+    worldId: W,
+    chapterId: "ai-ch19",
+    title: "Court's Edge",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Court's Edge sits right at the border of a palace nobody living was ever invited into. One floor short of the next confirmed gate.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor19-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A woman in careful, theatrical dress is narrating something to nobody in particular, like she's rehearsing a speech only she can hear the rest of.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town19", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor19-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch19",
+    title: "Isolde Thorne",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-isolde", speakerName: "Isolde", expression: "smirk", text: "Ah — a witness. Perfect timing. I'm cataloguing the fall of a great court, once flourishing, now entirely faded. Tragic, really. Would you like to hear how it ends?", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-isolde" }, { type: "unlockCodex", entryId: "ai-codex-isolde" }], conditions: [], choices: [
+        { id: "c1", text: "\"This court sounds a lot like it's actually about you.\"", requirementLabel: "Requires Perception 7", conditions: [{ type: "minStat", stat: "perception", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-isolde", axis: "trust", delta: 10 }], goTo: "n2" },
+        { id: "c2", text: "\"Sure. Tell me how it ends.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-isolde", axis: "respect", delta: 5 }] },
+      ] },
+      { id: "n2", speakerId: "ai-isolde", speakerName: "Isolde", expression: "sad", text: "...Perceptive. Yes. It's my guild, renamed and re-costumed into something grander than it ever was. We fell apart on Floor 6, over something stupid — a trade dispute, of all things. Telling it as a court's tragedy is easier than telling it as mine.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-isolde-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss19-prep",
+    worldId: W,
+    chapterId: "ai-ch19",
+    title: "Raid Preparation — The Faded Monarch",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Monarch holds a throne room built for a court that never actually had subjects, and it clearly still expects ceremony.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-faded-monarch" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Play by the court's own faded rules of engagement.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid19-honor" }, { type: "triggerBattle", encounterId: "ai-enc-boss19" }] },
+          { id: "c2", text: "Ignore every ceremonial rule and just win.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-raid19-ignore" }, { type: "triggerBattle", encounterId: "ai-enc-boss19" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss19-aftermath",
+    worldId: W,
+    chapterId: "ai-ch19",
+    title: "After the Monarch",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Monarch fades the way the rest of the court already has — quietly, without much ceremony left to spare. Floor 19 clears.", next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }], choices: [], conditions: [] },
+      { id: "n2", speakerId: "ai-isolde", speakerName: "Isolde", expression: "smile", text: "...I think I'm ready to tell that story as mine, actually. Guild and all. Thank you for that — I don't think I could have written the ending myself.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch19-complete" }], choices: [], conditions: [] },
+    ],
+  },
+
+  /* ============================ Floor 20: The Twentieth Spire ============================ */
+  {
+    id: "ai-scene-floor20-arrival",
+    worldId: W,
+    chapterId: "ai-ch20",
+    title: "Spirebase",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "Spirebase is quieter than even Gatewatch was. The third confirmed milestone floor does that to a town, apparently.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-floor20-arrived" }], choices: [], conditions: [] },
+      { id: "n2", expression: "neutral", isInnerMonologue: true, text: "A confident-looking veteran is running solo drills at the edge of town, the way someone does when they're used to relying only on themselves.", isInterruption: false, effects: [{ type: "changeLocation", mapId: "ai-map-town20", spawnId: "default" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-floor20-npc-intro",
+    worldId: W,
+    chapterId: "ai-ch20",
+    title: "Renn Aurelio",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", speakerId: "ai-renn", speakerName: "Renn", expression: "smirk", text: "You're the one everyone at Spirebase has been talking about. Good — means you're either very skilled or very lucky, and either way I'd rather have you at my back than not, going up against the Warden.", next: "n2", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-met-renn" }, { type: "unlockCodex", entryId: "ai-codex-renn" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you respond?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "\"You've fought it before, haven't you. Alone.\"", requirementLabel: "Requires Empathy 7", conditions: [{ type: "minStat", stat: "empathy", value: 7 }], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-renn", axis: "trust", delta: 10 }, { type: "startQuest", questId: "ai-q-renn-pride" }], goTo: "n3" },
+          { id: "c2", text: "\"Glad to have you. Let's climb.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-renn", axis: "respect", delta: 6 }] },
+        ],
+      },
+      { id: "n3", speakerId: "ai-renn", speakerName: "Renn", expression: "shocked", text: "...Twice. Lost both times. Nearly didn't walk away from the second one. I don't tell people that — bad for morale, worse for reputation. But you asked directly, so: yes. Alone. Twice.", isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-renn-secret" }], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-renn-join",
+    worldId: W,
+    chapterId: "ai-ch20",
+    title: "Asking Renn to Attempt the Spire Together",
+    startNode: "n1",
+    nodes: [
+      {
+        id: "n1", expression: "neutral", text: "You could ask Renn to join the party for the raid on the Twentieth Warden.", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "\"Not alone this time. Come with us.\"", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, effects: [{ type: "setFlag", flag: "ai-flag-renn-recruited" }, { type: "modifyRelationship", npcId: "ai-renn", axis: "trust", delta: 12 }, { type: "modifyRelationship", npcId: "ai-renn", axis: "loyalty", delta: 8 }, { type: "unlockAchievement", achievementId: "ach-unlikely-ally" }], goTo: "good" },
+          { id: "c2", text: "Respect that this might be something she needs to finish herself.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, effects: [{ type: "modifyRelationship", npcId: "ai-renn", axis: "respect", delta: 6 }] },
+        ],
+      },
+      { id: "good", speakerId: "ai-renn", speakerName: "Renn", expression: "determined", text: "...Okay. Third time. This time it's not just me walking in.", isInterruption: false, effects: [], choices: [], conditions: [] },
+    ],
+  },
+  {
+    id: "ai-scene-boss20-prep",
+    worldId: W,
+    chapterId: "ai-ch20",
+    title: "Raid Preparation — The Twentieth Warden",
+    startNode: "n1",
+    nodes: [
+      { id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warden waits at the spire's peak. The third confirmed milestone floor, and the hardest fight this slice of the climb has offered yet — everyone at Spirebase agrees on that much, at least.", next: "n2", isInterruption: false, effects: [{ type: "unlockCodex", entryId: "ai-codex-twentieth-warden" }], choices: [], conditions: [] },
+      {
+        id: "n2", expression: "neutral", text: "How do you want to approach the fight?", isInnerMonologue: false, isInterruption: false, effects: [], conditions: [],
+        choices: [
+          { id: "c1", text: "Go in aggressive — end it before it unseals a weapon nobody's seen it use.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, timerSeconds: 10, effects: [{ type: "setFlag", flag: "ai-flag-raid20-aggressive" }, { type: "triggerBattle", encounterId: "ai-enc-boss20" }] },
+          { id: "c2", text: "Play the long game — let every phase cost it something it can't get back.", conditions: [], hiddenIfUnmet: false, isBluff: false, isSilence: false, importantChoice: true, timerSeconds: 10, effects: [{ type: "setFlag", flag: "ai-flag-raid20-patient" }, { type: "triggerBattle", encounterId: "ai-enc-boss20" }] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai-scene-boss20-aftermath",
+    worldId: W,
+    chapterId: "ai-ch20",
+    title: "The Twentieth Floor Clears",
+    startNode: "n1",
+    nodes: [
+      {
+        id: "n1", expression: "neutral", isInnerMonologue: true, text: "The Warden falls. Twenty floors. From the spire's peak, on a clear day, you can now say you've actually seen how far up Aincrad really goes — farther than anyone's confirmed reaching, still, but twenty floors closer than you were.",
+        next: "n2", isInterruption: false, effects: [{ type: "unlockAchievement", achievementId: "ach-floor-pioneer" }, { type: "unlockAchievement", achievementId: "ach-twentieth-spire" }], choices: [], conditions: [],
+      },
+      {
+        id: "n2", speakerId: "ai-renn", speakerName: "Renn", expression: "determined", text: "Third attempt. First time it actually felt like a victory instead of a survival. I don't think I say this to people often, but — thank you for that. Genuinely.",
+        next: "n3", isInterruption: false, effects: [], choices: [], conditions: [],
+      },
+      {
+        id: "n3", expression: "neutral", isInnerMonologue: true, text: "Eighty floors left past this one. For now, though, the climb feels less like a countdown and more like a story with real people still telling it alongside you.",
+        isInterruption: false, effects: [{ type: "setFlag", flag: "ai-flag-ch20-complete" }], choices: [], conditions: [],
+      },
+    ],
+  },
 ];
